@@ -1,0 +1,19 @@
+---
+import PostList from "@components/PostList.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getPosts } from "../../lib/content";
+
+const posts = await getPosts();
+---
+
+<BaseLayout title="Writing" description="Occasional posts, notes, and essays by Hoye Lam.">
+  <main class="article">
+    <header class="article-header">
+      <h1>Writing</h1>
+      <p class="article-description">
+        Notes, essays, and product updates from over the years.
+      </p>
+    </header>
+    <PostList posts={posts} />
+  </main>
+</BaseLayout>

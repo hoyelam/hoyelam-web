@@ -1,0 +1,97 @@
+---
+title: "Share Sheet UIActivityViewController within SwiftUI"
+description: "UIActivityViewController within SwiftUI."
+publishedAt: "2021-01-26T19:12:42.000Z"
+updatedAt: "2021-01-26T19:12:42.000Z"
+coverImage: "/images/imported/2021/01/Screenshot-2021-01-26-at-20.10.45-134af7c849.png"
+legacyUrl: "https://hoyelam.com/share-sheet-uiactivityviewcontroller-within-swiftui/"
+---
+With Growrilla 1.5.0 released, users can now share their progress more easily.
+
+Thus I also want to share how I did it.
+
+First, we have the make the `UIActivityViewController` usable with SwiftUI. Thus we are going to wrap it around a `UIViewControllerRepresentable`.
+
+```swift
+struct ActivityViewController: UIViewControllerRepresentable {
+
+    @Binding var activityItems: [Any]
+    var excludedActivityTypes: [UIActivity.ActivityType]? = nil
+    
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ActivityViewController>) -> UIActivityViewController {
+        let controller = UIActivityViewController(activityItems: activityItems,
+                                                  applicationActivities: nil)
+        
+        controller.excludedActivityTypes = excludedActivityTypes
+        
+        return controller
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: UIViewControllerRepresentableContext<ActivityViewController>) {}
+}
+```
+
+Then we create a custom `ViewModifer` to more easily views more easily implement the sharing feature.
+
+```swift
+struct ShareSheetModifer: ViewModifier {
+    @State private var showShareSheet: Bool = false
+    @State var shareSheetItems: [Any] = []
+    
+    func body(content: Content) -> some View {
+        content
+            .contextMenu {
+                Button(action: {
+                    self.showShareSheet.toggle()
+                }) {
+                    Text("Share")
+                    Image(systemName: "square.and.arrow.up")
+                }
+            }
+            .sheet(isPresented: $showShareSheet, content: {
+                ActivityViewController(activityItems: self.$shareSheetItems)
+            })
+    }
+}
+```
+
+Within my example, I’m creating this sharing feature with a context menu, but you can easily change it to being a double tap for example with `onTapGesture`.
+
+Then to use it, add the modifier to your SwiftUI Element like the following with the items that you want to share.
+
+```swift
+Text("Hello, world!")
+            .padding()
+            .modifier(ShareSheetModifer(shareSheetItems: ["Hello, world!"]))
+```
+
+While this is already okay to use, I personally don’t like to write my modifiers in this way. Thus, you can use the following extension on View.
+
+```swift
+extension View {
+    func shareSheet(items: [Any], excludedActivityTypes: [UIActivity.ActivityType]? = nil) -> some View {
+        self.modifier(ShareSheetModifer(shareSheetItems: items))
+    }
+}
+```
+
+Then you use it the following way:
+
+```swift
+Text("Hello, world!")
+            .padding()
+            .shareSheet(items: ["Hello world!"])
+```
+
+If you want to exclude activity types like for example posting the items to Facebook, you use the it the following way:
+
+```swift
+Text("Hello, world!")
+                .padding()
+                .shareSheet(items: ["Hello world!"], excludedActivityTypes: [.postToFacebook])
+```
+
+Hope you enjoyed it!
+
+For the full code snippet:  
+[Share Sheet UIActivityViewController within SwiftUI · GitHub](https://gist.github.com/hoyelam/04f4d476f6f987ac81ec67cbf5cbc6e7)

@@ -1,0 +1,101 @@
+---
+title: "Summing up numeric properties of objects in an array in Swift"
+description: "A solution on how to sum up numeric properties of objects within an array."
+publishedAt: "2021-01-17T21:55:33.000Z"
+updatedAt: "2021-01-17T21:57:59.000Z"
+legacyUrl: "https://hoyelam.com/summing-up-numeric-properties-of-objects-in-an-array-in-swift/"
+---
+You may want to sum up properties from an object. For example, you may retrieve log data from your analytics web server.
+
+A struct could be the following:
+
+```swift
+struct ActionLog: Codable {
+    var actionId: Int
+    var actionPerformed: Int
+    var creationDate: Date
+}
+```
+
+This struct could for example contain a log of a certain action taken within a software product.
+
+-   actionId = the ID of a certain action (i.e button press, purchase, authentication)
+-   actionPerformed = the number of times this action was performed during a log
+
+With these logs, you may have as aim to calculate the total amount of actions performed of a certain action. How do you this?
+
+* * *
+
+First, let’s break down the requirement into smaller pieces.
+
+1.  Filter all the actions based on the `actionId`
+2.  Get all the `actionPerformed`  Integer based on the actionId
+3.  Sum all the retrieved `actionPerformed` Integers.
+
+Now that we know what we want to do, let’s code it as well.
+
+```swift
+// 1. Filter step
+let desiredActionId = 1
+let filteredLogs = logs.filter( {$0.actionId == desiredActionId} )
+
+// 2. Get the `actionPerformed` integers
+let numbers = filteredLogs.map( {$0.actionPerformed })
+
+// 3. Sum all the integers up
+let totalAmount = numbers.reduce(0, +)
+```
+
+Or if you want much shorter.
+
+```swift
+let totalAmount = logs
+    .filter( {$0.actionId == desiredActionId} ) // Step 1
+    .map( {$0.actionPerformed }) // Step 2
+    .reduce(0, +) // Step 3
+```
+
+This a solution on how to sum up numeric properties of objects within an array.
+
+You can test the code with there snippet here within Playgrounds:
+
+```swift
+struct ActionLog: Codable {
+    var actionId: Int
+    var actionPerformed: Int
+    var creationDate: Date
+}
+
+var logs: [ActionLog] = []
+
+for _ in 0..<100 {
+    logs.append(.init(actionId: 1,
+                      actionPerformed: 1,
+                      creationDate: Date()))
+    
+    logs.append(.init(actionId: 2,
+                      actionPerformed: 2,
+                      creationDate: Date()))
+}
+
+// 1. Filter step
+let desiredActionId = 1
+let filteredLogs = logs.filter( {$0.actionId == desiredActionId} )
+
+// 2. Get the `actionPerformed` integers
+let numbers = filteredLogs.map( {$0.actionPerformed })
+
+// 3. Sum all the integers
+let total = numbers.reduce(0, +)
+
+print("Total amount of actions performed of action 1: \(total) times")
+
+// shorter
+let totalShort = logs
+    .filter( {$0.actionId == desiredActionId} ) // Step 1
+    .map( {$0.actionPerformed }) // Step 2
+    .reduce(0, +) // Step 3
+
+print("Total amount of actions performed of action 1: \(totalShort) times")
+
+```

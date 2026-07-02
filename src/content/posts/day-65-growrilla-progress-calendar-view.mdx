@@ -1,0 +1,36 @@
+---
+title: "Day #65 | Growrilla progress Calendar View"
+description: "Within this view, you can see all the logs of a specific day for Growrilla - the app to literally count anything."
+publishedAt: "2020-11-14T21:41:01.000Z"
+updatedAt: "2020-11-14T21:41:01.000Z"
+coverImage: "/images/imported/2020/11/Screen-Shot-2020-11-14-at-22.40.02-c9280bbb2f.png"
+legacyUrl: "https://hoyelam.com/day-65-growrilla-progress-calendar-view/"
+---
+Today, I’ve worked on the calendar view of Growrilla.
+
+Within this view, you can see all the logs of a specific day. This view is to explore the logs of previous days of a certain event you are counting.
+
+It also allows for the ability to delete logs. Just incase you made a mistake and mis counted. Or if you forgot to count with Growrilla somehow, you can also add an additional one on the specified date.
+
+![](/images/imported/2020/11/Simulator-Screen-Shot---iPhone-11---2020-11-14-at-22.25.55-cc49c47d05.png)
+
+_Calendar View for Growrilla - The app to count literraly anything_
+
+Stay tuned for more updates!
+
+### Development
+
+The struggle with SwiftUI is for me still the List. I still don’t why we can’t adjust parameters like the background color, separator-line/style, and EdgeInsets.
+
+I feel like every time I’m working with it I have to use the following lines:
+
+```swift
+UITableView.appearance().separatorStyle = .none
+UITableView.appearance().backgroundColor = UIColor(Color.background)
+// or 
+Text("").listRowInsets(EdgeInsets()
+```
+
+_💤_
+
+These lines feel so awkward when SwiftUI should be powerful for these standards views. The lazy grids are much better than List, but because delete or edit actions are a bit more complex to accomplish in the grids, List is preferred for now.

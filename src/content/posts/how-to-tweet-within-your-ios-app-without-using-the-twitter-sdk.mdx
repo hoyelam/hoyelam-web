@@ -1,0 +1,187 @@
+---
+title: "How to Tweet within your iOS app without using the Twitter SDK"
+description: "How to tweet within your app"
+publishedAt: "2022-08-27T15:55:47.000Z"
+updatedAt: "2022-09-16T07:51:34.000Z"
+coverImage: "/images/imported/2022/08/CleanShot-2022-08-27-at-17.55.00-2x-1-9df32f98d4.png"
+legacyUrl: "https://hoyelam.com/how-to-tweet-within-your-ios-app-without-using-the-twitter-sdk/"
+---
+Sometimes you want to give your customers to ability to share the content of your app. But, you don’t want to necessarily spend the time to integrate a whole Twitter SDK just to add a Twitter sharing feature. Probably cause it’s not a core feature of your app.
+
+How can we achieve this without coding too much?
+
+Though I haven’t found official Twitter documentation regarding deep linking within iOS, there is a stack overflow answer [here](https://stackoverflow.com/a/10424346/5388338).
+
+In that stack overflow answer, we discover that we can open the Twitter app through deep linking and give it a Tweet (message) with the following URL:
+
+```text
+twitter://post?message=
+```
+
+And if we want to add a message we do the following:
+
+```text
+twitter://post?message=hello%20world
+```
+
+Let’s implement this in service, for example, the following:
+
+```swift
+protocol TweetServiceProviding {
+    func tweet(text: String)
+}
+
+final class TweetService: TweetServiceProviding {
+    func tweet(text: String) {
+        // 1. Build Tweet String
+        guard let tweet = text
+            .addingPercentEncoding(
+                withAllowedCharacters: .urlQueryAllowed
+            ) else {
+            return
+        }
+        
+        // 2. Build URL
+        guard let appUrl = URL(string: "twitter://post?message=\(tweet)") else {
+            return
+        }
+        
+        // 3. Open the Twitter app
+        let application = UIApplication.shared
+        application.open(appUrl)
+    }
+}
+
+```
+
+Now that we have our service available, let’s build our `ViewModel` to operate the service
+
+```swift
+@MainActor
+final class ContentViewModel: ObservableObject {
+    @Published var text: String = ""
+    
+    let tweetService: TweetServiceProviding
+    
+    init(tweetService: TweetServiceProviding) {
+        self.tweetService = tweetService
+    }
+    
+    func onTapTweet() {
+        self.tweetService.tweet(text: self.text)
+    }
+}
+```
+
+As last, let’s also build a UI to write a tweet and tweet it.
+
+```swift
+struct ContentView: View {
+    @StateObject var viewModel = ContentViewModel(
+        tweetService: TweetService()
+    )
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text("My tweet drafter")
+                .font(.title)
+            
+            TextField(
+                "Type your amazing non-toxic tweet",
+                text: $viewModel.text
+            )
+            .padding()
+            .background(Color.gray.opacity(0.4))
+            .cornerRadius(16)
+            
+            Button {
+                viewModel.onTapTweet()
+            } label: {
+                Text("Tweet")
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(16)
+            }
+        }
+        .padding(.horizontal)
+    }
+}
+```
+
+Now let’s run it and test it on your device.
+
+![](/images/imported/2022/08/RPReplay_Final1661609793-c48ae4a8db.gif)
+
+Congratulations, you have just added a tweet functionality within your app!
+
+### No Twitter app installed?
+
+If no Twitter app is installed, then you get the following error within your Xcode console.
+
+```text
+Failed to open URL twitter://post?message=Hello%20world: Error Domain=NSOSStatusErrorDomain Code=-10814 "(null)" UserInfo={_LSLine=225, _LSFunction=-[_LSDOpenClient openURL:options:completionHandler:]}
+```
+
+Now, we can resolve this with two options.
+
+1.  We make the function `tweet(text: String)` that it can throw an error, then display an error to the user that Twitter is not installed.
+2.  Or open Twitter within the user’s web browser like Safari
+
+Let’s go with option two in this article.
+
+To open the user’s web browser and go to Twitter, we simply have to provide a `http`or `https` URL to the function `UIApplication.shared.open(_)`.
+
+Also, official documentation is provided on how to route directly to Twitter’s web Tweet composer [here](https://developer.twitter.com/en/docs/twitter-for-websites/tweet-button/guides/web-intent).
+
+So let’s do that within our `TweetService`.
+
+```swift
+protocol TweetServiceProviding {
+    func tweet(text: String)
+}
+
+final class TweetService: TweetServiceProviding {
+    func tweet(text: String) {
+        // 1. Build Tweet String
+        guard let tweet = text
+            .addingPercentEncoding(
+                withAllowedCharacters: .urlQueryAllowed
+            ) else {
+            return
+        }
+        
+        // 2. Build URL
+        guard let appUrl = URL(string: "twitter://post?message=\(tweet)") else {
+            return
+        }
+        
+  
+        let application = UIApplication.shared
+        
+        // 3a. Open the Twitter app if possible
+        if application.canOpenURL(appUrl) {
+            application.open(appUrl)
+        } else {
+            // 3b. Open Twitter within web browser
+            guard let webUrl = URL(string: "https://twitter.com/intent/tweet?text=\(tweet)") else {
+                return
+            }
+            
+            application.open(webUrl)
+        }
+    }
+}
+```
+
+![](/images/imported/2022/08/CleanShot-2022-08-27-at-17.00.33-37e3a540d6.gif)
+
+Now we can also open up Twitter, even if there is no Twitter app installed.
+
+* * *
+
+Hope that this gives you an overview of how to implement a Tweet feature within your app. Of course, if you want more power, flexibility, and in-app tweeting features, go implement the Twitter SDK. But I believe for many that this should be enough.
+
+The full project is available [here](https://github.com/hoyelam/TweetWithinAppExample).

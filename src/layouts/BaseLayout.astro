@@ -1,0 +1,136 @@
+---
+import Header from "@components/Header.astro";
+import "@styles/global.css";
+
+type Props = {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+  noindex?: boolean;
+};
+
+const {
+  title = "Hoye Lam",
+  description = "Portfolio, apps, writing, and notes by Hoye Lam.",
+  image,
+  canonical: canonicalOverride,
+  noindex = false,
+} = Astro.props;
+
+const pageTitle = title === "Hoye Lam" ? title : `${title} - Hoye Lam`;
+const canonical = new URL(canonicalOverride ?? Astro.url.pathname, Astro.site).toString();
+const imageUrl = image
+  ? image.startsWith("http")
+    ? image
+    : new URL(image, Astro.site).toString()
+  : undefined;
+const enablePlausible = import.meta.env.PROD;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <script is:inline>
+      (() => {
+        const storageKey = "hoyelam-theme";
+        const root = document.documentElement;
+        const stored = (() => {
+          try {
+            return window.localStorage.getItem(storageKey);
+          } catch {
+            return null;
+          }
+        })();
+        const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+        const theme = stored === "light" || stored === "dark" ? stored : systemTheme;
+
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+      })();
+    </script>
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : null}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="Hoye Lam" />
+    <meta property="og:site_name" content="Hoye Lam" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {imageUrl ? <meta property="og:image" content={imageUrl} /> : null}
+    <meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
+    {
+      enablePlausible ? (
+        <script is:inline defer data-domain="hoyelam.com" src="https://plausible.io/js/plausible.js" />
+      ) : null
+    }
+  </head>
+  <body>
+    <div class="site-shell">
+      <Header pathname={Astro.url.pathname} />
+      <slot />
+      <footer class="site-footer">
+        <span>© {new Date().getFullYear()} Hoye Lam.</span>
+      </footer>
+    </div>
+    <script is:inline>
+      (() => {
+        const storageKey = "hoyelam-theme";
+        const root = document.documentElement;
+        const toggle = document.querySelector("[data-theme-toggle]");
+        const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+        const storedTheme = () => {
+          try {
+            return window.localStorage.getItem(storageKey);
+          } catch {
+            return null;
+          }
+        };
+
+        const systemTheme = () => (media.matches ? "dark" : "light");
+
+        const updateToggle = (theme) => {
+          if (!toggle) return;
+          const nextTheme = theme === "dark" ? "light" : "dark";
+          const label = `Switch to ${nextTheme} mode`;
+          toggle.setAttribute("aria-label", label);
+          toggle.setAttribute("title", label);
+        };
+
+        const setTheme = (theme, persist = true) => {
+          root.dataset.theme = theme;
+          root.style.colorScheme = theme;
+
+          if (persist) {
+            try {
+              window.localStorage.setItem(storageKey, theme);
+            } catch {
+              // Theme still changes for the current session when storage is unavailable.
+            }
+          }
+
+          updateToggle(theme);
+        };
+
+        updateToggle(root.dataset.theme || systemTheme());
+
+        toggle?.addEventListener("click", () => {
+          const currentTheme = root.dataset.theme || systemTheme();
+          setTheme(currentTheme === "dark" ? "light" : "dark");
+        });
+
+        media.addEventListener("change", () => {
+          if (!storedTheme()) setTheme(systemTheme(), false);
+        });
+      })();
+    </script>
+  </body>
+</html>

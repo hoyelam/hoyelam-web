@@ -1,0 +1,284 @@
+---
+title: "An iOS Developer Perspective on the MacBook Pro 13-inch M1 2020"
+description: "My thoughts on the performance, display, keyboard, IO, and more on the MacBook Pro 13-inch M1 Late 2020."
+publishedAt: "2020-12-17T17:42:22.000Z"
+updatedAt: "2022-09-01T17:41:28.000Z"
+coverImage: "/images/imported/2020/12/F0194FBB-7220-4033-9AC1-AAB482672B41-ae77d0fade.png"
+legacyUrl: "https://hoyelam.com/an-ios-developer-perspective-on-the-macbook-pro-13-inch-m1-2020/"
+---
+My thoughts on the performance, display, keyboard, IO, and more on the MacBook Pro 13-inch M1 2020
+
+Before starting my thoughts about MBP13-Inch M1, I like to give some context about my usage first.
+
+Firstly I’m a software developer which mainly focuses on iOS development. Thus I make usage of Xcode for developing mobile applications but also VSCode for (small) web development. Outside of software development, I also do some Adobe Photoshop related tasks although not frequently.
+
+![](/images/imported/2020/12/Screenshot-2020-12-17-at-13.35.10-5276617441.png)
+
+_Macbook Pro 13-inch M1 2020_
+
+My previous laptop was the MacBook Pro 15 2018. See specs below for the specifics or my last [review](/an-ios-developer-perspective-on-the-macbook-pro-15-inch-2018/).
+
+![](/images/imported/2020/12/Screen-Shot-2020-12-17-at-13.33.08-6e4b288511.png)
+
+_Macbook Pro 15-inch 2018 Intel Core i7 2.6 GHz_
+
+> P.S. In this review, I won’ talk about the GPU performance since I don’t work on anything related that requires heavy usage of the GPU.
+
+## Performance
+
+With a new computer, you expect performance to be better. If it isn’t then it instantly is a failed product. As a developer, I use one browser which usually has around 10+ tabs open. Then loads of apps that have various purposes like Xcode, VSCode, Things3, Slack, Spotify, Paw, Bear, Adobe Photoshop, and iTerm2 (Terminal).
+
+With my previous MBP, I sometimes had to close some applications cause it was making the other ones slower. But now I don’t need to do that all. CPU and memory performance is fast for all my development, browsing, design, and communication purposes.
+
+To show an example of the MBP 13-Inch M1 2020 performance, I’m going to show examples of Xcode projects building and launching simulators. These tests were run with the project [Eidolon](https://github.com/artsy/eidolon) and are used for sharing [Xcode hardware performances](https://github.com/ashfurrow/xcode-hardware-performance) on various hardware setups.
+
+(All test were conducted on Xcode 12.3, macOS Big Sur 11.1, Safari open with 10 tabs, Spotify and iTerm2 open as well, everything else is closed)
+
+### M1 - Results Clean Project and then Build
+
+![](/images/imported/2020/12/EB573C45-5E91-458C-890F-0271B88C190D-50888dad7a.png)
+
+_M1: Clean -> Build time Try 1_
+
+![](/images/imported/2020/12/0564E578-22B9-45A4-9710-B70EF93D8FD2-dc55e77c62.png)
+
+_M1: Clean -> Build time Try 2_
+
+![](/images/imported/2020/12/BCE3F004-14C8-4CA8-92A4-32F5D7E61CB0-95324ea62e.png)
+
+_M1: Clean -> Build time Try 3_
+
+**Average time 16~ seconds**
+
+## M1 - Clean and Run on Simulator
+
+Freshly cleaned projects and then run on the simulator (iPad Air 2). Time includes the startup time of the simulator and launching the app.
+
+![](/images/imported/2020/12/60C78FA7-778A-43C2-ABD8-D8E42FF17287-f1107600df.png)
+
+_M1: Clean -> Run including launch time Try 1_
+
+![](/images/imported/2020/12/IMG_18006AF8636E-1-cdff53fb31.jpeg)
+
+_M1: Clean -> Run including launch time Try 2_
+
+![](/images/imported/2020/12/IMG_F7FB615C31F5-1-1a654da3d8.jpeg)
+
+_M1: Clean -> Run including launch time Try 3_
+
+**Average total time 21~ seconds.**
+
+## M1 - Incremental Runs
+
+These tests were performed by adding or removing one line in the codebase and then run without cleaning.
+
+![](/images/imported/2020/12/IMG_307562F26452-1-a321e866ad.jpeg)
+
+_M1: Edit Code -> Run including launch time Try 1_
+
+![](/images/imported/2020/12/CA972A6C-969A-41BE-9424-CB3A790B508E-55957b91af.png)
+
+_M1: Edit Code -> Build Try 1_
+
+![](/images/imported/2020/12/IMG_3004-4ca0423f5c.jpg)
+
+_M1: Edit Code -> Run including launch time Try 2_
+
+![](/images/imported/2020/12/6753CC63-2884-4C2D-9E65-7D8D98D9AAD7-c9288a5d97.png)
+
+_M1: Edit Code -> Build Try 2_
+
+![](/images/imported/2020/12/IMG_3005-4caeff6474.jpg)
+
+_M1: Edit Code -> Run including launch time Try 3_
+
+![](/images/imported/2020/12/F6B14A36-F884-4BA2-8D03-D9B3B5BACC25-5138101977.png)
+
+_M1: Edit Code -> Build Try 3_
+
+**Average launch time 4~ seconds**  
+**Average build time 1.3~ seconds**
+
+### Comparison against MacBook Pro 2018
+
+Overview Results with Eidolon project and [Growrilla](https://growrilla.app/) the most recent mobile app I’m working on:
+
+![](/images/imported/2020/12/0EB1FDA7-C968-42D1-928A-6FE536B1F4BF-ab2f6faed8.png)
+
+_M1: Growrilla Clean and then Build Time 18~ seconds_
+
+![](/images/imported/2020/12/285D7E10-369F-4245-B99F-A32C3626581B-28b4c59e5f.png)
+
+_MBP 2018: Growrilla Clean and then Build Time 56~ seconds_
+
+Action
+
+Project
+
+MBP 13-inch 2020 M1
+
+MBP 15-inch 2018
+
+Clean -> Build
+
+Eidolon
+
+16~ seconds
+
+31~ seconds
+
+Clean -> Run -> Simulator
+
+Eidolon
+
+21~ seconds
+
+54~ seconds
+
+Edit Code -> Run -> Simulator
+
+Eidolon
+
+4~ seconds
+
+9~ seconds
+
+Edit Code -> Build
+
+Eidolon
+
+1.3~ seconds
+
+3.6~ seconds
+
+Clean -> Build
+
+Growrilla
+
+18~ seconds
+
+56~ seconds
+
+I don’t think I have anything to add. Compared to my previous MBP the development performance has doubled or more. So it is quite fast.
+
+But the real deal for me is that it is this fast all while the fans AREN’T RUNNING at all. I haven’t heard a single fan spinning even when the MBP 13-inch M1 is connected to an external monitor. This is crazy.
+
+For me, I hate it when my fans start going completely off like. I get the feeling that something bad is happening to my computer. But this M1 MacBook-Pro doesn’t make any sound at all and doesn’t even become warm.
+
+This is a big plus point for me.
+
+Also, you may have seen all the GIFs of opening several apps simultaneously. In my experience, it is indeed the same experience which is quite amazing.
+
+All in all, I would rate the performance a  
+**10/10**
+
+## Display
+
+![](/images/imported/2020/12/155BE2C1-73A7-4777-81A5-A22C03697BC5-1557606803.png)
+
+_MacBook Pro display | Screenshot from [Apple](https://www.apple.com/macbook-pro-13/)_
+
+The only thing that is different for me is the size going from 15-inch to 13-inch. For me, 13-inch is a much better size when you need to travel from time-to-time. That suits my purposes since it is lighter to carry and fits in every bag I have.
+
+There aren’t that many noticeable differences when it comes to clarity, pixels, or brightness. I haven’t looked up the spec sheets specifically, but from my user experience, there is no difference in those aspects.
+
+There is a big difference though in the support of external monitors. On my previous MBP, whenever I connected it to an external monitor it always flashed and kept flickering for some reason. On the MBP M1, the complete opposite happens. No flickering at all and everything seamlessly resizes and moves windows. Also, the clamshell mode was always buggy from my side on Intel MBPs, but the M1 laptop has made this a much better experience.
+
+The only downside I have for the display support is that it doesn’t support the number amount of external monitors up to one. This means I can only hook up one monitor to the MBP. While I only use one monitor this feels like a limitation that I don’t want to have.
+
+All in all, I would rate the display (+ support)  
+**8/10**
+
+## Keyboard
+
+![](/images/imported/2020/12/95EBA11F-811F-4A10-9D5F-504D976389C1-0219935b10.png)
+
+_MacBook Pro Keyboard | Screenshot from [Apple](https://www.apple.com/macbook-pro-13/)_
+
+The keyboard is important to me cause I use it when I travel somewhere else besides my home. Also, as an engineer (and writer) you would like to have the best experience possible when it comes to typing.
+
+On my previous MBP 15, I had the butterfly keyboard. Now lots of people suggest that it was an inferior keyboard, for me, it was just different, and didn’t mind the low-key travel.
+
+The thing I did mind on my previous MBP was the numerous reports of longevity doubts. Keys getting stuck by debris for example. This has happened many times, but I quickly fixed it by just vacuum-cleaning it. Not that much of a hassle, cause I clean my MacBook often.
+
+Now, I have what Apple calls the Magic Keyboard which is in my understanding an improved version of the scissor mechanism from the old MacBooks.
+
+You have much more feedback and key travel. So far there haven’t been that many reports that the new keyboards suck, so I assume that the Magic Keyboard does its job well.
+
+Also, I really like that the TouchID and Escape key/button are separate from the Touch Bar. Still I don’t feel like the Touch Bar adds that much value to me, but don’t mind it either.
+
+For me, I enjoy the keyboard. I enjoy typing on it and actually feels similar to my standalone Magic Keyboard. Nothing special about it though.
+
+All in all, I would rate this keyboard a  
+**8/10**
+
+## IO Connectivity USB-C/Thunderbolt 4
+
+![](/images/imported/2020/12/8E73F0A3-0EFD-4036-BA84-3B7C4F3AD14E-c81a8a26b0.png)
+
+_MacBook Pro IO | Screenshot from [Apple](https://www.apple.com/macbook-pro-13/)_
+
+The MacBook Pro M1 13-inch 2020 has two USB-C/Thunderbolt 4 ports and one 3.5 Headphone Jack. This could have been the reason for me not buying this product. IO is important cause I like to debug with an iPhone and iPad. This means that the two ports are already taken.
+
+So then in theory I can’t to my monitor or power charger.
+
+So far it hasn’t been a problem though. The battery is so good that I can go the whole day without charging it once. Also, my monitor powers the MBP with 5-10 watt so somewhat okay.
+
+Also, even though I debug projects on the iPad and iPhone, I don’t do it simultaneously. So it means I can just switch up if needed. Not too much of a hassle.
+
+But still. Like I indicated with the external display support limitations, this feels like a big limitation as well. I know loads of these things can be solved by using a dongle, but I don’t like that feels a bit forced.
+
+You can get away with two IO ports as a developer, but the limitation feels a bit too much.
+
+All in all, I would rate the IO and connectivity possibilities a  
+**6/10**
+
+## Battery
+
+![](/images/imported/2020/12/image-dd4f7d013e.png)
+
+_Battery from macOS_
+
+Now to the part where I’m truly mindblown. The battery of this MBP is incredible. That may be even an understatement.
+
+I can’t believe that I’m working for an hour with many apps open, debugging, writing code, written documentation, browsing things and it only reduced by like 2-3%.
+
+In theory, I can go travel for a weekend and don’t need a charger at ALL. Apple indicates that it can go up to 20 hours with a single charge and I believe it. The insane performance per watt of power is the best thing about M1 MacBooks. Not the performance necessarily, but the battery life.
+
+Using the iStat menu it always indicates that I have double digits of hours left on my MacBook Pro. For reference, on my previous MBP 15-Inch 2018, it always indicated around 4-6 hours on a full battery. This means that the battery performance has been tripled or even quadrupled. Bruh 😱.
+
+All in all, I would rate the battery performance  
+**10/10.** (if not even higher)
+
+## General Thoughts
+
+Some quick general notes.
+
+-   Touch-ID is still amazing and fast
+-   Touch Bar still gimmicky but that doesn’t mean it is garbage
+-   Touchpad is still the best in the game, but always use a secondary mouse
+-   13-inch is much better than 15/16-inch if you need to travel (my case)
+-   Bluetooth connectivity works great despite the reports I saw earlier
+-   The performance is amazing but loading times do still exist, don’t think otherwise.
+-   Also, the performance is great, but it doesn’t prevent software from getting stuck.
+-   I haven’t noticed the SSD performance increases, but it was already pretty fast.
+-   Many software tools (or apps) are not optimized yet for M1 like Homebrew for development, which means you may be a bit hacky with Rosetta 2.
+-   I don’t use iPhone or iPad apps on Mac (yet?)
+
+## Conclusion
+
+I think the MacBook Pro 13-inch M1 2020 is an amazing purchase for my needs. The performance for all my development, communication, design, and browsing tasks is fast without any hiccups, fans running, or the computer getting warm.
+
+There are some limitations with the IO and external display support, but for me, that’s not an issue yet.
+
+The best upgrade however that I didn’t think I needed is the battery life. It can go up to 20 hours on a single charge and in my experience, it is pretty accurate.
+
+Some software tools may be not usable or optimized yet for M1, but over-time developers will adapt to them. (As of the writing date of this review).
+
+> All in all, I would rate the MacBook Pro 13-Inch 2020 a solid **8.4/10.**
+
+![](/images/imported/2020/12/JPEG-image-1E9E87A5CE46-1-ae05b9a02d.jpeg)
+
+_Apple or other photographers make much better photos than me 🙈_
+
+_(If you are doubting between the Air and Pro, I would suggest getting the Air cause it is even lighter and the fans from my experience aren’t needed.)_

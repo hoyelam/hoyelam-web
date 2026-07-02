@@ -1,0 +1,158 @@
+---
+title: "GitHub actions to build and test iOS projects using Fastlane"
+description: "Templates to build, compile unit- and UI-tests iOS-based project with GitHub actions and Fastlane."
+publishedAt: "2021-12-10T22:06:55.000Z"
+updatedAt: "2021-12-10T22:06:55.000Z"
+coverImage: "/images/imported/2021/12/Screenshot-2021-12-10-at-23.05.28-b404da2243.png"
+legacyUrl: "https://hoyelam.com/github-actions-to-build-and-test-ios-project-using-fastlane/"
+---
+Here is a template you can use to automatically set up GitHub actions in your iOS-based project.
+
+```yaml
+name: "Build and Test"
+
+on: 
+  push:
+    branches:
+      - development
+      - beta
+  pull_request:
+
+jobs:
+  build_test:
+    name: Run tests
+    runs-on: macOS-11
+    env:
+        # The XCode version to use. If you want to update it please refer to this document:
+        # https://docs.github.com/en/actions/reference/specifications-for-github-hosted-runners#supported-software
+        # and set proper version.
+        XCODE_VERSION: "13.0"
+
+    steps:
+      - name: Select XCode
+        # Use XCODE_VERSION env variable to set the XCode version you want.
+        run: sudo xcode-select --switch /Applications/Xcode_${{ env.XCODE_VERSION }}.app
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Run tests
+        run: |
+          set -o pipefail
+          fastlane tests
+```
+
+All you have to do is copy the contents to a .yml file and put it in the root of your repo under the folder structure `.github/worksflows/`
+
+Here is a `Fastfile` you can use. I won't go into detail about what the file does, but you can learn more about it in the [Fastlane docs](https://docs.fastlane.tools/advanced/Fastfile/).
+
+```ruby
+default_platform :ios
+
+platform :ios do
+  ####### Testing #######
+
+    desc "Runs all the tests"
+    lane :tests do
+      unit_tests
+    end
+
+    desc "Runs all unit tests"
+    lane :unit_tests do
+      scan(
+        workspace: "MyAmazingApp.xcworkspace",
+        scheme: "MyAmazingAppTests",
+        devices: ["iPhone 8"]
+      )
+    end
+
+    desc "Runs all ui tests"
+    lane :ui_tests do
+      scan(
+        workspace: "MyAmazingApp.xcworkspace",
+        scheme: "MyAmazingAppTests",
+        devices: ["iPhone 8"],
+        clean: true
+      )
+    end
+
+end
+```
+
+* * *
+
+Let’s start at the beginning of this template on what is happening:
+
+`Name: “Build and Test”`
+
+This is the name of what this action is. You can call it whatever you want as long it provides information to you what the acton does. For me, it is Build and Test.
+
+* * *
+
+```yaml
+on: 
+  push:
+    branches:
+      - development
+      - beta
+  pull_request:
+```
+
+The `on:` key refers to when the action should get triggered. In our instance, first when it detects pushes to the branches `development` and `beta` . Thus when I push my code to those branches it will trigger the action. But when I push to branches like `feature/my-amazing-feature-x` it won't trigger the action.
+
+If you do want to trigger with branches like `feature/x-y-z` you can add `feature/*` above `- development` or underneath `- beta` . This will trigger code pushes to branches that start with `feature/`
+
+Then the `pull_requests:` also lets the action trigger when pull requests are detected. Once again you specify the branches here or even other certain types of pull requests. You can learn more [`here`](https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions).
+
+* * *
+
+```yaml
+jobs:
+  build_test:
+    name: Run tests
+    runs-on: macOS-11
+    env:
+        # The XCode version to use. If you want to update it please refer to this document:
+        # https://docs.github.com/en/actions/reference/specifications-for-github-hosted-runners#supported-software
+        # and set proper version.
+        XCODE_VERSION: "13.0"
+```
+
+Here we tell what the action jobs are. In the first job we give a key called `build_test:`, then it a name called `Run tests`. Nothing out of the ordinary just giving names on what the job does.
+
+Then we specify that the environment should run on `macOS-11` using `runs-on: macOS-11`.
+
+Then we can set some environment variables with `env:` . Here I’ve assigned an environment variable called `XCODE_VERSION` to be `13.0` . We will need this once we want to specify the exact Xcode environment in which the project should build. You may not need this and can just use the default Xcode version (which is `13.1` as of this article date).
+
+But you can use this for example if you need specific a server environment by `SERVER: production`. But for us, that's not that relevant.
+
+* * *
+
+```yaml
+steps:
+      - name: Select XCode
+        # Use XCODE_VERSION env variable to set the XCode version you want.
+        run: sudo xcode-select --switch /Applications/Xcode_${{ env.XCODE_VERSION }}.app
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        
+      - name: Run tests
+        run: |
+          set -o pipefail
+          fastlane tests
+```
+
+As the last part of the YAML file, we specify the steps of the job. First, we set the Xcode environment using the `XCODE_VERSION` we set before.
+
+Then we pull the project using `actions/checkout@v2`.
+
+Luckily `Fastlane` is by default installed in the `macOS-11` environment of GitHub actions, thus we don't need to install it.
+
+So with this, we can start the next step called `Run tests` . First, we use `set -o pipefail` it to prevent errors in the pipeline from being masked.
+
+Then we finally call `fastlane tests` . This will execute the Fastlane 'lane' called `tests` that we have specified in our `Fastfile` .
+
+Your project will then be built, compiled, unit- and UI-tested.
+
+![Image.png](https://res.craft.do/user/full/1e5e04fd-08f2-59f4-5f56-2df8cba9f174/doc/59CF68C7-FB75-4955-85FB-D29C7B0BA39A/6153B3D8-54D8-426E-BADD-1942EBECE2F9_2/Image.png)

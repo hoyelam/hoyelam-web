@@ -1,0 +1,19 @@
+---
+title: "Learning watchOS Development | Day #128"
+description: "Today, I’ve been learning watchOS development."
+publishedAt: "2021-01-16T19:59:05.000Z"
+updatedAt: "2021-01-16T19:59:05.000Z"
+coverImage: "https://images.unsplash.com/photo-1579586337278-3befd40fd17a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=MXwxMTc3M3wwfDF8c2VhcmNofDF8fGFwcGxlJTIwd2F0Y2h8ZW58MHx8fA&ixlib=rb-1.2.1&q=80&w=2000"
+legacyUrl: "https://hoyelam.com/learning-watchos-day-128/"
+---
+Today, I’ve been learning watchOS development. Not necessarily to integrate with Growrilla yet, but just to explore some things.
+
+All I can say is that it has been quite challenging. App Groups aren’t supported anymore, so it is very different from usual extensions.
+
+This means if I want a database within a WatchOS app, I have to think of a synchronisation strategy in place. With apps that have iCloud this may be a bit easier, but still quite challenging if I don’t draw the whole system out.
+
+An architecture could be a local database using Core Data, Realm, or GRDB and then let iCloud be the source of truth with a sync strategy. I don’t really like this cause then you have to maintain a local database and iCloud migrations. But with that, it seems like the most simple solution to creating a watchOS app with a database that is shared with a phone app.
+
+Other than that, it is quite do-able to create a watchOS app with SwiftUI. It’s basically the same, and some APIs/views even adapt differently to watchOS automatically. This means you can comfortably share code between your iOS app and the WatchOS app.
+
+I may consider creating a Watch extension for Growrilla but haven’t decided yet. Let’s see!

@@ -1,0 +1,84 @@
+---
+import { formatDate } from "@lib/tags";
+
+type Post = {
+  id: string;
+  body?: string;
+  data: {
+    title: string;
+    description?: string;
+    publishedAt?: Date;
+  };
+};
+
+type Props = {
+  posts: Post[];
+};
+
+const { posts } = Astro.props;
+
+function cleanExcerptLine(line: string) {
+  return line
+    .replace(/^#{1,6}\s+/, "")
+    .replace(/^>\s?/, "")
+    .replace(/^[-*+]\s+/, "")
+    .replace(/^\d+\.\s+/, "")
+    .replace(/!\[[^\]]*]\([^)]*\)/g, "")
+    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, "")
+    .replace(/[`*_~]/g, "")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function isBodyExcerptLine(line: string) {
+  const trimmed = line.trim();
+
+  if (!trimmed) return false;
+  if (trimmed.startsWith("![")) return false;
+  if (trimmed.startsWith("Embedded media")) return false;
+  if (/^_.*_$/.test(trimmed) || /^\*.*\*$/.test(trimmed)) return false;
+
+  return true;
+}
+
+function truncateExcerpt(excerpt: string, maxLength = 280) {
+  if (excerpt.length <= maxLength) return excerpt;
+
+  const truncated = excerpt.slice(0, maxLength + 1);
+  const lastSpace = truncated.lastIndexOf(" ");
+  return `${truncated.slice(0, lastSpace > 180 ? lastSpace : maxLength).trim()}...`;
+}
+
+function getPostExcerpt(post: Post) {
+  const lines =
+    post.body
+      ?.split("\n")
+      .filter(isBodyExcerptLine)
+      .map(cleanExcerptLine)
+      .filter(Boolean)
+      .slice(0, 3) ?? [];
+
+  return truncateExcerpt(lines.join(" "));
+}
+---
+
+<div class="post-list">
+  {
+    posts.map((post) => {
+      const excerpt = getPostExcerpt(post);
+
+      return (
+        <a class="post-row" href={`/${post.id}/`}>
+          <div>
+            <h2>{post.data.title}</h2>
+            {excerpt && <p class="muted">{excerpt}</p>}
+          </div>
+          <time class="post-meta" datetime={post.data.publishedAt?.toISOString()}>
+            {formatDate(post.data.publishedAt)}
+          </time>
+        </a>
+      );
+    })
+  }
+</div>

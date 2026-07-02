@@ -1,0 +1,255 @@
+---
+title: "How to display the user’s current location on iOS"
+description: "Get current location of your user"
+publishedAt: "2022-08-31T18:05:47.000Z"
+updatedAt: "2022-09-01T17:41:56.000Z"
+coverImage: "/images/imported/2022/08/CleanShot-2022-08-31-at-20.04.09-2x-1-0db26988bb.png"
+legacyUrl: "https://hoyelam.com/how-to-display-the-users-current-location-on-ios/"
+---
+You may want to display the user’s current location for some apps. For example, navigation apps, discover local area apps, AR apps, or a feature to log current user location.
+
+So how can we implement that?
+
+First, we need to build the functionality to request the user to allow us to track their location. There are two types that you can use (or both).
+
+1.  **Always**. This option allows your app to receive location updates all the time, even if your app is in the background
+2.  **When in use**. This option allows your app to receive location updates only your app is in the foreground and being used by the user.
+
+For this article, we focus on the second option, and thus we need to go `info.plist` and provide context for the user why this is needed.
+
+![](/images/imported/2022/08/CleanShot-2022-08-28-at-14.25.21-2x-78a50d69e1.png)
+
+Then let’s build our service to be able to do the following:
+
+-   Request user location permissions
+-   Provide user location authorization status
+-   Provide the user’s current location
+
+We can do that in the following implementation:
+
+```swift
+import CoreLocation
+
+protocol LocationProviding {
+    func requestPermissions()
+    func startUpdatingLocation()
+    var currentLocation: CLLocation? { get }
+    var currentLocationPub: Published<CLLocation?>.Publisher { get }
+    
+    var authorizationStatus: CLAuthorizationStatus? { get }
+    var authorizationStatusPub: Published<CLAuthorizationStatus?>.Publisher { get }
+}
+
+final class LocationService: NSObject, LocationProviding {
+    
+    @Published var currentLocation: CLLocation? = nil
+    var currentLocationPub: Published<CLLocation?>.Publisher { $currentLocation }
+    
+    @Published var authorizationStatus: CLAuthorizationStatus? = nil
+    var authorizationStatusPub: Published<CLAuthorizationStatus?>.Publisher { $authorizationStatus }
+    
+    private var locationManager: CLLocationManager?
+    
+    override init() {
+        super.init()
+        
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        self.authorizationStatus = locationManager?.authorizationStatus
+    }
+    
+    func startUpdatingLocation() {
+        locationManager?.startUpdatingLocation()
+    }
+    
+    func requestPermissions() {
+        locationManager?.requestWhenInUseAuthorization()
+    }
+}
+```
+
+First, we build a protocol of the things we need to define above. We use a Publisher to stream the latest authorization status and current user location. This is cause we want the latest information asap.
+
+Then using `CLLocationManager` as our location provider, added functions for our ViewModel (or client) to request permissions and start receiving location updates.
+
+Let’s implement the delegates of `CLLocationManager` to actually receive the location and authorization status.
+
+```swift
+extension LocationService: CLLocationManagerDelegate {
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let location = locations.first {
+            self.currentLocation = location
+        }
+    }
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        self.authorizationStatus = manager.authorizationStatus
+        
+        switch authorizationStatus {
+        case .authorizedWhenInUse, .authorizedAlways:
+            self.startUpdatingLocation()
+        default:
+            self.requestPermissions()
+        }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Your amazing error handling when failing to get user's location
+    }
+}
+
+```
+
+Voila, we have now built a service that can request location permissions and provide the current device’s location.
+
+Let’s build the `ViewModel` now to provide the necessary data for our view.
+
+```swift
+import CoreLocation
+import MapKit
+import Combine
+
+enum LocationPermissionsState {
+    case available
+    case unknown
+}
+
+final class ContentViewModel: ObservableObject {
+    @Published var locationStatus: LocationPermissionsState = .unknown
+    @Published var region: MKCoordinateRegion? = nil
+    
+    private var service: LocationProviding
+    
+    private var subscribers: [AnyCancellable] = []
+    
+    init(service: LocationProviding = LocationService()) {
+        self.service = service
+        subscribeToLocationPublishers()
+    }
+    
+    func subscribeToLocationPublishers() {
+        // Subscribe to authorization changes
+        service.authorizationStatusPub
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                switch status {
+                case .authorizedAlways, .authorizedWhenInUse:
+                    self?.locationStatus = .available
+                default:
+                    self?.locationStatus = .unknown
+                }
+            }
+            .store(in: &subscribers)
+        
+        // Subscribe to location updates
+        service.currentLocationPub
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] newLocation in
+                if let location = newLocation {
+                    let region = MKCoordinateRegion(
+                        center: location.coordinate,
+                        span: MKCoordinateSpan(
+                            latitudeDelta: 0.25,
+                            longitudeDelta: 0.25
+                        )
+                    )
+                    
+                    self?.region = region
+                }
+            }
+            .store(in: &subscribers)
+    }
+    
+    func onAppear() {
+        service.requestPermissions()
+    }
+    
+    func onTapRequestPermissions() {
+        if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(settingsUrl)
+        }
+    }
+}
+```
+
+Let’s break it down. First, there are two `@Published` variables that provide the permission state and region. The view doesn’t need to know every status that is provided by the service, thus we only have two states. `Available` and `Unknown`. Second, we publish a variable of the type `MKCoordinateRegion` which is needed to display the map as you will see later. The view doesn’t need to know anything else.
+
+As last, we have functions to subscribe to published data by our service, and events or actions by the view. For example, `onTapRequestPermissions` routes the user to the settings screen to let them enable location services for the app. This is cause they probably declined it, and need to set it to be allowed by themselves.
+
+Now let’s implement the view as well.
+
+```swift
+import SwiftUI
+import MapKit
+
+struct ContentView: View {
+    @StateObject var viewModel = ContentViewModel()
+    
+    var body: some View {
+        VStack {
+            if viewModel.locationStatus == .unknown {
+               noPermissionsGivenView
+            } else {
+                if let region = viewModel.region {
+                    Text("I'm here!")
+                        .font(.title)
+                    
+                    Map(
+                        coordinateRegion: .constant(region),
+                        interactionModes: [],
+                        showsUserLocation: true
+                    )
+                    .frame(height: 200)
+                    .frame(maxWidth: .infinity)
+                    .cornerRadius(16)
+                } else {
+                    Text("Loading up current location")
+                }
+            }
+        }
+        .onAppear(perform: viewModel.onAppear)
+        .padding()
+    }
+    
+    private var noPermissionsGivenView: some View {
+        VStack {
+            Text("Location permissions not given")
+                .font(.title)
+                .multilineTextAlignment(.center)
+            
+            Button {
+                viewModel.onTapRequestPermissions()
+            } label: {
+                Text("Request permissions again")
+                    .bold()
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .background(Color.accentColor)
+                    .foregroundColor(.white)
+                    .cornerRadius(16)
+            }
+        }
+    }
+}
+```
+
+The view should speak for itself. The most important part is that we use the `MKCoordinateRegion` provided by the `ViewModel` to instantiate the Map view. This `MKCoordinateRegion` indicates to the map what region should display.
+
+Let’s run the app and test it out!
+
+![](/images/imported/2022/08/CleanShot-2022-08-31-at-19.49.25-b155e0f2ca.gif)
+
+(The location is simulated by the simulator).
+
+* * *
+
+So, we have learned the following:
+
+-   How to request the user to give permissions for location access
+-   How to implement `CLLocationManager`
+-   How to receive location and authorization updates
+-   How to display a map with the user’s location
+
+The full project is [here available on GitHub](https://github.com/hoyelam/CurrentLocationExample).
+
+Hope this article and project provided help you to create awesome apps.

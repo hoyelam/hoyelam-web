@@ -1,0 +1,57 @@
+---
+title: "Creating a Circle CI App Client OnCircleCI"
+description: "The process of building a side project: OnCircleCI — A simple CI client."
+publishedAt: "2018-07-19T22:00:00.000Z"
+updatedAt: "2020-07-25T19:17:36.000Z"
+coverImage: "/images/imported/2018/07/oncircleci-header-494050c8a2.png"
+legacyUrl: "https://hoyelam.com/creating-a-circle-ci-app-client-oncircleci/"
+---
+[OnCircleCI](https://apps.apple.com/nl/app/oncircleci-simple-ci-client/id1412530565) provides a simple iOS mobile application to keep track of your Circle CI build statuses. As most of you know, there are limited mobile applications available on the market when it comes to Circle CI. Thus, I created my own.
+
+# OnCircleCI
+
+[OnCircleCI](https://apps.apple.com/nl/app/oncircleci-simple-ci-client/id1412530565) works as follows. You authenticate yourself by providing OnCircleCI with an API token. The API token can be retrieved from your CircleCI account. After providing the token, OnCircleCI will verify the token against CircleCI. If it is verified, the token will be securely stored in your Keychain.
+
+Using the stored API token, the app retrieves your profile, projects, recent builds and details from Circle CI. OnCircleCI displays that data in many locations of the app. In short, OnCircleCI is just a simple client to view your Circle CI builds. 😉
+
+# Why?
+
+There are many reasons why you could use a Circle CI mobile client. For example, lets say your are at the end of your workday. You push your latest work to Circle CI, but can’t wait for the result of the Circle CI build. Why? Because you need to catch your train. You need to go to the gym. You need to know if you need to work on a fix the next day. You need to be at home around seven or else your loved one will be mad. You have to go to the toilet. Whatever it is, instead of staying at your workstation, you can now leave and look it up OnCircleCI.
+
+For me, it was because I just wanted a mobile application of Circle CI to simply look at my build statuses. 😜
+
+# Technologies and tools used?
+
+This is an iOS mobile application developed in Swift. Xcode is the IDE used for iOS development. I also used Cocoapods as a dependency manager. SDKs (or libraries) used are:
+
+-   [Alamofire](https://github.com/Alamofire/Alamofire)
+-   [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON)
+-   [SnapKit](https://github.com/SnapKit)
+-   [Crashlytics / Fabric](https://get.fabric.io/)
+-   [SVProgressHUD](https://github.com/SVProgressHUD/SVProgressHUD)
+-   [Kingfisher](https://github.com/onevcat/Kingfisher)
+
+Architectural choices for the app is MVC with inspiration from Omar Albeik: [Making MVC great again.](https://medium.com/@omaralbeik/making-mvc-great-again-829ef9461ec2)
+
+# How?
+
+Starting to develop an iOS mobile application isn’t the hardest part for me. I have been working as an iOS developer in the last two years. Thus, I do not need to learn iOS development from scratch. The hardest part for me is to find time to work on side-projects.
+
+I am currently full-timed employed at a startup. Finding time to relax, but also work on side-projects is hard. So, how do I do it? In short, I created a system to work everyday at-least one hour on a side-project. Maintaining this system is the hard part.
+
+In the beginning I noticed that it wasn’t working very well. After work (or the gym 💪), I sometimes just felt too tired. Who wouldn’t? You work eight to ten hours a day and after that you want to even work more? Yuugh! Some people are not trained for it. I am not trained for it.
+
+In order to keep myself disciplined to maintain this system, I needed variety in the tasks of the side-project. As I said, sometimes after a workday solely focusing on programming, you don’t want to program even more. But this does not mean you can’t work on your side-project. A side-project does not consists of one specific task. It consist of many that differs from focus and effort.
+
+For me, programming is one of those tasks that requires focus. Which means if I feel tired, I do not want to do it at the end of a workday. So. I did other tasks related to the side-project. This could be numerous things. Talking with your friends about the side-project, reading about other people’s side-projects, researching similar problems, designing the application, reading about code improvements, getting feedback, writing about it (like now) and probably more other things. All of these tasks makes progress, even if its just a little. They also do not require the same effort and focus. Even just thinking about the side-project is progress.
+
+🕐 Time invested to date is around 50 hours within 4–5 weeks.
+
+# Alternatives to your app 😥?
+
+As displayed [OnCircleCI](https://apps.apple.com/nl/app/oncircleci-simple-ci-client/id1412530565) is just a simple application. If you are seeking for something more powerful (or just don’t like the app), an alternative is [CI2Go](https://apps.apple.com/nl/app/ci2go-the-circleci-client/id940028427), which is an amazing app that provides even more features!  
+The future 🚀?
+
+The current plan is to make the UI better. For example, adding the commit message of a build to the detail screen. Also support for more ANSI colors in the TextView in the action/step output is a feature that could be improved on. One action of interaction to be added is the ability to rebuild a failed build. Of-course this all depends on numbers of usage of the application. As I would like to develop it even further it all depends on the returns and user satisfaction.
+
+# Thanks for reading!

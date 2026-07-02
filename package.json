@@ -1,0 +1,32 @@
+{
+  "name": "hoyelam-web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "import:ghost": "node scripts/import-ghost.mjs",
+    "import:live": "node scripts/import-live-ghost.mjs",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.0",
+    "@astrojs/rss": "^4.0.18",
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.0.3",
+    "cheerio": "^1.0.0",
+    "turndown": "^7.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@types/turndown": "^5.0.5",
+    "playwright-core": "^1.61.1",
+    "prettier": "^3.4.2",
+    "typescript": "^6.0.3"
+  },
+  "overrides": {
+    "yaml": "^2.8.3"
+  }
+}

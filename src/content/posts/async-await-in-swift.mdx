@@ -1,0 +1,401 @@
+---
+title: "Async Await in Swift"
+description: "What does it actually solve?"
+publishedAt: "2022-01-31T19:28:52.000Z"
+updatedAt: "2022-02-01T12:47:46.000Z"
+coverImage: "/images/imported/2022/01/IMG_6269-1e2cc53cc1.jpg"
+legacyUrl: "https://hoyelam.com/async-await-in-swift/"
+---
+So Async await is a new concurrency feature that has arrived for a while now, but since recently can be used for iOS 15.0 and lower. But what does Async Await exactly solve, and should you consider refactoring your codebase to make use of it.
+
+### Completion Closures Problem
+
+In Swift, we use completion closures (or handlers) to perform a code block once the first code block is completed. A completion closure could look in the form like the following:
+
+```swift
+fetchJoke { result in
+    switch result {
+    case .success(let joke):
+        print("Fetched Joke: \(joke.value)")
+    case .failure(let error):
+        print("Fetching Joke failed with error: \(error)")
+    }
+}
+```
+
+Here is a function with a completion closure that once completed will return a result. The result contains a fetched result of `Joke` or an `Error` .
+
+So far nothing wrong with this. Once we expand on what to do besides this though, it gets a bit tricky. For example the following:
+
+```swift
+// 1. Call method
+fetchJoke { result in
+    // 3. Executes asynchronous method
+    switch result {
+    case .success(let joke):
+        print("Fetched Joke: \n\(joke.value)")
+        
+        // 4. Call the translate method
+        translateJoke(languageId: "fr") { result in
+            // 6. Translate the joke method
+            switch result {
+            case .success(let translatedJoke):
+                // 7. Handle the translated joke result
+                print("Translated Joke: \(translatedJoke)")
+                displayLoadingState(.done)
+            case .failure(let error):
+                print("Fetching Joke translation error: \(error)")
+            }
+        }
+        
+        // 5. Code executes here after joke is fetched
+        displayLoadingState(.translating)
+    case .failure(let error):
+        print("Fetching Joke failed with error: \(error)")
+    }
+}
+// 2. Code still executes here and displays the loading state
+displayLoadingState(.fetching)
+```
+
+I don’t know about you, but I’m already dizzy. This code block is for most people quite unreadable at first glance. I have to read the code all over the place and doesn’t seem that structured.
+
+### How can Async Await improve this?
+
+Using Async Await we can rewrite the entire code block above in the following way:
+
+```swift
+func fetchJoke() async throws -> Joke {
+	// perform request
+}
+```
+
+```swift
+// 1. Try and Catch
+    do {
+        // 2. Call fetch joke
+        let joke = try await fetchJoke()
+        // 3. Await until joke is fetched
+        
+        // 4. Call the translate method
+        let translatedJoke = try await translateJoke(languageId: "fr",
+                                                     joke: joke.value)
+        // 5. Await until joke is translated
+        
+        // 6. Handle result
+        print("Translated joke: \(translatedJoke)")
+    } catch let error {
+        print("Fetching joke failed with error \(error)")
+    }
+    // 7. Execute the rest of the code block
+```
+
+Wow, this seems more readable. You can actually read the code block from top down without having to think where to go.
+
+What is happening here?
+
+First it is around a try and catch to catch any error that may be thrown any error that either `fetchJoke` or `translateJoke` can throw.
+
+Then we actually call the `fetchJoke` function and the keyword here is `await` . Once you declare a function as an async function using the keyword `async` , you can `await` for it. This until `fetchJoke()` is executed and returns a value, it won't execute the rest of the code. It will wait for it.
+
+Thus before `translateJoke()` it needs to wait for `fetchJoke()` and the same things happens after.  All of this makes this code block more readable compared to the use of completion closures.
+
+### Shouldn't we use completion closures anymore?
+
+This is of course can be opinionated. Some still like completion handlers and some go all-in on async-await. For me, I don’t really care what you use as long it is readable for your fellow engineers and ultimately satisfies the best experience for your customers. I probably will start using async-await for the most part.
+
+But there are still use cases for completion handlers being used. For example, when you don’t want to wait for the whole set of data to be fetched.
+
+You use both completion handlers and async-await in this case with the following:
+
+```swift
+struct JokeFetcherOperation {
+    var amount: Int
+    var onFetchJoke: ((Result<String, Error>) -> Void)
+
+    func fetchJokes() async {
+        do {
+            for _ in 0..<amount {
+                let joke = try await fetchJoke()
+                onFetchJoke(.success(joke.value))
+            }
+        } catch let error {
+            print("Error fetching a series of jokes: \(error)")
+            onFetchJoke(.failure(error))
+        }
+    }
+    
+    private func fetchJoke() async throws -> Joke {
+        let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode(Joke.self, from: data)
+    }
+}
+
+var jokes = [String]()
+let amount = 10
+let operation = JokeFetcherOperation(amount: amount) { result in
+    switch result {
+    case .success(let newJoke):
+        jokes.append(newJoke)
+        print("Fetched \(jokes.count) jokes out of the \(amount)")
+    case .failure(let error):
+        print("Error when fetching a new joke: \(error)")
+    }
+}
+
+Task {
+    await operation.fetchJokes()
+}
+```
+
+In this code block, I’ve defined a struct that can fetch a whole set of jokes based on the amount. Instead of waiting for the full amount of jokes to be fetched, the code block uses the completion closure onFetchJoke every time a single joke has been fetched.
+
+If we have used the following:
+
+```swift
+private func fetchJokes(amount: Int) async throws -> [Joke] {
+    let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+    
+    var jokes = [Joke]()
+    for _ in 0..<amount {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let newJoke = try JSONDecoder().decode(Joke.self, from: data)
+        jokes.append(newJoke)
+    }
+
+    return jokes
+}
+
+Task {
+    do {
+        let jokes = try await fetchJokes(amount: 10)
+        print("Fetched all jokes of amount \(jokes.count)")
+    }
+}
+```
+
+The user probably has to wait longer for a response for the app. Especially if the app has to fetch thousands of jokes haha.
+
+### Conclusion
+
+Async-await in Swift improves readability for engineers especially for complex asynchronous code blocks. Completion closures are no longer needed, barring for some specific use-cases.
+
+### Additional reading
+
+Here are some great articles on how to comply your old code with async-await as well explaining it.
+
+[Connecting async/await to other Swift code | Swift by Sundell](https://www.swiftbysundell.com/articles/connecting-async-await-with-other-swift-code/)
+
+[Async await in Swift explained with code examples](https://www.avanderlee.com/swift/async-await/)
+
+#### Full Xcode playground code
+
+```swift
+import UIKit
+import PlaygroundSupport
+
+PlaygroundPage.current.needsIndefiniteExecution
+
+// MARK: - Helperes
+
+struct Joke: Codable {
+    var id: String
+    var url: String
+    var value: String
+}
+
+enum LoadingState: String {
+    case fetching
+    case translating
+    case done
+}
+
+///
+///
+///
+
+// MARK: - Implementation of completion closures
+
+/// Fetch Joke implementation with completion closure
+func fetchJoke(completion: @escaping (Result<Joke, Error>) -> Void) {
+    let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+    
+    let task = URLSession.shared.dataTask(with: url) {(data, response, error) in
+        guard let data = data else {
+            // Amazing Error Handler
+            return
+        }
+        
+        if let joke = try? JSONDecoder().decode(Joke.self, from: data) {
+            completion(.success(joke))
+        }
+    }
+    
+    task.resume()
+}
+
+/// Fetch Joke implementation with completion closure
+func translateJoke(languageId: String,
+                   completion: @escaping (Result<String, Error>) -> Void) {
+    // perform translate request
+    completion(.success("hahaha, this is joke is translated"))
+}
+
+func displayLoadingState(_ state: LoadingState) {
+    print("Loading State = \(state.rawValue)")
+}
+
+/// Fetch Joke usage implementation with completion closure
+fetchJoke { result in
+    switch result {
+    case .success(let joke):
+        print("Fetched Joke: \n\(joke.value)")
+    case .failure(let error):
+        print("Fetching Joke failed with error: \(error)")
+    }
+}
+
+/// Fetch Joke usage implementation with completion closure and details
+
+// 1. Call method
+fetchJoke { result in
+    // 3. Executes asynchronous method
+    switch result {
+    case .success(let joke):
+        print("Fetched Joke: \n\(joke.value)")
+        
+        // 4. Call the translate method
+        translateJoke(languageId: "fr") { result in
+            // 6. Translate the joke method
+            switch result {
+            case .success(let translatedJoke):
+                // 7. Handle the translated joke result
+                print("Translated Joke: \(translatedJoke)")
+                displayLoadingState(.done)
+            case .failure(let error):
+                print("Fetching Joke translation error: \(error)")
+            }
+        }
+        
+        // 5. Code executes here after joke is fetched
+        displayLoadingState(.translating)
+    case .failure(let error):
+        print("Fetching Joke failed with error: \(error)")
+    }
+}
+// 2. Code still executes here and displays the loading state
+displayLoadingState(.fetching)
+
+///
+///
+///
+
+// MARK: - Async Await rewrite from completion closure
+
+/// Fetch Jokes implementation with async await and URLSession
+func fetchJoke() async throws -> Joke {
+    let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+    
+    let (data, _) = try await URLSession.shared.data(from: url)
+    return try JSONDecoder().decode(Joke.self, from: data)
+}
+
+func translateJoke(languageId: String, joke: String) async throws -> String {
+    return "hahaha, I'm translated"
+}
+
+Task {
+    // 1. Try and Catch
+    do {
+        // 2. Call fetch joke
+        let joke = try await fetchJoke()
+        // 3. Await until joke is fetched
+        
+        // 4. Call the translate method
+        let translatedJoke = try await translateJoke(languageId: "fr",
+                                                     joke: joke.value)
+        // 5. Await until joke is translated
+        
+        // 6. Handle result
+        print("Translated joke: \(translatedJoke)")
+    } catch let error {
+        print("Fetching joke failed with error \(error)")
+    }
+    // 7. Execute the rest of the code block
+}
+
+///
+///
+///
+
+// MARK: - Implementation where you do have to wait for all the results to be fetched
+
+struct JokeFetcherOperation {
+    var amount: Int
+    var onFetchJoke: ((Result<String, Error>) -> Void)
+
+    func fetchJokes() async {
+        do {
+            for _ in 0..<amount {
+                let joke = try await fetchJoke()
+                onFetchJoke(.success(joke.value))
+            }
+        } catch let error {
+            print("Error fetching a series of jokes: \(error)")
+            onFetchJoke(.failure(error))
+        }
+    }
+    
+    private func fetchJoke() async throws -> Joke {
+        let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+        
+        let (data, _) = try await URLSession.shared.data(from: url)
+        return try JSONDecoder().decode(Joke.self, from: data)
+    }
+}
+
+var jokes = [String]()
+let amount = 10
+let operation = JokeFetcherOperation(amount: amount) { result in
+    switch result {
+    case .success(let newJoke):
+        jokes.append(newJoke)
+        print("Fetched \(jokes.count) jokes out of the \(amount)")
+    case .failure(let error):
+        print("Error when fetching a new joke: \(error)")
+    }
+}
+
+Task {
+    await operation.fetchJokes()
+}
+
+///
+///
+///
+///
+
+// MARK: - Implementation where you do have to wait for all the results to be fetched
+
+private func fetchJokes(amount: Int) async throws -> [Joke] {
+    let url = URL(string: "https://api.chucknorris.io/jokes/random")!
+    
+    var jokes = [Joke]()
+    for _ in 0..<amount {
+        let (data, _) = try await URLSession.shared.data(from: url)
+        let newJoke = try JSONDecoder().decode(Joke.self, from: data)
+        jokes.append(newJoke)
+    }
+
+    return jokes
+}
+
+Task {
+    do {
+        let jokes = try await fetchJokes(amount: 10)
+        print("Fetched all jokes of amount \(jokes.count)")
+    }
+}
+```

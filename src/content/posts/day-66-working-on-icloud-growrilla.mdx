@@ -1,0 +1,21 @@
+---
+title: "Day #66 | Working on Growrilla iPad support and iCloud sync"
+description: "Growrilla is thus going to be supported on iPad devices and iCloud to sync across all your Apple devices."
+publishedAt: "2020-11-15T18:54:54.000Z"
+updatedAt: "2020-11-15T18:54:54.000Z"
+coverImage: "/images/imported/2020/11/Simulator-Screen-Shot---iPad-Pro--11-inch---2nd-generation----2020-11-15-at-19.4-7ee36b2fd2.png"
+legacyUrl: "https://hoyelam.com/day-66-working-on-icloud-growrilla/"
+---
+Today I’ve been working on some fixes on Growrilla.
+
+These have mostly to do with displaying on the iPad devices. Like too wide components or not visible ones. Also, some count logic didn’t store correctly.
+
+![](/images/imported/2020/11/Simulator-Screen-Shot---iPad-Pro--11-inch---2nd-generation----2020-11-15-at-19.4-a04368dc1d.png)
+
+_iPad device support - Growrilla_
+
+Then I’ve started working on iCloud auto-sync with CloudKit. The implementations are similar to the one I’ve done with Kowa. I’m still in the boilerplate phase where I’m implementing specific Growrilla models.
+
+The problem I’m expecting to hit is performance-related. Since we are most probably working with more records and data. I’m working on a syncing strategy that is performant as possible.
+
+Growrilla is thus going to be supported on iPad devices and iCloud to sync across all your Apple devices.

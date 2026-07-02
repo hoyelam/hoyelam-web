@@ -1,0 +1,71 @@
+---
+type Props = {
+  pathname: string;
+};
+
+const { pathname } = Astro.props;
+
+const navItems = [
+  { href: "/", label: "Home" },
+  { href: "/portfolio/", label: "Portfolio" },
+  { href: "/writing/", label: "Writing" },
+  { href: "/about/", label: "About" },
+];
+
+function isCurrent(href: string) {
+  if (href === "/") return pathname === "/";
+  return pathname.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <a class="brand" href="/">
+    <span class="brand-mark">HL</span>
+    <span>Hoye Lam</span>
+  </a>
+  <div class="header-actions">
+    <nav class="nav" aria-label="Main navigation">
+      {
+        navItems.map((item) => (
+          <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+    <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
+      <svg
+        class="theme-icon theme-icon-sun"
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.8"
+      >
+        <circle cx="12" cy="12" r="4"></circle>
+        <path d="M12 2v2"></path>
+        <path d="M12 20v2"></path>
+        <path d="m4.93 4.93 1.41 1.41"></path>
+        <path d="m17.66 17.66 1.41 1.41"></path>
+        <path d="M2 12h2"></path>
+        <path d="M20 12h2"></path>
+        <path d="m6.34 17.66-1.41 1.41"></path>
+        <path d="m19.07 4.93-1.41 1.41"></path>
+      </svg>
+      <svg
+        class="theme-icon theme-icon-moon"
+        aria-hidden="true"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="1.8"
+      >
+        <path d="M20.5 14.5a7.8 7.8 0 0 1-11-11 8.8 8.8 0 1 0 11 11Z"></path>
+      </svg>
+    </button>
+  </div>
+</header>

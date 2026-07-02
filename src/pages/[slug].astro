@@ -1,0 +1,52 @@
+---
+import { render } from "astro:content";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getPages, getPosts } from "../lib/content";
+import { formatDate } from "../lib/tags";
+
+export async function getStaticPaths() {
+  const posts = await getPosts();
+  const pages = await getPages();
+
+  return [
+    ...posts.map((entry) => ({
+      params: { slug: entry.id },
+      props: { entry, kind: "post" },
+    })),
+    ...pages
+      .filter((entry) => entry.id !== "home")
+      .map((entry) => ({
+        params: { slug: entry.id },
+        props: { entry, kind: "page" },
+      })),
+  ];
+}
+
+const { entry, kind } = Astro.props;
+const { Content } = await render(entry);
+const title = entry.data.title;
+const description = entry.data.description;
+---
+
+<BaseLayout title={title} description={description} image={entry.data.coverImage}>
+  <main class="article">
+    <header class="article-header">
+      <h1>{title}</h1>
+      {
+        description ? <p class="article-description">{description}</p> : null
+      }
+      {
+        kind === "post" ? (
+          <p class="post-meta">
+            <time datetime={entry.data.publishedAt?.toISOString()}>
+              {formatDate(entry.data.publishedAt)}
+            </time>
+          </p>
+        ) : null
+      }
+    </header>
+    <article class="article-content">
+      <Content />
+    </article>
+  </main>
+</BaseLayout>
