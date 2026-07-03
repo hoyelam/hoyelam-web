@@ -10,6 +10,13 @@ export type Project = {
 
 export const projects: Project[] = [
   {
+    name: "DeepL",
+    role: "Full-time job",
+    description: "iOS and macOS engineer on translation products at deepl.com.",
+    href: "https://www.deepl.com/",
+    status: "Current",
+  },
+  {
     name: "LoudScript",
     role: "Creator",
     description:
@@ -55,13 +62,6 @@ export const projects: Project[] = [
     status: "Past",
     thumbnail: "/images/imported/2020/07/image-1-981a975174.png",
     thumbnailAlt: "Esportsfort app screens",
-  },
-  {
-    name: "DeepL",
-    role: "Full-time job",
-    description: "iOS and macOS engineer on translation products at deepl.com.",
-    href: "https://www.deepl.com/",
-    status: "Current",
   },
   {
     name: "Websave",
