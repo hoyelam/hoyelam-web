@@ -2,8 +2,7 @@
 import { projects } from "../data/projects";
 
 const featured = projects.filter((project) => project.portfolioTier === "featured");
-const past = projects.filter((project) => project.portfolioTier === "past");
-const archive = projects.filter((project) => project.portfolioTier === "archive");
+const archive = projects.filter((project) => project.portfolioTier !== "featured");
 
 const fallback = (name: string) => name.slice(0, 2);
 const isLinkableArchive = (project: (typeof projects)[number]) =>
@@ -44,10 +43,10 @@ const isLinkableArchive = (project: (typeof projects)[number]) =>
 </section>
 
 <section class="portfolio-section">
-  <h2>Selected Past Work</h2>
-  <div class="portfolio-past-grid">
+  <h2>Archive</h2>
+  <div class="portfolio-archive-grid">
     {
-      past.map((project) => (
+      archive.map((project) => (
         <article class="portfolio-card portfolio-card-compact">
           <div class="portfolio-card-media">
             {project.thumbnail ? (
@@ -63,7 +62,7 @@ const isLinkableArchive = (project: (typeof projects)[number]) =>
           <div class="portfolio-card-body">
             <p class="portfolio-meta">{project.period} · {project.role}</p>
             <h3>
-              {project.href ? (
+              {isLinkableArchive(project) ? (
                 <a href={project.href} target="_blank" rel="noreferrer">{project.name}</a>
               ) : project.name}
             </h3>
@@ -74,25 +73,4 @@ const isLinkableArchive = (project: (typeof projects)[number]) =>
       ))
     }
   </div>
-</section>
-
-<section class="portfolio-section">
-  <h2>Archive</h2>
-  <ul class="portfolio-archive">
-    {
-      archive.map((project) => (
-        <li>
-          <span>
-            <strong>
-              {isLinkableArchive(project) ? (
-                <a href={project.href} target="_blank" rel="noreferrer">{project.name}</a>
-              ) : project.name}
-            </strong>
-            <span>{project.description}</span>
-          </span>
-          <em>{project.period}</em>
-        </li>
-      ))
-    }
-  </ul>
 </section>
