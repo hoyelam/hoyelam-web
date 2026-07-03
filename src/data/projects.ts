@@ -15,6 +15,8 @@ export const projects: Project[] = [
     description: "iOS and macOS engineer on translation products at deepl.com.",
     href: "https://www.deepl.com/",
     status: "Current",
+    thumbnail: "/images/projects/deepl-logo-blue.svg",
+    thumbnailAlt: "DeepL logo",
   },
   {
     name: "LoudScript",

@@ -390,6 +390,12 @@ blockquote {
   width: 100%;
 }
 
+.project-preview img[src$=".svg"] {
+  box-sizing: border-box;
+  object-fit: contain;
+  padding: 1rem;
+}
+
 .project-preview-fallback {
   align-items: center;
   background: var(--text);
