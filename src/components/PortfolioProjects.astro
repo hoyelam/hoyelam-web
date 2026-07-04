@@ -2,7 +2,12 @@
 import { projects } from "../data/projects";
 
 const featured = projects.filter((project) => project.portfolioTier === "featured");
-const archive = projects.filter((project) => project.portfolioTier !== "featured");
+const archive = projects.filter(
+  (project) =>
+    project.portfolioTier !== "featured" &&
+    project.portfolioTier !== "olderArchive",
+);
+const olderArchive = projects.filter((project) => project.portfolioTier === "olderArchive");
 
 const fallback = (name: string) => name.slice(0, 2);
 const isLinkableArchive = (project: (typeof projects)[number]) =>
@@ -68,6 +73,34 @@ const isLinkableArchive = (project: (typeof projects)[number]) =>
             </h3>
             <p>{project.description}</p>
             {project.contribution ? <p class="portfolio-contribution">{project.contribution}</p> : null}
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<section class="portfolio-section">
+  <h2>Older Archive</h2>
+  <div class="portfolio-older-archive-grid">
+    {
+      olderArchive.map((project) => (
+        <article class="portfolio-card portfolio-card-compact portfolio-card-small">
+          <div class="portfolio-card-media">
+            {project.thumbnail ? (
+              <img
+                src={project.thumbnail}
+                alt={project.thumbnailAlt ?? `${project.name} preview`}
+                loading="lazy"
+              />
+            ) : (
+              <div class="portfolio-card-fallback" aria-hidden="true">{fallback(project.name)}</div>
+            )}
+          </div>
+          <div class="portfolio-card-body">
+            <p class="portfolio-meta">{project.period} · {project.role}</p>
+            <h3>{project.name}</h3>
+            <p>{project.description}</p>
           </div>
         </article>
       ))

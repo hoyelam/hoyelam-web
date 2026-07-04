@@ -514,7 +514,8 @@ blockquote {
 }
 
 .portfolio-featured-grid,
-.portfolio-archive-grid {
+.portfolio-archive-grid,
+.portfolio-older-archive-grid {
   display: grid;
   gap: 1rem;
 }
@@ -523,7 +524,8 @@ blockquote {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-.portfolio-archive-grid {
+.portfolio-archive-grid,
+.portfolio-older-archive-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
@@ -606,6 +608,26 @@ blockquote {
   border-bottom: 0;
   border-right: 1px solid var(--border);
   min-height: 100%;
+}
+
+.portfolio-card-small {
+  grid-template-columns: 6rem minmax(0, 1fr);
+}
+
+.portfolio-card-small .portfolio-card-body {
+  padding: 0.75rem;
+}
+
+.portfolio-card-small .portfolio-meta {
+  font-size: 0.72rem;
+}
+
+.portfolio-card-small h3 {
+  font-size: 1.05rem;
+}
+
+.portfolio-card-small p {
+  font-size: 0.92rem;
 }
 
 .about-hero {
@@ -837,7 +859,8 @@ blockquote {
   }
 
   .portfolio-featured-grid,
-  .portfolio-archive-grid {
+  .portfolio-archive-grid,
+  .portfolio-older-archive-grid {
     grid-template-columns: 1fr;
   }
 

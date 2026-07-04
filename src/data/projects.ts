@@ -7,7 +7,7 @@ export type Project = {
   thumbnail?: string;
   thumbnailAlt?: string;
   period?: string;
-  portfolioTier?: "featured" | "past" | "archive";
+  portfolioTier?: "featured" | "past" | "archive" | "olderArchive";
   contribution?: string;
 };
 
@@ -160,5 +160,104 @@ export const projects: Project[] = [
     thumbnailAlt: "Think Drop app screen",
     period: "2019",
     portfolioTier: "archive",
+  },
+  {
+    name: "Devleads",
+    role: "Creator",
+    description: "Find software engineer leads from GitHub.",
+    status: "Archived",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "OnCircleCI",
+    role: "Creator",
+    description: "Simple CircleCI client for iOS.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-6-4f60fb6e75.png",
+    thumbnailAlt: "OnCircleCI app screen",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "Esports Calendar",
+    role: "Creator",
+    description:
+      "Calendar for upcoming CS:GO, League of Legends, Dota 2, and Overwatch matches.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-7-19dcbca55c.png",
+    thumbnailAlt: "Esports Calendar app screen",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "Bachelor Thesis",
+    role: "Graduate Intern / Developer / Researcher",
+    description:
+      "Integration of third-party services and additional data for Sense Health.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-9-33ae324416.png",
+    thumbnailAlt: "Sense Health thesis project",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "Startup Story",
+    role: "Creator / Interviewer",
+    description:
+      "Web platform for startup stories from founders in the Netherlands.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-8-63610a4d1b.png",
+    thumbnailAlt: "Startup Story website",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "Projectcampus",
+    role: "Mobile Developer",
+    description: "University education platform by Shareworks Solution.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-10-095b221e30.png",
+    thumbnailAlt: "Projectcampus app screen",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "Smart Mirror",
+    role: "University Student / Developer",
+    description: "Mirror displaying metadata.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-11-c09cc966cf.png",
+    thumbnailAlt: "Smart Mirror project",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "Human Tracking Drone",
+    role: "University Student / Developer",
+    description: "Drone that can keep following a human.",
+    status: "Archived",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "PCBuild",
+    role: "University Student / Developer",
+    description: "Offline web platform for assembling PC components.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-13-2b74c4ce5e.png",
+    thumbnailAlt: "PCBuild web platform",
+    period: "Archived",
+    portfolioTier: "olderArchive",
+  },
+  {
+    name: "MyWatchList",
+    role: "Developer",
+    description: "Android app for tracking TV series.",
+    status: "Archived",
+    thumbnail: "/images/imported/2020/07/image-14-3c97eaa837.png",
+    thumbnailAlt: "MyWatchList Android app",
+    period: "Archived",
+    portfolioTier: "olderArchive",
   },
 ];
