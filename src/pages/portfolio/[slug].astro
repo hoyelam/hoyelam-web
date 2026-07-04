@@ -1,0 +1,49 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getProjectSlug, projects } from "../../data/projects";
+
+export function getStaticPaths() {
+  const archivedProjects = projects.filter((project) => project.portfolioTier !== "featured");
+
+  return archivedProjects.map((project) => ({
+    params: { slug: getProjectSlug(project) },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const images =
+  project.images ??
+  (project.thumbnail
+    ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview` }]
+    : []);
+---
+
+<BaseLayout title={project.name} description={project.description} image={images[0]?.src}>
+  <main class="article project-detail">
+    <header class="article-header">
+      <a class="project-back-link" href="/portfolio/">Portfolio</a>
+      <h1>{project.name}</h1>
+      <p class="article-description">{project.description}</p>
+      <p class="post-meta">{project.period} · {project.role}</p>
+    </header>
+    <article class="article-content">
+      {
+        project.contribution ? (
+          <p>{project.contribution}</p>
+        ) : (
+          <p>Archived project from my earlier portfolio.</p>
+        )
+      }
+      {
+        images.length ? (
+          <div class="project-gallery">
+            {images.map((image) => (
+              <img src={image.src} alt={image.alt} loading="lazy" />
+            ))}
+          </div>
+        ) : null
+      }
+    </article>
+  </main>
+</BaseLayout>

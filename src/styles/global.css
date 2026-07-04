@@ -538,6 +538,19 @@ blockquote {
   overflow: hidden;
 }
 
+.article-content a.portfolio-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.portfolio-card[href]:hover {
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+}
+
+.portfolio-card[href] h3 {
+  color: var(--accent);
+}
+
 .portfolio-card-media {
   align-items: center;
   aspect-ratio: 16 / 9;
@@ -628,6 +641,32 @@ blockquote {
 
 .portfolio-card-small p {
   font-size: 0.92rem;
+}
+
+.project-detail {
+  max-width: 920px;
+}
+
+.project-back-link {
+  display: inline-block;
+  font-size: 0.92rem;
+  font-weight: 750;
+  margin-bottom: 1rem;
+}
+
+.project-gallery {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 2rem;
+}
+
+.project-gallery img {
+  aspect-ratio: 16 / 10;
+  background: var(--bg-strong);
+  border: 1px solid var(--border);
+  object-fit: cover;
+  width: 100%;
 }
 
 .about-hero {
@@ -872,6 +911,10 @@ blockquote {
     aspect-ratio: 16 / 9;
     border-bottom: 1px solid var(--border);
     border-right: 0;
+  }
+
+  .project-gallery {
+    grid-template-columns: 1fr;
   }
 
   .post-row {

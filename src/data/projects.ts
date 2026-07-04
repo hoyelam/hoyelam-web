@@ -1,3 +1,8 @@
+export type ProjectImage = {
+  src: string;
+  alt: string;
+};
+
 export type Project = {
   name: string;
   role: string;
@@ -9,7 +14,15 @@ export type Project = {
   period?: string;
   portfolioTier?: "featured" | "past" | "archive" | "olderArchive";
   contribution?: string;
+  images?: ProjectImage[];
 };
+
+export function getProjectSlug(project: Pick<Project, "name">) {
+  return project.name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+}
 
 export const projects: Project[] = [
   {
@@ -125,6 +138,20 @@ export const projects: Project[] = [
     portfolioTier: "past",
     contribution:
       "Previously led software work and helped ship connected sleep-tech products.",
+    images: [
+      {
+        src: "/images/imported/2020/07/Brand-new-companion-app-01ebabef4c.jpeg",
+        alt: "Somnox companion app",
+      },
+      {
+        src: "/images/imported/2020/07/Extra-comfort-b79acebdb7.jpeg",
+        alt: "Somnox robot in use",
+      },
+      {
+        src: "/images/imported/2020/07/EzjnVDLX0AQG7Pe-ca14cf50c5.jpeg",
+        alt: "Somnox product photo",
+      },
+    ],
   },
   {
     name: "Growrilla",
@@ -149,6 +176,20 @@ export const projects: Project[] = [
     thumbnailAlt: "Kowa app screen",
     period: "2020",
     portfolioTier: "archive",
+    images: [
+      {
+        src: "/images/imported/2020/07/Wishlists-are-great-d3970c952f.png",
+        alt: "Kowa wishlists screen",
+      },
+      {
+        src: "/images/imported/2020/07/Kowa-introduction-a7dda944a8.png",
+        alt: "Kowa introduction screen",
+      },
+      {
+        src: "/images/imported/2020/07/image-15-4f765ef494.png",
+        alt: "Kowa app detail screen",
+      },
+    ],
   },
   {
     name: "Think Drop",
