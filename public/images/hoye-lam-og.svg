@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Hoye Lam</title>
+  <desc id="desc">Senior iOS and macOS engineer building indie software.</desc>
+  <rect width="1200" height="630" fill="#f7f3eb" />
+  <rect x="72" y="72" width="1056" height="486" rx="28" fill="#111111" />
+  <circle cx="177" cy="177" r="62" fill="#f5c542" />
+  <text x="177" y="199" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="48" font-weight="700" fill="#111111">HL</text>
+  <text x="140" y="324" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="700" fill="#ffffff">Hoye Lam</text>
+  <text x="144" y="394" font-family="Arial, Helvetica, sans-serif" font-size="36" fill="#d7d7d7">Senior iOS and macOS engineer</text>
+  <text x="144" y="452" font-family="Arial, Helvetica, sans-serif" font-size="34" fill="#f5c542">Apps, writing, and product notes</text>
+</svg>

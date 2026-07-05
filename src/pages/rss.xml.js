@@ -1,5 +1,6 @@
 import rss from "@astrojs/rss";
 import { getPosts } from "../lib/content";
+import { getEntryExcerpt, getSeoDescription } from "../lib/seo";
 
 export async function GET(context) {
   const posts = await getPosts();
@@ -10,7 +11,7 @@ export async function GET(context) {
     site: context.site,
     items: posts.map((post) => ({
       title: post.data.title,
-      description: post.data.description,
+      description: getEntryExcerpt(post, 160) || getSeoDescription(post),
       pubDate: post.data.publishedAt,
       link: `/${post.id}/`,
     })),

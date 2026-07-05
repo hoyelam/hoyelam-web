@@ -3,12 +3,50 @@ import PostList from "@components/PostList.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
 import { getPosts } from "../lib/content";
+import { HOME_SITE_DESCRIPTION, SITE_NAME } from "../lib/seo";
 
 const posts = (await getPosts()).slice(0, 6);
 const currentProjects = projects.filter((project) => project.status === "Current");
+const personId = new URL("/#person", Astro.site).toString();
+const homeUrl = new URL("/", Astro.site).toString();
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": personId,
+    name: SITE_NAME,
+    url: homeUrl,
+    jobTitle: "Senior Software Engineer",
+    worksFor: {
+      "@type": "Organization",
+      name: "DeepL",
+      url: "https://www.deepl.com/",
+    },
+    sameAs: [
+      "https://github.com/hoyelam",
+      "https://twitter.com/hoyelam",
+      "https://www.instagram.com/hoyelam/",
+    ],
+    knowsAbout: [
+      "iOS development",
+      "macOS development",
+      "Swift",
+      "indie app development",
+      "software products",
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: SITE_NAME,
+    url: homeUrl,
+    description: HOME_SITE_DESCRIPTION,
+    author: { "@id": personId },
+  },
+];
 ---
 
-<BaseLayout title="Hoye Lam" description="Portfolio, apps, writing, and notes by Hoye Lam.">
+<BaseLayout title="Hoye Lam" description={HOME_SITE_DESCRIPTION} structuredData={structuredData}>
   <main>
     <section class="hero">
       <img

@@ -1,5 +1,6 @@
 ---
-import { formatDate } from "@lib/tags";
+import { formatDate, formatRelativeDate } from "@lib/tags";
+import { getEntryExcerpt } from "@lib/seo";
 
 type Post = {
   id: string;
@@ -16,57 +17,12 @@ type Props = {
 };
 
 const { posts } = Astro.props;
-
-function cleanExcerptLine(line: string) {
-  return line
-    .replace(/^#{1,6}\s+/, "")
-    .replace(/^>\s?/, "")
-    .replace(/^[-*+]\s+/, "")
-    .replace(/^\d+\.\s+/, "")
-    .replace(/!\[[^\]]*]\([^)]*\)/g, "")
-    .replace(/\[([^\]]+)]\([^)]*\)/g, "$1")
-    .replace(/<[^>]+>/g, "")
-    .replace(/[`*_~]/g, "")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function isBodyExcerptLine(line: string) {
-  const trimmed = line.trim();
-
-  if (!trimmed) return false;
-  if (trimmed.startsWith("![")) return false;
-  if (trimmed.startsWith("Embedded media")) return false;
-  if (/^_.*_$/.test(trimmed) || /^\*.*\*$/.test(trimmed)) return false;
-
-  return true;
-}
-
-function truncateExcerpt(excerpt: string, maxLength = 280) {
-  if (excerpt.length <= maxLength) return excerpt;
-
-  const truncated = excerpt.slice(0, maxLength + 1);
-  const lastSpace = truncated.lastIndexOf(" ");
-  return `${truncated.slice(0, lastSpace > 180 ? lastSpace : maxLength).trim()}...`;
-}
-
-function getPostExcerpt(post: Post) {
-  const lines =
-    post.body
-      ?.split("\n")
-      .filter(isBodyExcerptLine)
-      .map(cleanExcerptLine)
-      .filter(Boolean)
-      .slice(0, 3) ?? [];
-
-  return truncateExcerpt(lines.join(" "));
-}
 ---
 
 <div class="post-list">
   {
     posts.map((post) => {
-      const excerpt = getPostExcerpt(post);
+      const excerpt = getEntryExcerpt(post);
 
       return (
         <a class="post-row" href={`/${post.id}/`}>
@@ -74,9 +30,19 @@ function getPostExcerpt(post: Post) {
             <h2>{post.data.title}</h2>
             {excerpt && <p class="muted">{excerpt}</p>}
           </div>
-          <time class="post-meta" datetime={post.data.publishedAt?.toISOString()}>
-            {formatDate(post.data.publishedAt)}
-          </time>
+          <span class="post-meta">
+            <time datetime={post.data.publishedAt?.toISOString()}>
+              {formatDate(post.data.publishedAt)}
+            </time>
+            {post.data.publishedAt ? (
+              <>
+                <span aria-hidden="true"> · </span>
+                <span data-relative-date={post.data.publishedAt.toISOString()}>
+                  {formatRelativeDate(post.data.publishedAt)}
+                </span>
+              </>
+            ) : null}
+          </span>
         </a>
       );
     })

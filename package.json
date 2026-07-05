@@ -9,6 +9,7 @@
     "preview": "astro preview",
     "import:ghost": "node scripts/import-ghost.mjs",
     "import:live": "node scripts/import-live-ghost.mjs",
+    "seo:audit": "node scripts/seo-audit.mjs",
     "format": "prettier --write ."
   },
   "dependencies": {

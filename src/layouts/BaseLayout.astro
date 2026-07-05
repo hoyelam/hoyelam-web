@@ -1,30 +1,65 @@
 ---
 import Header from "@components/Header.astro";
+import {
+  DEFAULT_SITE_DESCRIPTION,
+  DEFAULT_SOCIAL_IMAGE,
+  DEFAULT_SOCIAL_IMAGE_ALT,
+  DEFAULT_SOCIAL_IMAGE_HEIGHT,
+  DEFAULT_SOCIAL_IMAGE_WIDTH,
+  SITE_NAME,
+} from "@lib/seo";
 import "@styles/global.css";
 
 type Props = {
   title?: string;
   description?: string;
   image?: string;
+  imageAlt?: string;
+  imageWidth?: number;
+  imageHeight?: number;
   canonical?: string;
   noindex?: boolean;
+  type?: "website" | "article" | "profile";
+  publishedAt?: Date;
+  updatedAt?: Date;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 };
 
 const {
-  title = "Hoye Lam",
-  description = "Portfolio, apps, writing, and notes by Hoye Lam.",
+  title = SITE_NAME,
+  description = DEFAULT_SITE_DESCRIPTION,
   image,
+  imageAlt,
+  imageWidth,
+  imageHeight,
   canonical: canonicalOverride,
   noindex = false,
+  type = "website",
+  publishedAt,
+  updatedAt,
+  structuredData,
 } = Astro.props;
 
-const pageTitle = title === "Hoye Lam" ? title : `${title} - Hoye Lam`;
+const pageTitle = title === SITE_NAME ? title : `${title} - ${SITE_NAME}`;
+const seoDescription = description || DEFAULT_SITE_DESCRIPTION;
 const canonical = new URL(canonicalOverride ?? Astro.url.pathname, Astro.site).toString();
-const imageUrl = image
-  ? image.startsWith("http")
-    ? image
-    : new URL(image, Astro.site).toString()
+const effectiveImage = image || DEFAULT_SOCIAL_IMAGE;
+const imageUrl = effectiveImage
+  ? effectiveImage.startsWith("http")
+    ? effectiveImage
+    : new URL(effectiveImage, Astro.site).toString()
   : undefined;
+const effectiveImageAlt = imageAlt || DEFAULT_SOCIAL_IMAGE_ALT;
+const effectiveImageWidth = image ? imageWidth : (imageWidth || DEFAULT_SOCIAL_IMAGE_WIDTH);
+const effectiveImageHeight = image ? imageHeight : (imageHeight || DEFAULT_SOCIAL_IMAGE_HEIGHT);
+const isArticle = type === "article";
+const publishedIso = isArticle ? publishedAt?.toISOString() : undefined;
+const updatedIso = isArticle ? updatedAt?.toISOString() : undefined;
+const schemas = structuredData
+  ? Array.isArray(structuredData)
+    ? structuredData
+    : [structuredData]
+  : [];
 const enablePlausible = import.meta.env.PROD;
 ---
 
@@ -55,17 +90,29 @@ const enablePlausible = import.meta.env.PROD;
       })();
     </script>
     <title>{pageTitle}</title>
-    <meta name="description" content={description} />
+    <meta name="description" content={seoDescription} />
     {noindex ? <meta name="robots" content="noindex" /> : null}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title="Hoye Lam" />
-    <meta property="og:site_name" content="Hoye Lam" />
+    <link rel="alternate" type="application/rss+xml" href="/rss.xml" title={SITE_NAME} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={type} />
     <meta property="og:title" content={pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta property="og:description" content={seoDescription} />
     <meta property="og:url" content={canonical} />
-    {imageUrl ? <meta property="og:image" content={imageUrl} /> : null}
+    <meta property="og:image" content={imageUrl} />
+    <meta property="og:image:alt" content={effectiveImageAlt} />
+    {effectiveImageWidth ? <meta property="og:image:width" content={String(effectiveImageWidth)} /> : null}
+    {effectiveImageHeight ? <meta property="og:image:height" content={String(effectiveImageHeight)} /> : null}
+    {publishedIso ? <meta property="article:published_time" content={publishedIso} /> : null}
+    {updatedIso ? <meta property="article:modified_time" content={updatedIso} /> : null}
+    {publishedIso || updatedIso ? <meta property="article:author" content={SITE_NAME} /> : null}
     <meta name="twitter:card" content={imageUrl ? "summary_large_image" : "summary"} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={seoDescription} />
+    <meta name="twitter:image" content={imageUrl} />
+    <meta name="twitter:image:alt" content={effectiveImageAlt} />
+    {schemas.map((schema) => <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />)}
     {
       enablePlausible ? (
         <script is:inline defer data-domain="hoyelam.com" src="https://plausible.io/js/plausible.js" />
@@ -129,6 +176,52 @@ const enablePlausible = import.meta.env.PROD;
 
         media.addEventListener("change", () => {
           if (!storedTheme()) setTheme(systemTheme(), false);
+        });
+      })();
+    </script>
+    <script is:inline>
+      (() => {
+        const dayMs = 86400000;
+        const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        const plural = (value, unit) => `${value} ${unit}${value === 1 ? "" : "s"} ago`;
+
+        const formatRelativeDate = (value, now = new Date()) => {
+          const date = new Date(value);
+          if (Number.isNaN(date.getTime())) return "";
+
+          const dayDifference = Math.round((startOfDay(now) - startOfDay(date)) / dayMs);
+
+          if (dayDifference < 0) return "";
+          if (dayDifference === 0) return "today";
+          if (dayDifference === 1) return "yesterday";
+          if (dayDifference < 7) return plural(dayDifference, "day");
+          if (dayDifference < 30) return plural(Math.floor(dayDifference / 7), "week");
+
+          const monthDifference =
+            (now.getFullYear() - date.getFullYear()) * 12 +
+            now.getMonth() -
+            date.getMonth() -
+            (now.getDate() < date.getDate() ? 1 : 0);
+
+          if (monthDifference < 12) return plural(Math.max(1, monthDifference), "month");
+
+          const yearDifference =
+            now.getFullYear() -
+            date.getFullYear() -
+            (now.getMonth() < date.getMonth() ||
+            (now.getMonth() === date.getMonth() && now.getDate() < date.getDate())
+              ? 1
+              : 0);
+
+          return plural(Math.max(1, yearDifference), "year");
+        };
+
+        document.querySelectorAll("[data-relative-date]").forEach((element) => {
+          const value = element.getAttribute("data-relative-date");
+          if (!value) return;
+
+          const label = formatRelativeDate(value);
+          if (label) element.textContent = label;
         });
       })();
     </script>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { getProjectSlug, projects } from "../../data/projects";
+import { SITE_NAME, toAbsoluteUrl } from "../../lib/seo";
 
 export function getStaticPaths() {
   const archivedProjects = projects.filter((project) => project.portfolioTier !== "featured");
@@ -17,9 +18,30 @@ const images =
   (project.thumbnail
     ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview` }]
     : []);
+const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  name: project.name,
+  description: project.description,
+  url: canonical,
+  image: toAbsoluteUrl(images[0]?.src, Astro.site),
+  creator: {
+    "@type": "Person",
+    name: SITE_NAME,
+    url: new URL("/", Astro.site).toString(),
+  },
+  sameAs: project.href,
+};
 ---
 
-<BaseLayout title={project.name} description={project.description} image={images[0]?.src}>
+<BaseLayout
+  title={project.name}
+  description={project.description}
+  image={images[0]?.src}
+  imageAlt={images[0]?.alt}
+  structuredData={structuredData}
+>
   <main class="article project-detail">
     <header class="article-header">
       <a class="project-back-link" href="/portfolio/">Portfolio</a>
