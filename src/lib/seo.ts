@@ -1,11 +1,14 @@
 export const SITE_NAME = "Hoye Lam";
 export const SITE_URL = "https://hoyelam.com";
-export const DEFAULT_SITE_DESCRIPTION = "Portfolio, apps, writing, and notes by Hoye Lam.";
+export const HOME_SITE_TITLE =
+  "Hoye Lam — iOS Engineer, Indie App Builder & Writer";
+export const DEFAULT_SITE_DESCRIPTION =
+  "Useful software and candid writing about building, work, and life by Hoye Lam.";
 export const HOME_SITE_DESCRIPTION =
-  "Hoye Lam is a senior iOS and macOS engineer at DeepL, building LoudScript, Websave, Thinkdrop, and other indie software.";
+  "I’m Hoye Lam, a senior iOS and macOS engineer at DeepL. I build useful indie apps and write candidly about software, work, family, ambition, and doubt.";
 export const DEFAULT_SOCIAL_IMAGE = "/images/hoye-lam-og.png";
 export const DEFAULT_SOCIAL_IMAGE_ALT =
-  "Hoye Lam, senior iOS and macOS engineer building indie software.";
+  "Hoye Lam, iOS engineer, indie app builder, and writer.";
 export const DEFAULT_SOCIAL_IMAGE_WIDTH = 1200;
 export const DEFAULT_SOCIAL_IMAGE_HEIGHT = 630;
 

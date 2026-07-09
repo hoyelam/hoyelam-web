@@ -36,6 +36,7 @@ export async function getStaticPaths() {
 const { entry, kind } = Astro.props;
 const { Content } = await render(entry);
 const title = entry.data.title;
+const seoTitle = entry.data.seoTitle || title;
 const description =
   kind === "post"
     ? getEntryExcerpt(entry, 160) || getSeoDescription(entry)
@@ -46,6 +47,7 @@ const canonical = new URL(`/${entry.id}/`, Astro.site).toString();
 const absoluteImage = toAbsoluteUrl(image, Astro.site);
 const personId = new URL("/#person", Astro.site).toString();
 const isDefaultImage = image === DEFAULT_SOCIAL_IMAGE;
+const isProfilePage = kind === "page" && entry.id === "about";
 const structuredData =
   kind === "post"
     ? {
@@ -62,10 +64,40 @@ const structuredData =
           "@type": "Person",
           "@id": personId,
           name: SITE_NAME,
-          url: new URL("/", Astro.site).toString(),
+          url: new URL("/about/", Astro.site).toString(),
         },
       }
-    : {
+    : isProfilePage
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ProfilePage",
+          name: seoTitle,
+          description,
+          url: canonical,
+          dateCreated: entry.data.publishedAt?.toISOString(),
+          dateModified: entry.data.updatedAt?.toISOString(),
+          mainEntity: {
+            "@type": "Person",
+            "@id": personId,
+            name: SITE_NAME,
+            alternateName: ["林浩意", "@hoyelam"],
+            description,
+            image: new URL("/images/hoye-lam-x-avatar.jpg", Astro.site).toString(),
+            url: new URL("/", Astro.site).toString(),
+            jobTitle: "Senior Software Engineer",
+            worksFor: {
+              "@type": "Organization",
+              name: "DeepL",
+              url: "https://www.deepl.com/",
+            },
+            sameAs: [
+              "https://github.com/hoyelam",
+              "https://twitter.com/hoyelam",
+              "https://www.instagram.com/hoyelam/",
+            ],
+          },
+        }
+      : {
         "@context": "https://schema.org",
         "@type": "WebPage",
         name: title,
@@ -80,13 +112,13 @@ const structuredData =
 ---
 
 <BaseLayout
-  title={title}
+  title={seoTitle}
   description={description}
   image={image}
   imageAlt={imageAlt}
   imageWidth={isDefaultImage ? DEFAULT_SOCIAL_IMAGE_WIDTH : undefined}
   imageHeight={isDefaultImage ? DEFAULT_SOCIAL_IMAGE_HEIGHT : undefined}
-  type={kind === "post" ? "article" : "website"}
+  type={kind === "post" ? "article" : isProfilePage ? "profile" : "website"}
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
   structuredData={structuredData}

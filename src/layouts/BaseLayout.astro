@@ -40,7 +40,7 @@ const {
   structuredData,
 } = Astro.props;
 
-const pageTitle = title === SITE_NAME ? title : `${title} - ${SITE_NAME}`;
+const pageTitle = title.includes(SITE_NAME) ? title : `${title} - ${SITE_NAME}`;
 const seoDescription = description || DEFAULT_SITE_DESCRIPTION;
 const canonical = new URL(canonicalOverride ?? Astro.url.pathname, Astro.site).toString();
 const effectiveImage = image || DEFAULT_SOCIAL_IMAGE;
@@ -91,9 +91,11 @@ const enablePlausible = import.meta.env.PROD;
     </script>
     <title>{pageTitle}</title>
     <meta name="description" content={seoDescription} />
+    <meta name="author" content={SITE_NAME} />
     {noindex ? <meta name="robots" content="noindex" /> : null}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="canonical" href={canonical} />
+    <link rel="author" href="/about/" />
     <link rel="alternate" type="application/rss+xml" href="/rss.xml" title={SITE_NAME} />
     <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:type" content={type} />

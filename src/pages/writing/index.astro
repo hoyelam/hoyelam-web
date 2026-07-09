@@ -6,12 +6,15 @@ import { getPosts } from "../../lib/content";
 const posts = await getPosts();
 ---
 
-<BaseLayout title="Writing" description="Occasional posts, notes, and essays by Hoye Lam.">
+<BaseLayout
+  title="Writing"
+  description="Candid essays and practical notes on software, building products, work, family, ambition, and life by Hoye Lam."
+>
   <main class="article">
     <header class="article-header">
       <h1>Writing</h1>
       <p class="article-description">
-        Notes, essays, and product updates from over the years.
+        Candid essays and practical notes on software, building products, work, family, ambition, and life.
       </p>
     </header>
     <PostList posts={posts} />

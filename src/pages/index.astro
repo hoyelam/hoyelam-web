@@ -3,7 +3,7 @@ import PostList from "@components/PostList.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { projects } from "../data/projects";
 import { getPosts } from "../lib/content";
-import { HOME_SITE_DESCRIPTION, SITE_NAME } from "../lib/seo";
+import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
 
 const posts = (await getPosts()).slice(0, 6);
 const currentProjects = projects.filter((project) => project.status === "Current");
@@ -15,7 +15,10 @@ const structuredData = [
     "@type": "Person",
     "@id": personId,
     name: SITE_NAME,
+    alternateName: ["林浩意", "@hoyelam"],
+    description: HOME_SITE_DESCRIPTION,
     url: homeUrl,
+    image: new URL("/images/hoye-lam-x-avatar.jpg", Astro.site).toString(),
     jobTitle: "Senior Software Engineer",
     worksFor: {
       "@type": "Organization",
@@ -46,7 +49,7 @@ const structuredData = [
 ];
 ---
 
-<BaseLayout title="Hoye Lam" description={HOME_SITE_DESCRIPTION} structuredData={structuredData}>
+<BaseLayout title={HOME_SITE_TITLE} description={HOME_SITE_DESCRIPTION} structuredData={structuredData}>
   <main>
     <section class="hero">
       <img
@@ -56,13 +59,14 @@ const structuredData = [
       />
       <h1>Hoye Lam</h1>
       <p class="hero-copy">
-        Senior Software Engineer at <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a>{" "}
-        specializing in iOS and macOS. Built{" "}
+        I build useful software and write what I actually think. By day, I’m a Senior Software Engineer at{" "}
+        <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a> specializing in iOS and
+        macOS. Outside work, I build{" "}
         <a href="https://loudscript.app/" target="_blank" rel="noreferrer">LoudScript</a>,{" "}
         <a href="https://websave.app/" target="_blank" rel="noreferrer">Websave</a>, and{" "}
-        <a href="https://thinkdrop.app/" target="_blank" rel="noreferrer">Thinkdrop 2</a>. Co-founded{" "}
-        <a href="https://waterfuze.com/" target="_blank" rel="noreferrer">Waterfuze</a>, previously led software
-        at Somnox, and write about software, products, and life.
+        <a href="https://thinkdrop.app/" target="_blank" rel="noreferrer">Thinkdrop 2</a>; co-founded{" "}
+        <a href="https://waterfuze.com/" target="_blank" rel="noreferrer">Waterfuze</a>; and write candidly about
+        software, products, work, family, ambition, and doubt.
       </p>
       <div class="actions">
         <a class="button primary" href="/portfolio/">View portfolio</a>
