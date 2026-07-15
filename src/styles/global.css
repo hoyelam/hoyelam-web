@@ -492,15 +492,13 @@ blockquote {
   border-radius: var(--radius);
 }
 
-.related-writing,
-.writing-section {
+.related-writing {
   border-top: 1px solid var(--border);
   margin-top: 3rem;
   padding-top: 2rem;
 }
 
-.related-writing > h2,
-.writing-section > h2 {
+.related-writing > h2 {
   font-size: clamp(1.4rem, 3vw, 1.9rem);
   margin: 0 0 1rem;
 }

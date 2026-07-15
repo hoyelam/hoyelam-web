@@ -4,7 +4,6 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import { getPosts } from "../../lib/content";
 
 const posts = await getPosts();
-const featuredPosts = posts.filter((post) => post.data.featured);
 ---
 
 <BaseLayout
@@ -18,17 +17,6 @@ const featuredPosts = posts.filter((post) => post.data.featured);
         Candid essays and practical notes on software, building products, work, family, ambition, and life.
       </p>
     </header>
-    {
-      featuredPosts.length ? (
-        <section class="writing-section" aria-labelledby="selected-writing-heading">
-          <h2 id="selected-writing-heading">Selected writing</h2>
-          <PostList posts={featuredPosts} headingLevel="h3" />
-        </section>
-      ) : null
-    }
-    <section class="writing-section" aria-labelledby="all-writing-heading">
-      <h2 id="all-writing-heading">All writing</h2>
-      <PostList posts={posts} headingLevel="h3" />
-    </section>
+    <PostList posts={posts} />
   </main>
 </BaseLayout>

@@ -5,7 +5,7 @@ import { projects } from "../data/projects";
 import { getPosts } from "../lib/content";
 import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
 
-const posts = (await getPosts()).filter((post) => post.data.featured).slice(0, 6);
+const posts = (await getPosts()).slice(0, 6);
 const currentProjects = projects.filter((project) => project.status === "Current");
 const personId = new URL("/#person", Astro.site).toString();
 const homeUrl = new URL("/", Astro.site).toString();
@@ -81,7 +81,7 @@ const structuredData = [
       posts.length ? (
         <section class="section">
           <div class="section-heading">
-            <h2>Selected writing</h2>
+            <h2>Recent writing</h2>
             <a class="muted" href="/writing/">Archive</a>
           </div>
           <PostList posts={posts} />
