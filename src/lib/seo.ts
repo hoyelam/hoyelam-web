@@ -5,10 +5,10 @@ export const HOME_SITE_TITLE =
 export const DEFAULT_SITE_DESCRIPTION =
   "Useful software and candid writing about building, work, and life by Hoye Lam.";
 export const HOME_SITE_DESCRIPTION =
-  "I’m Hoye Lam, a senior iOS and macOS engineer at DeepL. I build useful indie apps and write candidly about software, work, family, ambition, and doubt.";
+  "I’m Hoye Lam, a senior software engineer at DeepL specializing in software for Apple platforms. I build useful indie apps and write candidly about work and life.";
 export const DEFAULT_SOCIAL_IMAGE = "/images/hoye-lam-og.png";
 export const DEFAULT_SOCIAL_IMAGE_ALT =
-  "Hoye Lam, iOS engineer, indie app builder, and writer.";
+  "Hoye Lam, software engineer, indie app builder, and writer.";
 export const DEFAULT_SOCIAL_IMAGE_WIDTH = 1200;
 export const DEFAULT_SOCIAL_IMAGE_HEIGHT = 630;
 
@@ -24,9 +24,14 @@ type EntryLike = {
   };
 };
 
-export function toAbsoluteUrl(value: string | undefined, site: string | URL | undefined = SITE_URL) {
+export function toAbsoluteUrl(
+  value: string | undefined,
+  site: string | URL | undefined = SITE_URL,
+) {
   if (!value) return undefined;
-  return value.startsWith("http") ? value : new URL(value, site ?? SITE_URL).toString();
+  return value.startsWith("http")
+    ? value
+    : new URL(value, site ?? SITE_URL).toString();
 }
 
 export function normalizeDescription(value?: string) {
@@ -68,7 +73,10 @@ export function truncateText(value: string, maxLength = 160) {
   return `${truncated.slice(0, lastSpace > 100 ? lastSpace : maxLength).trim()}...`;
 }
 
-export function getEntryExcerpt(entry: Pick<EntryLike, "body">, maxLength = 280) {
+export function getEntryExcerpt(
+  entry: Pick<EntryLike, "body">,
+  maxLength = 280,
+) {
   const lines =
     entry.body
       ?.split("\n")
@@ -80,7 +88,10 @@ export function getEntryExcerpt(entry: Pick<EntryLike, "body">, maxLength = 280)
   return truncateText(lines.join(" "), maxLength);
 }
 
-export function getSeoDescription(entry: EntryLike, fallback = DEFAULT_SITE_DESCRIPTION) {
+export function getSeoDescription(
+  entry: EntryLike,
+  fallback = DEFAULT_SITE_DESCRIPTION,
+) {
   return (
     normalizeDescription(entry.data.description) ||
     getEntryExcerpt(entry, 160) ||

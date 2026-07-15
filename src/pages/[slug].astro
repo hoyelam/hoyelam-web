@@ -1,12 +1,12 @@
 ---
 import { render } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { getPages, getPosts } from "../lib/content";
+import RelatedPosts from "@components/RelatedPosts.astro";
+import { getPages, getPosts, getRelatedPosts } from "../lib/content";
 import {
   DEFAULT_SOCIAL_IMAGE,
   DEFAULT_SOCIAL_IMAGE_HEIGHT,
   DEFAULT_SOCIAL_IMAGE_WIDTH,
-  getEntryExcerpt,
   getEntryImage,
   getEntryImageAlt,
   getSeoDescription,
@@ -22,25 +22,22 @@ export async function getStaticPaths() {
   return [
     ...posts.map((entry) => ({
       params: { slug: entry.id },
-      props: { entry, kind: "post" },
+      props: { entry, kind: "post", relatedPosts: getRelatedPosts(entry, posts) },
     })),
     ...pages
-      .filter((entry) => entry.id !== "home")
+      .filter((entry) => entry.id !== "home" && entry.id !== "kin-yee")
       .map((entry) => ({
         params: { slug: entry.id },
-        props: { entry, kind: "page" },
+        props: { entry, kind: "page", relatedPosts: [] },
       })),
   ];
 }
 
-const { entry, kind } = Astro.props;
+const { entry, kind, relatedPosts = [] } = Astro.props;
 const { Content } = await render(entry);
 const title = entry.data.title;
 const seoTitle = entry.data.seoTitle || title;
-const description =
-  kind === "post"
-    ? getEntryExcerpt(entry, 160) || getSeoDescription(entry)
-    : getSeoDescription(entry);
+const description = getSeoDescription(entry);
 const image = getEntryImage(entry);
 const imageAlt = getEntryImageAlt(entry);
 const canonical = new URL(`/${entry.id}/`, Astro.site).toString();
@@ -148,5 +145,6 @@ const structuredData =
     <article class="article-content">
       <Content />
     </article>
+    {kind === "post" ? <RelatedPosts posts={relatedPosts} /> : null}
   </main>
 </BaseLayout>

@@ -5,7 +5,7 @@ import { projects } from "../data/projects";
 import { getPosts } from "../lib/content";
 import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
 
-const posts = (await getPosts()).slice(0, 6);
+const posts = (await getPosts()).filter((post) => post.data.featured).slice(0, 6);
 const currentProjects = projects.filter((project) => project.status === "Current");
 const personId = new URL("/#person", Astro.site).toString();
 const homeUrl = new URL("/", Astro.site).toString();
@@ -56,12 +56,15 @@ const structuredData = [
         class="hero-avatar"
         src="/images/hoye-lam-x-avatar.jpg"
         alt="Hoye Lam"
+        width="400"
+        height="400"
+        decoding="async"
       />
       <h1>Hoye Lam</h1>
       <p class="hero-copy">
-        I build useful software and write what I actually think. By day, I’m a Senior Software Engineer at{" "}
-        <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a> specializing in iOS and
-        macOS. Outside work, I build{" "}
+        I build useful software and write what I actually think. By day, I’m a senior software engineer at{" "}
+        <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a> who specializes in software
+        for Apple platforms. Outside work, I build{" "}
         <a href="https://loudscript.app/" target="_blank" rel="noreferrer">LoudScript</a>,{" "}
         <a href="https://websave.app/" target="_blank" rel="noreferrer">Websave</a>, and{" "}
         <a href="https://thinkdrop.app/" target="_blank" rel="noreferrer">Thinkdrop 2</a>; co-founded{" "}
@@ -78,7 +81,7 @@ const structuredData = [
       posts.length ? (
         <section class="section">
           <div class="section-heading">
-            <h2>Recent Writing</h2>
+            <h2>Selected writing</h2>
             <a class="muted" href="/writing/">Archive</a>
           </div>
           <PostList posts={posts} />

@@ -1,11 +1,20 @@
 ---
 title: "How to classify an image through ML on iOS"
-description: "Using Machine Learning to classify images within iOS Swift"
+seoTitle: "How to Classify Images With Core ML on iOS"
+description: "Learn how to classify photos in an iOS app using Core ML, MobileNetV2, an image picker, and a small Swift image-classification service."
+featured: true
+relatedPosts:
+  [
+    "how-to-start-with-a-microapps-architecture-on-ios",
+    "how-to-display-the-users-current-location-on-ios",
+    "async-await-in-swift",
+  ]
 publishedAt: "2022-09-15T17:42:46.000Z"
 updatedAt: "2024-11-03T18:21:04.000Z"
 coverImage: "/images/imported/2022/09/CleanShot-2022-09-15-at-19.43.50-2x-046d4e30c5.png"
 legacyUrl: "https://hoyelam.com/how-to-perform-image-classification-on-ios/"
 ---
+
 Let’s say we want to build an app or feature that imports a photo and then classifies what the image is. For example, if we import an image of a dog, the app should recognize that it is a dog.
 
 How can we do that within iOS?
@@ -25,11 +34,11 @@ There are several models provided by Apple that we can use [here](https://develo
 
 Then let’s download this Core ML Model, and import it into our project.
 
-![](/images/imported/2022/09/CleanShot-2022-09-15-at-18.58.32-2x-9827e1ea8f.png)
+![Downloading the MobileNetV2 Core ML model from Apple](/images/imported/2022/09/CleanShot-2022-09-15-at-18.58.32-2x-9827e1ea8f.png)
 
 Clicking on the ML Model within Xcode also displays relevant information for the trained model.
 
-![](/images/imported/2022/09/CleanShot-2022-09-15-at-18.58.55-2x-ab9b9b67ad.png)
+![MobileNetV2 model details displayed in Xcode](/images/imported/2022/09/CleanShot-2022-09-15-at-18.58.55-2x-ab9b9b67ad.png)
 
 To make use of this ML, Apple provides an API called [Vision](https://developer.apple.com/documentation/vision). Vision contains algorithms that perform tasks on images and video. To do that we need to define a request that is based on [`VNCoreMLRequest`](https://developer.apple.com/documentation/vision/vncoremlrequest)
 
@@ -48,15 +57,15 @@ Now let’s implement that service and also the `VNCoreMLRequest`.
 
 ```swift
 final class ClassificationService: ClassificationServiceProviding {
-    
+
     @Published private var classifications: String = ""
     var classificationsResultPub: Published<String>.Publisher { $classifications }
-    
+
     /// - Tag: MLModelSetup
     lazy var classificationRequest: `VNCoreMLRequest` = {
         do {
             let model = try VNCoreMLModel(for: MobileNetV2(configuration: MLModelConfiguration()).model)
-            
+
             let request = VNCoreMLRequest(model: model, completionHandler: { [weak self] request, error in
                 self?.processClassifications(for: request, error: error)
             })
@@ -66,21 +75,21 @@ final class ClassificationService: ClassificationServiceProviding {
             fatalError("Failed to load Vision ML model: \(error)")
         }
     }()
-    
-    
+
+
     // MARK: - Image Classification
-    
+
     /// - Tag: PerformRequests
     func updateClassifications(for image: UIImage) {
         let orientation = CGImagePropertyOrientation(image.imageOrientation)
         guard let ciImage = CIImage(image: image) else { fatalError("Unable to create \(CIImage.self) from \(image).") }
-        
+
         /// Clear old classifications
         self.classifications = ""
-        
+
         DispatchQueue.global(qos: .userInitiated).async {
             let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation)
-            
+
             do {
                 try handler.perform([self.classificationRequest])
             } catch {
@@ -88,7 +97,7 @@ final class ClassificationService: ClassificationServiceProviding {
             }
         }
     }
-    
+
     /// Updates the variable with the results of the classification.
     /// - Tag: ProcessClassifications
     private func processClassifications(for request: VNRequest, error: Error?) {
@@ -98,7 +107,7 @@ final class ClassificationService: ClassificationServiceProviding {
             }
             // The `results` will always be `VNClassificationObservation`s, as specified by the Core ML model in this project.
             let classifications = results as! [VNClassificationObservation]
-            
+
             if classifications.isEmpty {
                 // do nothing
             } else {
@@ -108,7 +117,7 @@ final class ClassificationService: ClassificationServiceProviding {
                     // Formats the classification for display; e.g. "(0.37) cliff, drop, drop-off".
                     return String(format: "(%.2f) %@\n", classification.confidence, classification.identifier)
                 }
-                
+
                 self.classifications = descriptions.joined(separator: " ")
             }
         }
@@ -133,7 +142,7 @@ extension CGImagePropertyOrientation {
      Converts a `UIImageOrientation` to a corresponding
      `CGImagePropertyOrientation`. The cases for each
      orientation are represented by different raw values.
-     
+
      - Tag: ConvertOrientation
      */
     init(_ orientation: UIImage.Orientation) {
@@ -157,7 +166,7 @@ The Image Request handler then performs the algorithm which is our ML Model that
 
 At last, `processClassifications` is then called once our `classificationRequest` is finished, and publishes the results accordingly to be displayed.
 
-* * *
+---
 
 Now that we have our service, let’s define our `ViewModel` to operate the connect the UI and service.
 
@@ -168,26 +177,26 @@ import UIKit
 @MainActor
 final class ContentViewModel: ObservableObject {
     @Published var displayImagePicker: Bool = false
-    
+
     @Published var importedImage: UIImage? = nil
-    
+
     @Published var classifications: String = ""
-    
+
     let service: ClassificationServiceProviding
-    
+
     private var subscribers: [AnyCancellable] = []
-    
+
     init(
         image: UIImage? = nil,
         service: ClassificationServiceProviding = ClassificationService()
     ) {
         self.importedImage = image
         self.service = service
-        
+
         self.subscribe()
         self.onChangeImage()
     }
-    
+
     func subscribe() {
         self.service.classificationsResultPub
             .receive(on: DispatchQueue.main)
@@ -196,7 +205,7 @@ final class ContentViewModel: ObservableObject {
             }
             .store(in: &subscribers)
     }
-    
+
     func onChangeImage() {
         guard let image = importedImage else { return }
         service.updateClassifications(for: image)
@@ -209,7 +218,7 @@ No need to explain much here, we have defined some published variables to displa
 
 Once, the UI receives/changes an imported image, we call `onChangeImage()` to start the classification process.
 
-* * *
+---
 
 Now let’s go to our SwiftUI view.
 
@@ -222,7 +231,7 @@ Let’s use that article’s `ImagePicker` and build the following SwiftUI view.
 ```swift
 struct ContentView: View {
     @StateObject var viewModel = ContentViewModel()
-    
+
     var body: some View {
         NavigationView {
             if let image = viewModel.importedImage {
@@ -235,7 +244,7 @@ struct ContentView: View {
                         .onTapGesture {
                             viewModel.displayImagePicker.toggle()
                         }
-                        
+
                     ScrollView {
                         Text(viewModel.classifications)
                             .bold()
@@ -247,7 +256,7 @@ struct ContentView: View {
                     Image(systemName: "photo.fill")
                         .imageScale(.large)
                         .foregroundColor(.accentColor)
-                    
+
                     Button {
                         viewModel.displayImagePicker.toggle()
                     } label: {
@@ -271,11 +280,11 @@ struct ContentView: View {
 }
 ```
 
-* * *
+---
 
 Let’s run the app and import an image and see what happens.
 
-![](/images/imported/2022/09/CleanShot-2022-09-15-at-19.32.11-971c1e0659.gif)
+![iOS app importing a photo and displaying Core ML classification results](/images/imported/2022/09/CleanShot-2022-09-15-at-19.32.11-971c1e0659.gif)
 
 We see the imported image on the app, and also the classification results as well.
 

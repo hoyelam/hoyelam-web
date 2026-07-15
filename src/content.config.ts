@@ -17,6 +17,7 @@ const posts = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
   schema: contentBase.extend({
     featured: z.boolean().default(false),
+    relatedPosts: z.array(z.string()).default([]),
   }),
 });
 

@@ -1,0 +1,28 @@
+---
+import PostList from "@components/PostList.astro";
+
+type Post = {
+  id: string;
+  body?: string;
+  data: {
+    title: string;
+    description?: string;
+    publishedAt?: Date;
+  };
+};
+
+type Props = {
+  posts: Post[];
+};
+
+const { posts } = Astro.props;
+---
+
+{
+  posts.length ? (
+    <section class="related-writing" aria-labelledby="related-writing-heading">
+      <h2 id="related-writing-heading">Keep reading</h2>
+      <PostList posts={posts} headingLevel="h3" />
+    </section>
+  ) : null
+}

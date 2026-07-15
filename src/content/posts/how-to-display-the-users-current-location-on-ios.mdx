@@ -1,11 +1,20 @@
 ---
 title: "How to display the user’s current location on iOS"
-description: "Get current location of your user"
+seoTitle: "How to Display a User’s Current Location on iOS"
+description: "Build an iOS location flow with Core Location, SwiftUI, permission handling, published state, and a map centered on the user’s current position."
+featured: true
+relatedPosts:
+  [
+    "how-to-perform-image-classification-on-ios",
+    "how-to-tweet-within-your-ios-app-without-using-the-twitter-sdk",
+    "how-to-let-ios-speak-to-you",
+  ]
 publishedAt: "2022-08-31T18:05:47.000Z"
 updatedAt: "2022-09-01T17:41:56.000Z"
 coverImage: "/images/imported/2022/08/CleanShot-2022-08-31-at-20.04.09-2x-1-0db26988bb.png"
 legacyUrl: "https://hoyelam.com/how-to-display-the-users-current-location-on-ios/"
 ---
+
 You may want to display the user’s current location for some apps. For example, navigation apps, discover local area apps, AR apps, or a feature to log current user location.
 
 So how can we implement that?
@@ -17,13 +26,13 @@ First, we need to build the functionality to request the user to allow us to tra
 
 For this article, we focus on the second option, and thus we need to go `info.plist` and provide context for the user why this is needed.
 
-![](/images/imported/2022/08/CleanShot-2022-08-28-at-14.25.21-2x-78a50d69e1.png)
+![Location permission description configured in an iOS app Info.plist](/images/imported/2022/08/CleanShot-2022-08-28-at-14.25.21-2x-78a50d69e1.png)
 
 Then let’s build our service to be able to do the following:
 
--   Request user location permissions
--   Provide user location authorization status
--   Provide the user’s current location
+- Request user location permissions
+- Provide user location authorization status
+- Provide the user’s current location
 
 We can do that in the following implementation:
 
@@ -35,33 +44,33 @@ protocol LocationProviding {
     func startUpdatingLocation()
     var currentLocation: CLLocation? { get }
     var currentLocationPub: Published<CLLocation?>.Publisher { get }
-    
+
     var authorizationStatus: CLAuthorizationStatus? { get }
     var authorizationStatusPub: Published<CLAuthorizationStatus?>.Publisher { get }
 }
 
 final class LocationService: NSObject, LocationProviding {
-    
+
     @Published var currentLocation: CLLocation? = nil
     var currentLocationPub: Published<CLLocation?>.Publisher { $currentLocation }
-    
+
     @Published var authorizationStatus: CLAuthorizationStatus? = nil
     var authorizationStatusPub: Published<CLAuthorizationStatus?>.Publisher { $authorizationStatus }
-    
+
     private var locationManager: CLLocationManager?
-    
+
     override init() {
         super.init()
-        
+
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         self.authorizationStatus = locationManager?.authorizationStatus
     }
-    
+
     func startUpdatingLocation() {
         locationManager?.startUpdatingLocation()
     }
-    
+
     func requestPermissions() {
         locationManager?.requestWhenInUseAuthorization()
     }
@@ -81,10 +90,10 @@ extension LocationService: CLLocationManagerDelegate {
             self.currentLocation = location
         }
     }
-    
+
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         self.authorizationStatus = manager.authorizationStatus
-        
+
         switch authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
             self.startUpdatingLocation()
@@ -92,7 +101,7 @@ extension LocationService: CLLocationManagerDelegate {
             self.requestPermissions()
         }
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         // Your amazing error handling when failing to get user's location
     }
@@ -117,16 +126,16 @@ enum LocationPermissionsState {
 final class ContentViewModel: ObservableObject {
     @Published var locationStatus: LocationPermissionsState = .unknown
     @Published var region: MKCoordinateRegion? = nil
-    
+
     private var service: LocationProviding
-    
+
     private var subscribers: [AnyCancellable] = []
-    
+
     init(service: LocationProviding = LocationService()) {
         self.service = service
         subscribeToLocationPublishers()
     }
-    
+
     func subscribeToLocationPublishers() {
         // Subscribe to authorization changes
         service.authorizationStatusPub
@@ -140,7 +149,7 @@ final class ContentViewModel: ObservableObject {
                 }
             }
             .store(in: &subscribers)
-        
+
         // Subscribe to location updates
         service.currentLocationPub
             .receive(on: DispatchQueue.main)
@@ -153,17 +162,17 @@ final class ContentViewModel: ObservableObject {
                             longitudeDelta: 0.25
                         )
                     )
-                    
+
                     self?.region = region
                 }
             }
             .store(in: &subscribers)
     }
-    
+
     func onAppear() {
         service.requestPermissions()
     }
-    
+
     func onTapRequestPermissions() {
         if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
             UIApplication.shared.open(settingsUrl)
@@ -184,7 +193,7 @@ import MapKit
 
 struct ContentView: View {
     @StateObject var viewModel = ContentViewModel()
-    
+
     var body: some View {
         VStack {
             if viewModel.locationStatus == .unknown {
@@ -193,7 +202,7 @@ struct ContentView: View {
                 if let region = viewModel.region {
                     Text("I'm here!")
                         .font(.title)
-                    
+
                     Map(
                         coordinateRegion: .constant(region),
                         interactionModes: [],
@@ -210,13 +219,13 @@ struct ContentView: View {
         .onAppear(perform: viewModel.onAppear)
         .padding()
     }
-    
+
     private var noPermissionsGivenView: some View {
         VStack {
             Text("Location permissions not given")
                 .font(.title)
                 .multilineTextAlignment(.center)
-            
+
             Button {
                 viewModel.onTapRequestPermissions()
             } label: {
@@ -237,18 +246,18 @@ The view should speak for itself. The most important part is that we use the `MK
 
 Let’s run the app and test it out!
 
-![](/images/imported/2022/08/CleanShot-2022-08-31-at-19.49.25-b155e0f2ca.gif)
+![SwiftUI map following a simulated current location in the iOS Simulator](/images/imported/2022/08/CleanShot-2022-08-31-at-19.49.25-b155e0f2ca.gif)
 
 (The location is simulated by the simulator).
 
-* * *
+---
 
 So, we have learned the following:
 
--   How to request the user to give permissions for location access
--   How to implement `CLLocationManager`
--   How to receive location and authorization updates
--   How to display a map with the user’s location
+- How to request the user to give permissions for location access
+- How to implement `CLLocationManager`
+- How to receive location and authorization updates
+- How to display a map with the user’s location
 
 The full project is [here available on GitHub](https://github.com/hoyelam/CurrentLocationExample).
 

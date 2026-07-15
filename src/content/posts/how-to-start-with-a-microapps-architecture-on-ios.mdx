@@ -1,11 +1,20 @@
 ---
 title: "How to start with a Microapps architecture on iOS"
-description: "Introduction to Microapps Architecture for iOS"
+seoTitle: "Microapps Architecture on iOS: A Practical Introduction"
+description: "A practical introduction to microapps architecture on iOS: split features into independent Swift packages, integrate them cleanly, and keep the app maintainable."
+featured: true
+relatedPosts:
+  [
+    "how-to-perform-image-classification-on-ios",
+    "github-actions-to-build-and-test-ios-project-using-fastlane",
+    "async-await-in-swift",
+  ]
 publishedAt: "2022-09-04T17:34:05.000Z"
 updatedAt: "2022-09-04T17:37:15.000Z"
 coverImage: "/images/imported/2022/09/CleanShot-2022-09-04-at-19.32.49-2x-0c96ae75d4.png"
 legacyUrl: "https://hoyelam.com/how-to-start-with-a-microapps-architecture-on-ios/"
 ---
+
 Every software application architecture pattern has its pros and cons. Today, we are going to look into how to start creating a microapps architecture for your iOS apps. First, what is modular architecture?
 
 > To learn more about the Microapps architecture you can read more [here](https://increment.com/mobile/microapps-architecture/).
@@ -14,9 +23,9 @@ In short, the Microapps architecture is an app that is built by standalone modul
 
 Using the Microapps architecture improves the following:
 
--   Reusability - Smaller Packages can be re-used by any other Swift-based project
--   Modularity - Improves separation of concerns instead of one big chunk of codebase
--   Build/Compile time - Cause your codebase is separated into modules, you can build the module instead of one big codebase/project
+- Reusability - Smaller Packages can be re-used by any other Swift-based project
+- Modularity - Improves separation of concerns instead of one big chunk of codebase
+- Build/Compile time - Cause your codebase is separated into modules, you can build the module instead of one big codebase/project
 
 If you are familiar with backend development, the concept is similar to microservices.
 
@@ -24,23 +33,23 @@ To understand it better, let’s start creating an empty project. The aim of thi
 
 First, let’s start by adding a new directory in our project workspace called `Packages`.
 
-![](/images/imported/2022/09/CleanShot-2022-09-04-at-12.41.17-2x-db73764bac.png)
+![Packages directory inside an Xcode project workspace](/images/imported/2022/09/CleanShot-2022-09-04-at-12.41.17-2x-db73764bac.png)
 
 Then let’s start creating a standalone package. The aim of this package is to handle all our API calls to get a Chuck Norris joke. We can create a new package with the shortcut `control + shift + cmd + n`. Or by going to `Xcode -> file -> package` on the Xcode menu bar.
 
-![](/images/imported/2022/09/CleanShot-2022-09-04-at-12.59.44-2x-cf850ff5aa.png)
+![Creating a standalone Swift package in Xcode](/images/imported/2022/09/CleanShot-2022-09-04-at-12.59.44-2x-cf850ff5aa.png)
 
 Then make sure you have the following:
 
--   A name is given to the standalone package
--   Add to the project you want your package to be available on
--   Make sure the Group option is directed towards the `Packages` folder we made (optional)
+- A name is given to the standalone package
+- Add to the project you want your package to be available on
+- Make sure the Group option is directed towards the `Packages` folder we made (optional)
 
 Also, if you want a separate git repository to hold your standalone package, you can also toggle the `Create Git repository on my Mac` checkbox. In this article, we leave it unchecked.
 
 Congratulations you have made your first package.
 
-* * *
+---
 
 Let’s take a look at our `Package.swift` file first of our new package.
 
@@ -75,11 +84,11 @@ let package = Package(
 
 Within a `Package.swift` we can define the following:
 
--   The name of the package
--   The products that another Swift project can execute
--   The dependencies that our package may need to have (i.e. Alamofire)
--   The targets that the compiler needs to build independently
--   The platforms that the package needs to support
+- The name of the package
+- The products that another Swift project can execute
+- The dependencies that our package may need to have (i.e. Alamofire)
+- The targets that the compiler needs to build independently
+- The platforms that the package needs to support
 
 For our package, we don’t need any dependencies, thus we can keep it empty.
 
@@ -110,7 +119,7 @@ let package = Package(
 
 > Learn more about creating a standalone swift package [here](https://developer.apple.com/documentation/xcode/creating-a-standalone-swift-package-with-xcode)
 
-* * *
+---
 
 Now that we have a better understanding of how to create packages, let’s finally add some code and logic to the package. Let’s head to our file `ChuckNorrisAPI.Swift`.
 
@@ -149,7 +158,7 @@ public struct RandomJokeResponse: Codable {
     let updatedAt: String
     let url: String
     let value: String
-    
+
     enum CodingKeys: String, CodingKey {
         case categories
         case createdAt = "created_at"
@@ -169,14 +178,14 @@ import XCTest
 @testable import ChuckNorrisAPI
 
 final class ChuckNorrisAPITests: XCTestCase {
-    
+
     func testChuckNorrisAPIReturnsJoke() async throws {
         // Given
         let apiClient = ChuckNorrisAPI()
-        
+
         // When
         let joke = try await apiClient.getChuckNorrisJoke()
-        
+
         // Then
         XCTAssertNoThrow(joke)
     }
@@ -185,15 +194,15 @@ final class ChuckNorrisAPITests: XCTestCase {
 
 To run our tests, we have to switch our target to `ChuckNorrisAPI`.
 
-![](/images/imported/2022/09/CleanShot-2022-09-04-at-15.19.19-2x-159abd517e.png)
+![Selecting the ChuckNorrisAPI package scheme in Xcode](/images/imported/2022/09/CleanShot-2022-09-04-at-15.19.19-2x-159abd517e.png)
 
 Congratulations, you have to know created a Swift package that can return a joke to another Swift project!
 
-* * *
+---
 
 Now that we have our package available and working, let’s add it to our example app project. We can do this by pressing on our App project in Xcode. Then go to section `Targets -> <TargetName> -> General -> Frameworks, Libraries, and Embedded Content`. Within that section, we can click on the plus sign and should be able to select the package. Our package is thus called `ChuckNorrisAPI`.
 
-![](/images/imported/2022/09/CleanShot-2022-09-04-at-15.28.58-2x-599456d916.png)
+![Adding the ChuckNorrisAPI Swift package to an iOS app target](/images/imported/2022/09/CleanShot-2022-09-04-at-15.28.58-2x-599456d916.png)
 
 Now we can import it anywhere we want within our App. Let’s do that within our `ContentView` SwiftUI view and build a list that displays the fetched jokes.
 
@@ -203,16 +212,16 @@ import ChuckNorrisAPI
 
 struct ContentView: View {
     @State var jokes: [String] = []
-    
+
     private let apiClient = ChuckNorrisAPI()
-    
+
     private func getJoke() {
         Task {
             let joke = try await apiClient.getChuckNorrisJoke()
             self.jokes.insert(joke, at: 0)
         }
     }
-    
+
     var body: some View {
         NavigationView {
             List(jokes, id: \.self) { joke in
@@ -225,7 +234,7 @@ struct ContentView: View {
                         self.getJoke()
                     }
                 }
-                
+
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button("Clear") {
                         self.jokes.removeAll()
@@ -239,16 +248,16 @@ struct ContentView: View {
 
 Let’s switch our target scheme back to our app and run the app.
 
-![](/images/imported/2022/09/CleanShot-2022-09-04-at-19.11.36-8ae6548e8f.gif)
+![Running the modular iOS app and loading Chuck Norris jokes](/images/imported/2022/09/CleanShot-2022-09-04-at-19.11.36-8ae6548e8f.gif)
 
 Congratulations! You have now learned how to import your standalone package within your app, and also how to use it.
 
-* * *
+---
 
 We have learned the following:
 
--   How to create a standalone Swift package
--   How to import your Swift package within another Swift project
+- How to create a standalone Swift package
+- How to import your Swift package within another Swift project
 
 If you, for example, want to change the HTTPS communication with the API, you don’t have to build and run the whole project. You can switch the target scheme to the package and only have to compile/build the relevant context.
 

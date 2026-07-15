@@ -14,9 +14,11 @@ type Post = {
 
 type Props = {
   posts: Post[];
+  headingLevel?: "h2" | "h3";
 };
 
-const { posts } = Astro.props;
+const { posts, headingLevel = "h2" } = Astro.props;
+const Heading = headingLevel;
 ---
 
 <div class="post-list">
@@ -27,7 +29,7 @@ const { posts } = Astro.props;
       return (
         <a class="post-row" href={`/${post.id}/`}>
           <div>
-            <h2>{post.data.title}</h2>
+            <Heading>{post.data.title}</Heading>
             {excerpt && <p class="muted">{excerpt}</p>}
           </div>
           <span class="post-meta">
