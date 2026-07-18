@@ -95,6 +95,7 @@ const enablePlausible = import.meta.env.PROD;
     <meta name="author" content={SITE_NAME} />
     {noindex ? <meta name="robots" content="noindex" /> : null}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preload" href="/fonts/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="canonical" href={canonical} />
     <link rel="author" href="/about/" />
     <link rel="alternate" type="application/rss+xml" href="/rss.xml" title={SITE_NAME} />
@@ -123,11 +124,18 @@ const enablePlausible = import.meta.env.PROD;
     }
   </head>
   <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
     <div class="site-shell">
       <Header pathname={Astro.url.pathname} />
       <slot />
       <footer class="site-footer">
         <span>© {new Date().getFullYear()} Hoye Lam.</span>
+        <nav class="footer-links" aria-label="Footer links">
+          <a href="/rss.xml">RSS</a>
+          <a href="https://github.com/hoyelam" target="_blank" rel="noreferrer">GitHub</a>
+          <a href="https://twitter.com/hoyelam" target="_blank" rel="noreferrer">Twitter</a>
+          <a href="https://www.instagram.com/hoyelam/" target="_blank" rel="noreferrer">Instagram</a>
+        </nav>
       </footer>
     </div>
     <script is:inline>
@@ -179,52 +187,6 @@ const enablePlausible = import.meta.env.PROD;
 
         media.addEventListener("change", () => {
           if (!storedTheme()) setTheme(systemTheme(), false);
-        });
-      })();
-    </script>
-    <script is:inline>
-      (() => {
-        const dayMs = 86400000;
-        const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        const plural = (value, unit) => `${value} ${unit}${value === 1 ? "" : "s"} ago`;
-
-        const formatRelativeDate = (value, now = new Date()) => {
-          const date = new Date(value);
-          if (Number.isNaN(date.getTime())) return "";
-
-          const dayDifference = Math.round((startOfDay(now) - startOfDay(date)) / dayMs);
-
-          if (dayDifference < 0) return "";
-          if (dayDifference === 0) return "today";
-          if (dayDifference === 1) return "yesterday";
-          if (dayDifference < 7) return plural(dayDifference, "day");
-          if (dayDifference < 30) return plural(Math.floor(dayDifference / 7), "week");
-
-          const monthDifference =
-            (now.getFullYear() - date.getFullYear()) * 12 +
-            now.getMonth() -
-            date.getMonth() -
-            (now.getDate() < date.getDate() ? 1 : 0);
-
-          if (monthDifference < 12) return plural(Math.max(1, monthDifference), "month");
-
-          const yearDifference =
-            now.getFullYear() -
-            date.getFullYear() -
-            (now.getMonth() < date.getMonth() ||
-            (now.getMonth() === date.getMonth() && now.getDate() < date.getDate())
-              ? 1
-              : 0);
-
-          return plural(Math.max(1, yearDifference), "year");
-        };
-
-        document.querySelectorAll("[data-relative-date]").forEach((element) => {
-          const value = element.getAttribute("data-relative-date");
-          if (!value) return;
-
-          const label = formatRelativeDate(value);
-          if (label) element.textContent = label;
         });
       })();
     </script>

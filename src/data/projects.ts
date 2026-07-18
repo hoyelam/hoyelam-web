@@ -1,6 +1,7 @@
 export type ProjectImage = {
   src: string;
   alt: string;
+  fit?: "contain" | "cover";
 };
 
 export type Project = {
@@ -11,6 +12,7 @@ export type Project = {
   status?: string;
   thumbnail?: string;
   thumbnailAlt?: string;
+  thumbnailFit?: "contain" | "cover";
   period?: string;
   portfolioTier?: "featured" | "past" | "archive" | "olderArchive";
   contribution?: string;
@@ -47,6 +49,7 @@ export const projects: Project[] = [
     status: "Current",
     thumbnail: "/images/projects/loudscript-mac-main-window.png",
     thumbnailAlt: "LoudScript for Mac main window",
+    thumbnailFit: "contain",
     period: "2026",
     portfolioTier: "featured",
     contribution:
@@ -61,6 +64,7 @@ export const projects: Project[] = [
     thumbnail:
       "/images/imported/2020/07/four_screens_app_demo-1-ae8d83e6cf.png",
     thumbnailAlt: "CraftCaption app screens",
+    thumbnailFit: "contain",
     period: "2025",
     portfolioTier: "archive",
   },
@@ -85,6 +89,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-2b5b2e17c5.png",
     thumbnailAlt: "Xpensemap app screens",
+    thumbnailFit: "contain",
     period: "2024",
     portfolioTier: "archive",
   },
@@ -96,6 +101,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-1-981a975174.png",
     thumbnailAlt: "Esportsfort app screens",
+    thumbnailFit: "contain",
     period: "2023",
     portfolioTier: "archive",
   },
@@ -107,6 +113,7 @@ export const projects: Project[] = [
     status: "Current",
     thumbnail: "/images/imported/2020/07/image-2-ac840d64ff.png",
     thumbnailAlt: "Websave app screens",
+    thumbnailFit: "contain",
     period: "2026",
     portfolioTier: "featured",
     contribution:
@@ -120,6 +127,7 @@ export const projects: Project[] = [
     status: "Current",
     thumbnail: "/images/imported/2020/07/image-f93ad6a01d.png",
     thumbnailAlt: "Thinkdrop 2 app screens",
+    thumbnailFit: "contain",
     period: "2024-present",
     portfolioTier: "featured",
     contribution:
@@ -161,6 +169,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/four_screens_demo-6c03f0964d.png",
     thumbnailAlt: "Growrilla app screens",
+    thumbnailFit: "contain",
     period: "2020-2021",
     portfolioTier: "past",
     contribution:
@@ -174,20 +183,24 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/Wishlists-are-great-d3970c952f.png",
     thumbnailAlt: "Kowa app screen",
+    thumbnailFit: "contain",
     period: "2020",
     portfolioTier: "archive",
     images: [
       {
         src: "/images/imported/2020/07/Wishlists-are-great-d3970c952f.png",
         alt: "Kowa wishlists screen",
+        fit: "contain",
       },
       {
         src: "/images/imported/2020/07/Kowa-introduction-a7dda944a8.png",
         alt: "Kowa introduction screen",
+        fit: "contain",
       },
       {
         src: "/images/imported/2020/07/image-15-4f765ef494.png",
         alt: "Kowa app detail screen",
+        fit: "contain",
       },
     ],
   },
@@ -199,6 +212,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-3-af44044e7c.png",
     thumbnailAlt: "Think Drop app screen",
+    thumbnailFit: "contain",
     period: "2019",
     portfolioTier: "archive",
   },
@@ -217,6 +231,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-6-4f60fb6e75.png",
     thumbnailAlt: "OnCircleCI app screen",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -228,6 +243,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-7-19dcbca55c.png",
     thumbnailAlt: "Esports Calendar app screen",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -239,6 +255,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-9-33ae324416.png",
     thumbnailAlt: "Sense Health thesis project",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -250,6 +267,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-8-63610a4d1b.png",
     thumbnailAlt: "Startup Story website",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -260,6 +278,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-10-095b221e30.png",
     thumbnailAlt: "Projectcampus app screen",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -288,6 +307,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-13-2b74c4ce5e.png",
     thumbnailAlt: "PCBuild web platform",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -298,6 +318,7 @@ export const projects: Project[] = [
     status: "Archived",
     thumbnail: "/images/imported/2020/07/image-14-3c97eaa837.png",
     thumbnailAlt: "MyWatchList Android app",
+    thumbnailFit: "contain",
     period: "Archived",
     portfolioTier: "olderArchive",
   },

@@ -6,7 +6,7 @@ import { getPosts } from "../lib/content";
 import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
 
 const posts = (await getPosts()).slice(0, 6);
-const currentProjects = projects.filter((project) => project.status === "Current");
+const currentProjects = projects.filter((project) => project.status === "Current").slice(0, 3);
 const personId = new URL("/#person", Astro.site).toString();
 const homeUrl = new URL("/", Astro.site).toString();
 const structuredData = [
@@ -50,7 +50,7 @@ const structuredData = [
 ---
 
 <BaseLayout title={HOME_SITE_TITLE} description={HOME_SITE_DESCRIPTION} structuredData={structuredData}>
-  <main>
+  <main id="main-content">
     <section class="hero">
       <img
         class="hero-avatar"
@@ -63,13 +63,10 @@ const structuredData = [
       <h1>Hoye Lam</h1>
       <p class="hero-copy">
         I build useful software and write what I actually think. By day, I’m a senior software engineer at{" "}
-        <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a> who specializes in software
-        for Apple platforms. Outside work, I build{" "}
-        <a href="https://loudscript.app/" target="_blank" rel="noreferrer">LoudScript</a>,{" "}
-        <a href="https://websave.app/" target="_blank" rel="noreferrer">Websave</a>, and{" "}
-        <a href="https://thinkdrop.app/" target="_blank" rel="noreferrer">Thinkdrop 2</a>; co-founded{" "}
-        <a href="https://waterfuze.com/" target="_blank" rel="noreferrer">Waterfuze</a>; and write candidly about
-        software, products, work, family, and ambition.
+        <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a>, specializing in software
+        for Apple platforms. Outside work, I build <strong>LoudScript</strong>, <strong>Websave</strong>, and{" "}
+        <strong>Thinkdrop 2</strong>; co-founded <strong>Waterfuze</strong>; and write candidly about software,
+        products, work, family, and ambition.
       </p>
       <div class="actions">
         <a class="button primary" href="/portfolio/">View portfolio</a>
@@ -103,6 +100,7 @@ const structuredData = [
                   <img
                     src={project.thumbnail}
                     alt={project.thumbnailAlt ?? `${project.name} preview`}
+                    data-fit={project.thumbnailFit}
                     loading="lazy"
                   />
                 ) : (

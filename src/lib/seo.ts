@@ -70,7 +70,7 @@ export function truncateText(value: string, maxLength = 160) {
 
   const truncated = text.slice(0, maxLength + 1);
   const lastSpace = truncated.lastIndexOf(" ");
-  return `${truncated.slice(0, lastSpace > 100 ? lastSpace : maxLength).trim()}...`;
+  return truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength).trim();
 }
 
 export function getEntryExcerpt(

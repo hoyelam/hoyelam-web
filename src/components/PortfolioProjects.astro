@@ -25,6 +25,7 @@ const projectPath = (project: (typeof projects)[number]) =>
               <img
                 src={project.thumbnail}
                 alt={project.thumbnailAlt ?? `${project.name} preview`}
+                data-fit={project.thumbnailFit}
                 loading="lazy"
               />
             ) : (
@@ -58,6 +59,7 @@ const projectPath = (project: (typeof projects)[number]) =>
               <img
                 src={project.thumbnail}
                 alt={project.thumbnailAlt ?? `${project.name} preview`}
+                data-fit={project.thumbnailFit}
                 loading="lazy"
               />
             ) : (
@@ -87,6 +89,7 @@ const projectPath = (project: (typeof projects)[number]) =>
               <img
                 src={project.thumbnail}
                 alt={project.thumbnailAlt ?? `${project.name} preview`}
+                data-fit={project.thumbnailFit}
                 loading="lazy"
               />
             ) : (

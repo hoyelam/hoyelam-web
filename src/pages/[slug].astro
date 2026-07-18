@@ -120,29 +120,24 @@ const structuredData =
   updatedAt={entry.data.updatedAt}
   structuredData={structuredData}
 >
-  <main class="article">
+  <main class="article" id="main-content">
     <header class="article-header">
       <h1>{title}</h1>
       {kind === "page" && description ? <p class="article-description">{description}</p> : null}
       {
         kind === "post" ? (
           <p class="post-meta">
-            <time datetime={entry.data.publishedAt?.toISOString()}>
+            <time
+              datetime={entry.data.publishedAt?.toISOString()}
+              title={formatRelativeDate(entry.data.publishedAt)}
+            >
               {formatDate(entry.data.publishedAt)}
             </time>
-            {entry.data.publishedAt ? (
-              <>
-                <span aria-hidden="true"> · </span>
-                <span data-relative-date={entry.data.publishedAt.toISOString()}>
-                  {formatRelativeDate(entry.data.publishedAt)}
-                </span>
-              </>
-            ) : null}
           </p>
         ) : null
       }
     </header>
-    <article class="article-content">
+    <article class:list={["article-content", { prose: kind === "post" }]}>
       <Content />
     </article>
     {kind === "post" ? <RelatedPosts posts={relatedPosts} /> : null}

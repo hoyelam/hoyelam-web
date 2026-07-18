@@ -16,7 +16,7 @@ const { project } = Astro.props;
 const images =
   project.images ??
   (project.thumbnail
-    ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview` }]
+    ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview`, fit: project.thumbnailFit }]
     : []);
 const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
 const structuredData = {
@@ -42,26 +42,20 @@ const structuredData = {
   imageAlt={images[0]?.alt}
   structuredData={structuredData}
 >
-  <main class="article project-detail">
+  <main class="article project-detail" id="main-content">
     <header class="article-header">
-      <a class="project-back-link" href="/portfolio/">Portfolio</a>
+      <a class="project-back-link" href="/portfolio/">← Portfolio</a>
       <h1>{project.name}</h1>
       <p class="article-description">{project.description}</p>
       <p class="post-meta">{project.period} · {project.role}</p>
     </header>
     <article class="article-content">
-      {
-        project.contribution ? (
-          <p>{project.contribution}</p>
-        ) : (
-          <p>Archived project from my earlier portfolio.</p>
-        )
-      }
+      {project.contribution ? <p>{project.contribution}</p> : null}
       {
         images.length ? (
           <div class="project-gallery">
             {images.map((image) => (
-              <img src={image.src} alt={image.alt} loading="lazy" />
+              <img src={image.src} alt={image.alt} data-fit={image.fit} loading="lazy" />
             ))}
           </div>
         ) : null

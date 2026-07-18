@@ -30,20 +30,15 @@ const Heading = headingLevel;
         <a class="post-row" href={`/${post.id}/`}>
           <div>
             <Heading>{post.data.title}</Heading>
-            {excerpt && <p class="muted">{excerpt}</p>}
+            {excerpt && <p class="post-excerpt muted">{excerpt}</p>}
           </div>
           <span class="post-meta">
-            <time datetime={post.data.publishedAt?.toISOString()}>
+            <time
+              datetime={post.data.publishedAt?.toISOString()}
+              title={formatRelativeDate(post.data.publishedAt)}
+            >
               {formatDate(post.data.publishedAt)}
             </time>
-            {post.data.publishedAt ? (
-              <>
-                <span aria-hidden="true"> · </span>
-                <span data-relative-date={post.data.publishedAt.toISOString()}>
-                  {formatRelativeDate(post.data.publishedAt)}
-                </span>
-              </>
-            ) : null}
           </span>
         </a>
       );
