@@ -1,6 +1,7 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { load } from "cheerio";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,6 +19,17 @@ function filesIn(dir) {
     .map((file) => path.join(dir, file));
 }
 
+function filesInRecursive(dir, extension) {
+  return readdirSync(dir).flatMap((file) => {
+    const fullPath = path.join(dir, file);
+    return statSync(fullPath).isDirectory()
+      ? filesInRecursive(fullPath, extension)
+      : fullPath.endsWith(extension)
+        ? [fullPath]
+        : [];
+  });
+}
+
 function frontmatterValue(frontmatter, key) {
   const match = frontmatter.match(new RegExp(`^${key}:\\s*(.+)$`, "m"));
   if (!match) return "";
@@ -28,7 +40,9 @@ function parseFile(file, kind) {
   const source = readFileSync(file, "utf8");
   const frontmatterMatch = source.match(/^---\n([\s\S]*?)\n---\n?/);
   const frontmatter = frontmatterMatch?.[1] ?? "";
-  const body = frontmatterMatch ? source.slice(frontmatterMatch[0].length) : source;
+  const body = frontmatterMatch
+    ? source.slice(frontmatterMatch[0].length)
+    : source;
   const text = body
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/!\[[^\]]*]\([^)]*\)/g, " ")
@@ -55,7 +69,9 @@ const posts = entries.filter((entry) => entry.kind === "post");
 const pages = entries.filter((entry) => entry.kind === "page");
 const missingDescriptions = entries.filter((entry) => !entry.description);
 const missingCovers = posts.filter((entry) => !entry.coverImage);
-const remoteCovers = posts.filter((entry) => /^https?:\/\//.test(entry.coverImage));
+const remoteCovers = posts.filter((entry) =>
+  /^https?:\/\//.test(entry.coverImage),
+);
 const thinPosts = posts.filter((entry) => entry.words > 0 && entry.words < 250);
 
 function printSection(title, rows, formatter = (row) => row.file) {
@@ -70,4 +86,40 @@ console.log(`Pages: ${pages.length}`);
 printSection("Missing descriptions", missingDescriptions);
 printSection("Posts missing coverImage", missingCovers);
 printSection("Posts with remote coverImage", remoteCovers);
-printSection("Potential thin posts under 250 words", thinPosts, (row) => `${row.file} (${row.words} words)`);
+printSection(
+  "Potential thin posts under 250 words",
+  thinPosts,
+  (row) => `${row.file} (${row.words} words)`,
+);
+
+const dist = path.join(root, "dist");
+if (existsSync(dist)) {
+  const renderedLocalImages = filesInRecursive(dist, ".html").flatMap(
+    (file) => {
+      const $ = load(readFileSync(file, "utf8"));
+      return $(".article-content.prose img[src^='/images/imported/']")
+        .map((_, image) => ({
+          file: path.relative(root, file),
+          src: $(image).attr("src"),
+          width: $(image).attr("width"),
+          height: $(image).attr("height"),
+        }))
+        .get();
+    },
+  );
+  const missingRenderedDimensions = renderedLocalImages.filter(
+    (image) => !image.width || !image.height,
+  );
+
+  console.log(
+    `\nRendered local post-body images: ${renderedLocalImages.length}`,
+  );
+  printSection(
+    "Rendered local post-body images missing dimensions",
+    missingRenderedDimensions,
+    (image) => `${image.file}: ${image.src}`,
+  );
+  if (missingRenderedDimensions.length) process.exitCode = 1;
+} else {
+  console.log("\nRendered image audit skipped: run npm run build first.");
+}
