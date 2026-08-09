@@ -41,6 +41,13 @@ const projectPath = (project: (typeof projects)[number]) =>
             </h3>
             <p>{project.description}</p>
             {project.contribution ? <p class="portfolio-contribution">{project.contribution}</p> : null}
+            {
+              project.feedbackProjectId ? (
+                <a class="project-feedback-link" href={`/feedback/?project=${project.feedbackProjectId}`}>
+                  Share feedback →
+                </a>
+              ) : null
+            }
           </div>
         </article>
       ))
