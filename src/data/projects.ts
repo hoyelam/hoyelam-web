@@ -15,6 +15,12 @@ export type Project = {
   thumbnailFit?: "contain" | "cover";
   period?: string;
   portfolioTier?: "featured" | "past" | "archive" | "olderArchive";
+  feedbackProjectId?:
+    | "loudscript-ios"
+    | "loudscript-mac"
+    | "spacepadx"
+    | "thinkdrop"
+    | "websave";
   contribution?: string;
   images?: ProjectImage[];
 };
@@ -52,6 +58,7 @@ export const projects: Project[] = [
     thumbnailFit: "contain",
     period: "2026",
     portfolioTier: "featured",
+    feedbackProjectId: "loudscript-mac",
     contribution:
       "Built the macOS app, product, website, and release pipeline.",
   },
@@ -116,6 +123,7 @@ export const projects: Project[] = [
     thumbnailFit: "contain",
     period: "2026",
     portfolioTier: "featured",
+    feedbackProjectId: "websave",
     contribution:
       "Built the iOS and iPadOS app for saving and archiving webpages.",
   },
@@ -130,6 +138,7 @@ export const projects: Project[] = [
     thumbnailFit: "contain",
     period: "2024-present",
     portfolioTier: "featured",
+    feedbackProjectId: "thinkdrop",
     contribution:
       "Rebuilt the thought-capture app and continue to maintain it.",
   },

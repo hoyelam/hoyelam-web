@@ -1,0 +1,174 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { feedbackProjects, feedbackStatuses } from "../../../feedback/projects.js";
+
+const apiUrl = import.meta.env.PUBLIC_FEEDBACK_API_URL ?? "";
+const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+---
+
+<BaseLayout
+  title="Product feedback"
+  description="Report bugs, suggest product ideas, and follow the public roadmap for Hoye Lam's independent software."
+>
+  <main
+    class="feedback-page"
+    id="main-content"
+    data-feedback-root
+    data-api-url={apiUrl}
+    data-turnstile-configured={turnstileSiteKey ? "true" : "false"}
+  >
+    <header class="feedback-hero">
+      <h1>Product feedback</h1>
+      <p>Report a bug, suggest an idea, or see what is being worked on.</p>
+    </header>
+
+    <section class="feedback-section feedback-submit-section" aria-labelledby="feedback-form-title">
+      <div class="feedback-section-heading">
+        <div>
+          <h2 id="feedback-form-title" data-feedback-form-title>Share feedback</h2>
+          <p>Your submission goes directly into the selected product’s private ticket tracker.</p>
+        </div>
+      </div>
+
+      <form class="feedback-form" data-feedback-form novalidate>
+        <div class="feedback-field-row">
+          <label class="feedback-field">
+            <span>Product</span>
+            <select name="project" required data-project-select>
+              {
+                feedbackProjects.map((project) => (
+                  <option
+                    value={project.id}
+                    data-aliases={project.aliases.join(",")}
+                  >
+                    {project.name}
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+
+          <label class="feedback-field">
+            <span>Feedback type</span>
+            <select name="type" required data-type-select>
+              <option value="bug">Bug report</option>
+              <option value="idea">Feature idea</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="feedback-field">
+          <span>Title</span>
+          <input
+            name="title"
+            type="text"
+            minlength="6"
+            maxlength="120"
+            autocomplete="off"
+            placeholder="Briefly describe the problem or idea"
+            required
+          />
+        </label>
+
+        <label class="feedback-field">
+          <span>Details</span>
+          <textarea
+            name="description"
+            minlength="20"
+            maxlength="5000"
+            rows="7"
+            placeholder="What happened, what did you expect, or how would this idea help?"
+            required
+          ></textarea>
+        </label>
+
+        <label class="feedback-field">
+          <span>Email <small>Optional and never shown publicly</small></span>
+          <input
+            name="email"
+            type="email"
+            maxlength="254"
+            autocomplete="email"
+            inputmode="email"
+            placeholder="you@example.com"
+          />
+        </label>
+
+        <details class="feedback-context" data-context-details>
+          <summary>App and device details</summary>
+          <div class="feedback-field-row">
+            <label class="feedback-field">
+              <span>App version</span>
+              <input name="appVersion" type="text" maxlength="100" autocomplete="off" placeholder="1.4.0" />
+            </label>
+            <label class="feedback-field">
+              <span>OS version</span>
+              <input name="osVersion" type="text" maxlength="100" autocomplete="off" placeholder="macOS 26.0" />
+            </label>
+          </div>
+        </details>
+
+        <input name="source" type="hidden" value="website" />
+        <label class="feedback-honeypot" aria-hidden="true">
+          Website
+          <input name="website" type="text" tabindex="-1" autocomplete="off" />
+        </label>
+
+        {
+          turnstileSiteKey ? (
+            <div class="cf-turnstile" data-sitekey={turnstileSiteKey} data-theme="auto"></div>
+          ) : (
+            <p class="feedback-config-note" data-config-note>
+              Submission is available after the feedback service is connected.
+            </p>
+          )
+        }
+
+        <div class="feedback-form-footer">
+          <button class="button primary feedback-submit" type="submit" data-submit-button>
+            Submit feedback
+          </button>
+          <p class="feedback-form-status" role="status" aria-live="polite" data-form-status></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="feedback-section feedback-roadmap" aria-labelledby="feedback-roadmap-title">
+      <div class="feedback-section-heading feedback-roadmap-heading">
+        <div>
+          <h2 id="feedback-roadmap-title">Public roadmap</h2>
+          <p>Approved tickets only. Private contact details and internal notes are never included.</p>
+        </div>
+        <label class="feedback-filter">
+          <span>Product</span>
+          <select data-roadmap-filter>
+            <option value="all">All products</option>
+            {feedbackProjects.map((project) => <option value={project.id}>{project.name}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <p class="feedback-board-state" role="status" aria-live="polite" data-board-state>
+        Loading public tickets…
+      </p>
+      <div class="feedback-board" data-feedback-board aria-busy="true">
+        {
+          feedbackStatuses.map((status) => (
+            <section class="feedback-column" data-status-column={status.id} aria-labelledby={`status-${status.id}`}>
+              <header class="feedback-column-header">
+                <h3 id={`status-${status.id}`}>{status.label}</h3>
+                <span data-status-count>0</span>
+              </header>
+              <div class="feedback-ticket-list" data-ticket-list></div>
+            </section>
+          ))
+        }
+      </div>
+    </section>
+  </main>
+
+  {turnstileSiteKey ? <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> : null}
+  <script>
+    import "../../scripts/feedback";
+  </script>
+</BaseLayout>
