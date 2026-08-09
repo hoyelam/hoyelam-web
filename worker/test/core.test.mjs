@@ -9,7 +9,7 @@ import {
 } from "../src/core.js";
 
 const validInput = {
-  project: "loudscript",
+  project: "loudscript-mac",
   type: "bug",
   title: "Speech stops after changing voices",
   description:
@@ -26,7 +26,16 @@ test("project aliases resolve to the allowlisted project", () => {
     resolveProject("loud-script")?.repository,
     "hoyelam/LoudScript-mac",
   );
+  assert.equal(
+    resolveProject("loudscript-ios")?.repository,
+    "Kin-yee/LoudScript",
+  );
+  assert.equal(
+    resolveProject("spacepadx-ios")?.repository,
+    "Kin-yee/spacepadx-ios",
+  );
   assert.equal(resolveProject("thinkdrop-2")?.id, "thinkdrop");
+  assert.equal(resolveProject("websnap-ios")?.id, "websave");
   assert.equal(resolveProject("unknown"), undefined);
 });
 
@@ -36,7 +45,7 @@ test("submission validation normalizes fields", () => {
     title: "  Speech\n stops  ",
   });
   assert.equal(submission.title, "Speech stops");
-  assert.equal(submission.project.id, "loudscript");
+  assert.equal(submission.project.id, "loudscript-mac");
 });
 
 test("submission validation rejects repositories outside the allowlist", () => {
@@ -60,7 +69,7 @@ test("issue body keeps contact details outside the public details section", () =
 });
 
 test("public issue output uses only the explicit public fields", () => {
-  const project = resolveProject("loudscript");
+  const project = resolveProject("loudscript-mac");
   const ticket = sanitizePublicIssue(
     {
       number: 42,

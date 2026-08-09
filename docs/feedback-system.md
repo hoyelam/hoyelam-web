@@ -26,11 +26,13 @@ New issues are private by default. The public endpoint only returns tickets carr
 
 The shared allowlist is [`feedback/projects.js`](../feedback/projects.js):
 
-| Project ID   | Ticket repository        | Worker token binding   |
-| ------------ | ------------------------ | ---------------------- |
-| `loudscript` | `hoyelam/LoudScript-mac` | `GITHUB_TOKEN_HOYELAM` |
-| `thinkdrop`  | `Kin-yee/think-drop`     | `GITHUB_TOKEN_KIN_YEE` |
-| `websave`    | `Kin-yee/WebSnap-iOS`    | `GITHUB_TOKEN_KIN_YEE` |
+| Project ID        | Ticket repository          | Worker token binding   |
+| ----------------- | -------------------------- | ---------------------- |
+| `loudscript-ios`  | `Kin-yee/LoudScript`        | `GITHUB_TOKEN_KIN_YEE` |
+| `loudscript-mac`  | `hoyelam/LoudScript-mac`   | `GITHUB_TOKEN_HOYELAM` |
+| `spacepadx`        | `Kin-yee/spacepadx-ios`    | `GITHUB_TOKEN_KIN_YEE` |
+| `thinkdrop`        | `Kin-yee/think-drop`       | `GITHUB_TOKEN_KIN_YEE` |
+| `websave`          | `Kin-yee/WebSnap-iOS`      | `GITHUB_TOKEN_KIN_YEE` |
 
 Add future products to this allowlist. Never accept a repository name from the form.
 
@@ -40,7 +42,7 @@ Apps should open the feedback page in `SFSafariViewController`, the system brows
 
 | Parameter      | Values                               | Purpose                                        |
 | -------------- | ------------------------------------ | ---------------------------------------------- |
-| `project`      | `loudscript`, `thinkdrop`, `websave` | Selects the product                            |
+| `project`      | One of the project IDs listed above | Selects the product                            |
 | `type`         | `bug`, `idea`                        | Selects the feedback type                      |
 | `source`       | Short free-form identifier           | Records where the form was opened              |
 | `app_version`  | App version/build                    | Prefills diagnostic context                    |
@@ -51,7 +53,7 @@ Apps should open the feedback page in `SFSafariViewController`, the system brows
 Example:
 
 ```text
-https://hoyelam.com/feedback/?project=loudscript&type=bug&source=loudscript-mac&app_version=1.4.0&os_version=macOS%2026.0&lock_project=1
+https://hoyelam.com/feedback/?project=loudscript-mac&type=bug&source=loudscript-mac&app_version=1.4.0&os_version=macOS%2026.0&lock_project=1
 ```
 
 Build URLs with `URLComponents`/`URLQueryItem` instead of string concatenation so values are encoded safely.

@@ -6,11 +6,25 @@
  */
 export const feedbackProjects = [
   {
-    id: "loudscript",
-    name: "LoudScript",
-    aliases: ["loudscript-mac", "loud-script"],
+    id: "loudscript-ios",
+    name: "LoudScript for iOS",
+    aliases: ["loudscript-iphone", "loudscript-ipad"],
+    repository: "Kin-yee/LoudScript",
+    tokenBinding: "GITHUB_TOKEN_KIN_YEE",
+  },
+  {
+    id: "loudscript-mac",
+    name: "LoudScript for Mac",
+    aliases: ["loudscript", "loud-script", "loudscript-macos"],
     repository: "hoyelam/LoudScript-mac",
     tokenBinding: "GITHUB_TOKEN_HOYELAM",
+  },
+  {
+    id: "spacepadx",
+    name: "SpacepadX",
+    aliases: ["spacepadx-ios", "spacepad-x"],
+    repository: "Kin-yee/spacepadx-ios",
+    tokenBinding: "GITHUB_TOKEN_KIN_YEE",
   },
   {
     id: "thinkdrop",

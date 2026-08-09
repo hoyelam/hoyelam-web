@@ -79,7 +79,7 @@ test("rejects unsafe content before creating a GitHub issue", async () => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        project: "loudscript",
+        project: "loudscript-mac",
         type: "bug",
         title: "An unsafe abusive submission",
         description:
@@ -101,11 +101,8 @@ test("rejects unsafe content before creating a GitHub issue", async () => {
 
 test("aggregates sanitized public issues from every configured repository", async () => {
   const fetchImpl = async (url) => {
-    const project = String(url).includes("LoudScript")
-      ? "LoudScript"
-      : String(url).includes("think-drop")
-        ? "Thinkdrop"
-        : "Websave";
+    const repository = String(url).match(/\/repos\/([^?]+)\/issues/)?.[1];
+    const project = repository || "Unknown";
     return Response.json([
       {
         number: project.length,
@@ -129,7 +126,7 @@ test("aggregates sanitized public issues from every configured repository", asyn
   const payload = await response.json();
 
   assert.equal(response.status, 200);
-  assert.equal(payload.tickets.length, 3);
+  assert.equal(payload.tickets.length, 5);
   assert.deepEqual(payload.unavailableProjects, []);
   assert.equal(JSON.stringify(payload).includes("private@example.com"), false);
 });

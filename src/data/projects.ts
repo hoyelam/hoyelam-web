@@ -15,7 +15,12 @@ export type Project = {
   thumbnailFit?: "contain" | "cover";
   period?: string;
   portfolioTier?: "featured" | "past" | "archive" | "olderArchive";
-  feedbackProjectId?: "loudscript" | "thinkdrop" | "websave";
+  feedbackProjectId?:
+    | "loudscript-ios"
+    | "loudscript-mac"
+    | "spacepadx"
+    | "thinkdrop"
+    | "websave";
   contribution?: string;
   images?: ProjectImage[];
 };
@@ -53,7 +58,7 @@ export const projects: Project[] = [
     thumbnailFit: "contain",
     period: "2026",
     portfolioTier: "featured",
-    feedbackProjectId: "loudscript",
+    feedbackProjectId: "loudscript-mac",
     contribution:
       "Built the macOS app, product, website, and release pipeline.",
   },
