@@ -1,12 +1,19 @@
 ---
 import PostList from "@components/PostList.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { getLocalImageDimensions } from "../../scripts/image-dimensions.mjs";
 import { projects } from "../data/projects";
 import { getPosts } from "../lib/content";
 import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
 
 const posts = (await getPosts()).slice(0, 6);
-const currentProjects = projects.filter((project) => project.status === "Current").slice(0, 3);
+const currentProjects = projects
+  .filter((project) => project.status === "Current")
+  .slice(0, 3)
+  .map((project) => ({
+    ...project,
+    thumbnailDimensions: getLocalImageDimensions(project.thumbnail),
+  }));
 const personId = new URL("/#person", Astro.site).toString();
 const homeUrl = new URL("/", Astro.site).toString();
 const structuredData = [
@@ -101,6 +108,8 @@ const structuredData = [
                     src={project.thumbnail}
                     alt={project.thumbnailAlt ?? `${project.name} preview`}
                     data-fit={project.thumbnailFit}
+                    width={project.thumbnailDimensions?.width}
+                    height={project.thumbnailDimensions?.height}
                     loading="lazy"
                   />
                 ) : (
