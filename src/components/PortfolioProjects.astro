@@ -1,13 +1,24 @@
 ---
+import { getLocalImageDimensions } from "../../scripts/image-dimensions.mjs";
 import { getProjectSlug, projects } from "../data/projects";
 
-const featured = projects.filter((project) => project.portfolioTier === "featured");
-const archive = projects.filter(
-  (project) =>
-    project.portfolioTier !== "featured" &&
-    project.portfolioTier !== "olderArchive",
-);
-const olderArchive = projects.filter((project) => project.portfolioTier === "olderArchive");
+const withThumbnailDimensions = (project: (typeof projects)[number]) => ({
+  ...project,
+  thumbnailDimensions: getLocalImageDimensions(project.thumbnail),
+});
+const featured = projects
+  .filter((project) => project.portfolioTier === "featured")
+  .map(withThumbnailDimensions);
+const archive = projects
+  .filter(
+    (project) =>
+      project.portfolioTier !== "featured" &&
+      project.portfolioTier !== "olderArchive",
+  )
+  .map(withThumbnailDimensions);
+const olderArchive = projects
+  .filter((project) => project.portfolioTier === "olderArchive")
+  .map(withThumbnailDimensions);
 
 const fallback = (name: string) => name.slice(0, 2);
 const projectPath = (project: (typeof projects)[number]) =>
@@ -26,6 +37,8 @@ const projectPath = (project: (typeof projects)[number]) =>
                 src={project.thumbnail}
                 alt={project.thumbnailAlt ?? `${project.name} preview`}
                 data-fit={project.thumbnailFit}
+                width={project.thumbnailDimensions?.width}
+                height={project.thumbnailDimensions?.height}
                 loading="lazy"
               />
             ) : (
@@ -67,6 +80,8 @@ const projectPath = (project: (typeof projects)[number]) =>
                 src={project.thumbnail}
                 alt={project.thumbnailAlt ?? `${project.name} preview`}
                 data-fit={project.thumbnailFit}
+                width={project.thumbnailDimensions?.width}
+                height={project.thumbnailDimensions?.height}
                 loading="lazy"
               />
             ) : (
@@ -97,6 +112,8 @@ const projectPath = (project: (typeof projects)[number]) =>
                 src={project.thumbnail}
                 alt={project.thumbnailAlt ?? `${project.name} preview`}
                 data-fit={project.thumbnailFit}
+                width={project.thumbnailDimensions?.width}
+                height={project.thumbnailDimensions?.height}
                 loading="lazy"
               />
             ) : (

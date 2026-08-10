@@ -97,7 +97,7 @@ if (existsSync(dist)) {
   const renderedLocalImages = filesInRecursive(dist, ".html").flatMap(
     (file) => {
       const $ = load(readFileSync(file, "utf8"));
-      return $(".article-content.prose img[src^='/images/imported/']")
+      return $("img[src^='/']")
         .map((_, image) => ({
           file: path.relative(root, file),
           src: $(image).attr("src"),
@@ -111,11 +111,9 @@ if (existsSync(dist)) {
     (image) => !image.width || !image.height,
   );
 
-  console.log(
-    `\nRendered local post-body images: ${renderedLocalImages.length}`,
-  );
+  console.log(`\nRendered local images: ${renderedLocalImages.length}`);
   printSection(
-    "Rendered local post-body images missing dimensions",
+    "Rendered local images missing dimensions",
     missingRenderedDimensions,
     (image) => `${image.file}: ${image.src}`,
   );

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { getLocalImageDimensions } from "../../../scripts/image-dimensions.mjs";
 import { getProjectSlug, projects } from "../../data/projects";
 import { SITE_NAME, toAbsoluteUrl } from "../../lib/seo";
 
@@ -14,10 +15,14 @@ export function getStaticPaths() {
 
 const { project } = Astro.props;
 const images =
-  project.images ??
-  (project.thumbnail
-    ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview`, fit: project.thumbnailFit }]
-    : []);
+  (project.images ??
+    (project.thumbnail
+      ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview`, fit: project.thumbnailFit }]
+      : []))
+    .map((image) => ({
+      ...image,
+      dimensions: getLocalImageDimensions(image.src),
+    }));
 const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
 const structuredData = {
   "@context": "https://schema.org",
@@ -40,6 +45,8 @@ const structuredData = {
   description={project.description}
   image={images[0]?.src}
   imageAlt={images[0]?.alt}
+  imageWidth={images[0]?.dimensions?.width}
+  imageHeight={images[0]?.dimensions?.height}
   structuredData={structuredData}
 >
   <main class="article project-detail" id="main-content">
@@ -55,7 +62,14 @@ const structuredData = {
         images.length ? (
           <div class="project-gallery">
             {images.map((image) => (
-              <img src={image.src} alt={image.alt} data-fit={image.fit} loading="lazy" />
+              <img
+                src={image.src}
+                alt={image.alt}
+                data-fit={image.fit}
+                width={image.dimensions?.width}
+                height={image.dimensions?.height}
+                loading="lazy"
+              />
             ))}
           </div>
         ) : null
