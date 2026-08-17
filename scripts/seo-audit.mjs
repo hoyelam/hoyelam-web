@@ -94,30 +94,43 @@ printSection(
 
 const dist = path.join(root, "dist");
 if (existsSync(dist)) {
-  const renderedLocalImages = filesInRecursive(dist, ".html").flatMap(
-    (file) => {
-      const $ = load(readFileSync(file, "utf8"));
-      return $("img[src^='/']")
-        .map((_, image) => ({
-          file: path.relative(root, file),
-          src: $(image).attr("src"),
-          width: $(image).attr("width"),
-          height: $(image).attr("height"),
-        }))
-        .get();
-    },
+  const renderedPages = filesInRecursive(dist, ".html").map((file) => {
+    const $ = load(readFileSync(file, "utf8"));
+    return { file, $ };
+  });
+  const longRenderedDescriptions = renderedPages
+    .map(({ file, $ }) => ({
+      file: path.relative(root, file),
+      description: $("meta[name='description']").attr("content")?.trim() ?? "",
+    }))
+    .filter(({ description }) => description.length > 165);
+  const renderedLocalImages = renderedPages.flatMap(({ file, $ }) =>
+    $("img[src^='/']")
+      .map((_, image) => ({
+        file: path.relative(root, file),
+        src: $(image).attr("src"),
+        width: $(image).attr("width"),
+        height: $(image).attr("height"),
+      }))
+      .get(),
   );
   const missingRenderedDimensions = renderedLocalImages.filter(
     (image) => !image.width || !image.height,
   );
 
+  printSection(
+    "Rendered meta descriptions over 165 characters",
+    longRenderedDescriptions,
+    ({ file, description }) => `${file} (${description.length} characters)`,
+  );
   console.log(`\nRendered local images: ${renderedLocalImages.length}`);
   printSection(
     "Rendered local images missing dimensions",
     missingRenderedDimensions,
     (image) => `${image.file}: ${image.src}`,
   );
-  if (missingRenderedDimensions.length) process.exitCode = 1;
+  if (longRenderedDescriptions.length || missingRenderedDimensions.length)
+    process.exitCode = 1;
 } else {
   console.log("\nRendered image audit skipped: run npm run build first.");
 }
