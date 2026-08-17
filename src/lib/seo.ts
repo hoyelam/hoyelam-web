@@ -73,6 +73,38 @@ export function truncateText(value: string, maxLength = 160) {
   return truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength).trim();
 }
 
+const META_DESCRIPTION_MAX_LENGTH = 160;
+const META_DESCRIPTION_TOLERANCE = 5;
+const META_DESCRIPTION_MIN_SENTENCE_LENGTH = 80;
+
+export function truncateMetaDescription(value: string) {
+  const text = value.trim();
+  if (text.length <= META_DESCRIPTION_MAX_LENGTH + META_DESCRIPTION_TOLERANCE) {
+    return text;
+  }
+
+  const candidate = text.slice(0, META_DESCRIPTION_MAX_LENGTH + 1);
+  const sentenceEnds = [...candidate.matchAll(/[.!?](?=\s|$)/g)];
+  const sentenceEnd = sentenceEnds.at(-1)?.index;
+
+  if (
+    sentenceEnd !== undefined &&
+    sentenceEnd + 1 >= META_DESCRIPTION_MIN_SENTENCE_LENGTH
+  ) {
+    return candidate.slice(0, sentenceEnd + 1).trim();
+  }
+
+  const ellipsis = "…";
+  const truncated = text.slice(
+    0,
+    META_DESCRIPTION_MAX_LENGTH - ellipsis.length + 1,
+  );
+  const lastSpace = truncated.lastIndexOf(" ");
+  const end =
+    lastSpace > 0 ? lastSpace : META_DESCRIPTION_MAX_LENGTH - ellipsis.length;
+  return `${truncated.slice(0, end).trim()}${ellipsis}`;
+}
+
 export function getEntryExcerpt(
   entry: Pick<EntryLike, "body">,
   maxLength = 280,
@@ -92,11 +124,12 @@ export function getSeoDescription(
   entry: EntryLike,
   fallback = DEFAULT_SITE_DESCRIPTION,
 ) {
-  return (
+  const description =
     normalizeDescription(entry.data.description) ||
     getEntryExcerpt(entry, 160) ||
-    fallback
-  );
+    fallback;
+
+  return truncateMetaDescription(description);
 }
 
 export function getEntryImage(entry: EntryLike) {
