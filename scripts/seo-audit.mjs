@@ -104,17 +104,26 @@ if (existsSync(dist)) {
       description: $("meta[name='description']").attr("content")?.trim() ?? "",
     }))
     .filter(({ description }) => description.length > 165);
-  const renderedLocalImages = renderedPages.flatMap(({ file, $ }) =>
-    $("img[src^='/']")
+  const renderedImages = renderedPages.flatMap(({ file, $ }) =>
+    $("img")
       .map((_, image) => ({
         file: path.relative(root, file),
-        src: $(image).attr("src"),
+        src: $(image).attr("src") ?? "",
+        hasAlt: $(image).attr("alt") !== undefined,
+        alt: $(image).attr("alt")?.trim() ?? "",
         width: $(image).attr("width"),
         height: $(image).attr("height"),
       }))
       .get(),
   );
-  const missingRenderedDimensions = renderedLocalImages.filter(
+  const remoteRenderedImages = renderedImages.filter((image) =>
+    /^https?:\/\//.test(image.src),
+  );
+  const missingRenderedAlt = renderedImages.filter((image) => !image.hasAlt);
+  const emptyRenderedAlt = renderedImages.filter(
+    (image) => image.hasAlt && !image.alt,
+  );
+  const missingRenderedDimensions = renderedImages.filter(
     (image) => !image.width || !image.height,
   );
 
@@ -123,13 +132,32 @@ if (existsSync(dist)) {
     longRenderedDescriptions,
     ({ file, description }) => `${file} (${description.length} characters)`,
   );
-  console.log(`\nRendered local images: ${renderedLocalImages.length}`);
+  console.log(`\nRendered images: ${renderedImages.length}`);
   printSection(
-    "Rendered local images missing dimensions",
+    "Rendered remote images",
+    remoteRenderedImages,
+    (image) => `${image.file}: ${image.src}`,
+  );
+  printSection(
+    "Rendered images missing alt attributes",
+    missingRenderedAlt,
+    (image) => `${image.file}: ${image.src}`,
+  );
+  printSection(
+    "Rendered images with empty alt text (review as decorative)",
+    emptyRenderedAlt,
+    (image) => `${image.file}: ${image.src}`,
+  );
+  printSection(
+    "Rendered images missing dimensions",
     missingRenderedDimensions,
     (image) => `${image.file}: ${image.src}`,
   );
-  if (longRenderedDescriptions.length || missingRenderedDimensions.length)
+  if (
+    longRenderedDescriptions.length ||
+    missingRenderedAlt.length ||
+    missingRenderedDimensions.length
+  )
     process.exitCode = 1;
 } else {
   console.log("\nRendered image audit skipped: run npm run build first.");
