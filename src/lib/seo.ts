@@ -11,6 +11,8 @@ export const DEFAULT_SOCIAL_IMAGE_ALT =
   "Hoye Lam, software engineer, indie app builder, and writer.";
 export const DEFAULT_SOCIAL_IMAGE_WIDTH = 1200;
 export const DEFAULT_SOCIAL_IMAGE_HEIGHT = 630;
+export const MAX_META_DESCRIPTION_LENGTH = 160;
+export const MIN_META_DESCRIPTION_LENGTH = 70;
 
 type EntryLike = {
   body?: string;
@@ -33,7 +35,6 @@ export function toAbsoluteUrl(
     ? value
     : new URL(value, site ?? SITE_URL).toString();
 }
-
 export function normalizeDescription(value?: string) {
   return value?.replace(/\s+/g, " ").trim();
 }
@@ -68,41 +69,13 @@ export function truncateText(value: string, maxLength = 160) {
   const text = value.trim();
   if (text.length <= maxLength) return text;
 
-  const truncated = text.slice(0, maxLength + 1);
+  const contentLength = Math.max(1, maxLength - 1);
+  const truncated = text.slice(0, contentLength + 1);
   const lastSpace = truncated.lastIndexOf(" ");
-  return truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength).trim();
-}
-
-const META_DESCRIPTION_MAX_LENGTH = 160;
-const META_DESCRIPTION_TOLERANCE = 5;
-const META_DESCRIPTION_MIN_SENTENCE_LENGTH = 80;
-
-export function truncateMetaDescription(value: string) {
-  const text = value.trim();
-  if (text.length <= META_DESCRIPTION_MAX_LENGTH + META_DESCRIPTION_TOLERANCE) {
-    return text;
-  }
-
-  const candidate = text.slice(0, META_DESCRIPTION_MAX_LENGTH + 1);
-  const sentenceEnds = [...candidate.matchAll(/[.!?](?=\s|$)/g)];
-  const sentenceEnd = sentenceEnds.at(-1)?.index;
-
-  if (
-    sentenceEnd !== undefined &&
-    sentenceEnd + 1 >= META_DESCRIPTION_MIN_SENTENCE_LENGTH
-  ) {
-    return candidate.slice(0, sentenceEnd + 1).trim();
-  }
-
-  const ellipsis = "…";
-  const truncated = text.slice(
-    0,
-    META_DESCRIPTION_MAX_LENGTH - ellipsis.length + 1,
-  );
-  const lastSpace = truncated.lastIndexOf(" ");
-  const end =
-    lastSpace > 0 ? lastSpace : META_DESCRIPTION_MAX_LENGTH - ellipsis.length;
-  return `${truncated.slice(0, end).trim()}${ellipsis}`;
+  const visibleText = truncated
+    .slice(0, lastSpace > 0 ? lastSpace : contentLength)
+    .trim();
+  return `${visibleText}…`;
 }
 
 export function getEntryExcerpt(
@@ -124,12 +97,30 @@ export function getSeoDescription(
   entry: EntryLike,
   fallback = DEFAULT_SITE_DESCRIPTION,
 ) {
-  const description =
-    normalizeDescription(entry.data.description) ||
-    getEntryExcerpt(entry, 160) ||
-    fallback;
+  const explicitDescription = normalizeDescription(entry.data.description);
+  const excerpt = getEntryExcerpt(entry, MAX_META_DESCRIPTION_LENGTH);
 
-  return truncateMetaDescription(description);
+  if (!explicitDescription) {
+    return excerpt || fallback;
+  }
+
+  if (explicitDescription.length >= MIN_META_DESCRIPTION_LENGTH) {
+    return truncateText(explicitDescription, MAX_META_DESCRIPTION_LENGTH);
+  }
+
+  if (!excerpt) {
+    return explicitDescription;
+  }
+
+  const normalizedExplicit = explicitDescription.toLocaleLowerCase();
+  const normalizedExcerpt = excerpt.toLocaleLowerCase();
+  const combinedDescription =
+    normalizedExcerpt.includes(normalizedExplicit) ||
+    normalizedExplicit.includes(normalizedExcerpt)
+      ? excerpt
+      : `${explicitDescription} ${excerpt}`;
+
+  return truncateText(combinedDescription, MAX_META_DESCRIPTION_LENGTH);
 }
 
 export function getEntryImage(entry: EntryLike) {

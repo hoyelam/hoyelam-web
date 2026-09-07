@@ -1,6 +1,6 @@
 ---
 title: "How to Tweet within your iOS app without using the Twitter SDK"
-description: "How to tweet within your app"
+description: "Add tweet sharing to an iOS app without the Twitter SDK, using URL schemes with a web-intent fallback when the Twitter app is unavailable."
 publishedAt: "2022-08-27T15:55:47.000Z"
 updatedAt: "2022-09-16T07:51:34.000Z"
 coverImage: "/images/imported/2022/08/CleanShot-2022-08-27-at-17.55.00-2x-1-9df32f98d4.png"
@@ -113,7 +113,7 @@ struct ContentView: View {
 
 Now let’s run it and test it on your device.
 
-![](/images/imported/2022/08/RPReplay_Final1661609793-c48ae4a8db.gif)
+![iPhone demo entering text and opening the Twitter tweet composer](/images/imported/2022/08/RPReplay_Final1661609793-c48ae4a8db.gif)
 
 Congratulations, you have just added a tweet functionality within your app!
 
@@ -176,7 +176,7 @@ final class TweetService: TweetServiceProviding {
 }
 ```
 
-![](/images/imported/2022/08/CleanShot-2022-08-27-at-17.00.33-37e3a540d6.gif)
+![iPhone demo entering a tweet and opening Twitter in the web browser](/images/imported/2022/08/CleanShot-2022-08-27-at-17.00.33-37e3a540d6.gif)
 
 Now we can also open up Twitter, even if there is no Twitter app installed.
 
