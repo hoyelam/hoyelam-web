@@ -104,6 +104,19 @@ if (existsSync(dist)) {
       description: $("meta[name='description']").attr("content")?.trim() ?? "",
     }))
     .filter(({ description }) => description.length > 165);
+  const renderedHeadingSkips = renderedPages
+    .map(({ file, $ }) => {
+      const levels = $("h1, h2, h3, h4, h5, h6")
+        .map((_, heading) => Number(heading.tagName.slice(1)))
+        .get();
+      const skips = levels
+        .slice(1)
+        .map((level, index) => ({ from: levels[index], to: level }))
+        .filter(({ from, to }) => to > from + 1);
+
+      return { file: path.relative(root, file), skips };
+    })
+    .filter(({ skips }) => skips.length);
   const renderedImages = renderedPages.flatMap(({ file, $ }) =>
     $("img")
       .map((_, image) => ({
@@ -132,6 +145,12 @@ if (existsSync(dist)) {
     longRenderedDescriptions,
     ({ file, description }) => `${file} (${description.length} characters)`,
   );
+  printSection(
+    "Rendered heading-level skips",
+    renderedHeadingSkips,
+    ({ file, skips }) =>
+      `${file}: ${skips.map(({ from, to }) => `h${from} to h${to}`).join(", ")}`,
+  );
   console.log(`\nRendered images: ${renderedImages.length}`);
   printSection(
     "Rendered remote images",
@@ -155,6 +174,7 @@ if (existsSync(dist)) {
   );
   if (
     longRenderedDescriptions.length ||
+    renderedHeadingSkips.length ||
     missingRenderedAlt.length ||
     missingRenderedDimensions.length
   )
