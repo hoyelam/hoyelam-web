@@ -1,6 +1,6 @@
 ---
 title: "Async Await in Swift"
-description: "What does it actually solve?"
+description: "Learn what Swift async/await solves, how it compares with completion handlers, and when each approach fits an iOS codebase."
 publishedAt: "2022-01-31T19:28:52.000Z"
 updatedAt: "2022-02-01T12:47:46.000Z"
 coverImage: "/images/imported/2022/01/IMG_6269-1e2cc53cc1.jpg"
@@ -8,7 +8,7 @@ legacyUrl: "https://hoyelam.com/async-await-in-swift/"
 ---
 So Async await is a new concurrency feature that has arrived for a while now, but since recently can be used for iOS 15.0 and lower. But what does Async Await exactly solve, and should you consider refactoring your codebase to make use of it.
 
-### Completion Closures Problem
+## Completion Closures Problem
 
 In Swift, we use completion closures (or handlers) to perform a code block once the first code block is completed. A completion closure could look in the form like the following:
 
@@ -60,7 +60,7 @@ displayLoadingState(.fetching)
 
 I don’t know about you, but I’m already dizzy. This code block is for most people quite unreadable at first glance. I have to read the code all over the place and doesn’t seem that structured.
 
-### How can Async Await improve this?
+## How can Async Await improve this?
 
 Using Async Await we can rewrite the entire code block above in the following way:
 
@@ -100,7 +100,7 @@ Then we actually call the `fetchJoke` function and the keyword here is `await` .
 
 Thus before `translateJoke()` it needs to wait for `fetchJoke()` and the same things happens after.  All of this makes this code block more readable compared to the use of completion closures.
 
-### Shouldn't we use completion closures anymore?
+## Shouldn't we use completion closures anymore?
 
 This is of course can be opinionated. Some still like completion handlers and some go all-in on async-await. For me, I don’t really care what you use as long it is readable for your fellow engineers and ultimately satisfies the best experience for your customers. I probably will start using async-await for the most part.
 
@@ -178,11 +178,11 @@ Task {
 
 The user probably has to wait longer for a response for the app. Especially if the app has to fetch thousands of jokes haha.
 
-### Conclusion
+## Conclusion
 
 Async-await in Swift improves readability for engineers especially for complex asynchronous code blocks. Completion closures are no longer needed, barring for some specific use-cases.
 
-### Additional reading
+## Additional reading
 
 Here are some great articles on how to comply your old code with async-await as well explaining it.
 
@@ -190,7 +190,7 @@ Here are some great articles on how to comply your old code with async-await as 
 
 [Async await in Swift explained with code examples](https://www.avanderlee.com/swift/async-await/)
 
-#### Full Xcode playground code
+### Full Xcode playground code
 
 ```swift
 import UIKit

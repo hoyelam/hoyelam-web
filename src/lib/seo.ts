@@ -11,6 +11,8 @@ export const DEFAULT_SOCIAL_IMAGE_ALT =
   "Hoye Lam, software engineer, indie app builder, and writer.";
 export const DEFAULT_SOCIAL_IMAGE_WIDTH = 1200;
 export const DEFAULT_SOCIAL_IMAGE_HEIGHT = 630;
+export const MAX_META_DESCRIPTION_LENGTH = 160;
+export const MIN_META_DESCRIPTION_LENGTH = 70;
 
 type EntryLike = {
   body?: string;
@@ -68,9 +70,13 @@ export function truncateText(value: string, maxLength = 160) {
   const text = value.trim();
   if (text.length <= maxLength) return text;
 
-  const truncated = text.slice(0, maxLength + 1);
+  const contentLength = Math.max(1, maxLength - 1);
+  const truncated = text.slice(0, contentLength + 1);
   const lastSpace = truncated.lastIndexOf(" ");
-  return truncated.slice(0, lastSpace > 0 ? lastSpace : maxLength).trim();
+  const visibleText = truncated
+    .slice(0, lastSpace > 0 ? lastSpace : contentLength)
+    .trim();
+  return `${visibleText}…`;
 }
 
 export function getEntryExcerpt(
@@ -92,11 +98,30 @@ export function getSeoDescription(
   entry: EntryLike,
   fallback = DEFAULT_SITE_DESCRIPTION,
 ) {
-  return (
-    normalizeDescription(entry.data.description) ||
-    getEntryExcerpt(entry, 160) ||
-    fallback
-  );
+  const explicitDescription = normalizeDescription(entry.data.description);
+  const excerpt = getEntryExcerpt(entry, MAX_META_DESCRIPTION_LENGTH);
+
+  if (!explicitDescription) {
+    return excerpt || fallback;
+  }
+
+  if (explicitDescription.length >= MIN_META_DESCRIPTION_LENGTH) {
+    return truncateText(explicitDescription, MAX_META_DESCRIPTION_LENGTH);
+  }
+
+  if (!excerpt) {
+    return explicitDescription;
+  }
+
+  const normalizedExplicit = explicitDescription.toLocaleLowerCase();
+  const normalizedExcerpt = excerpt.toLocaleLowerCase();
+  const combinedDescription =
+    normalizedExcerpt.includes(normalizedExplicit) ||
+    normalizedExplicit.includes(normalizedExcerpt)
+      ? excerpt
+      : `${explicitDescription} ${excerpt}`;
+
+  return truncateText(combinedDescription, MAX_META_DESCRIPTION_LENGTH);
 }
 
 export function getEntryImage(entry: EntryLike) {

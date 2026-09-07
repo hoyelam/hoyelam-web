@@ -6,7 +6,9 @@ import {
   DEFAULT_SOCIAL_IMAGE_ALT,
   DEFAULT_SOCIAL_IMAGE_HEIGHT,
   DEFAULT_SOCIAL_IMAGE_WIDTH,
+  MAX_META_DESCRIPTION_LENGTH,
   SITE_NAME,
+  truncateText,
 } from "@lib/seo";
 import "@styles/global.css";
 
@@ -41,8 +43,14 @@ const {
 } = Astro.props;
 
 const brandedTitle = `${title} - ${SITE_NAME}`;
-const pageTitle = title.includes(SITE_NAME) || brandedTitle.length > 60 ? title : brandedTitle;
-const seoDescription = description || DEFAULT_SITE_DESCRIPTION;
+const pageTitle =
+  title.includes(SITE_NAME) || brandedTitle.length > 60
+    ? truncateText(title, 60)
+    : brandedTitle;
+const seoDescription = truncateText(
+  description || DEFAULT_SITE_DESCRIPTION,
+  MAX_META_DESCRIPTION_LENGTH,
+);
 const canonical = new URL(canonicalOverride ?? Astro.url.pathname, Astro.site).toString();
 const effectiveImage = image || DEFAULT_SOCIAL_IMAGE;
 const imageUrl = effectiveImage

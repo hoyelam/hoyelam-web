@@ -19,11 +19,14 @@ const images =
     ? [{ src: project.thumbnail, alt: project.thumbnailAlt ?? `${project.name} preview`, fit: project.thumbnailFit }]
     : []);
 const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
+const metaDescription = project.contribution
+  ? `${project.description} ${project.contribution}`
+  : `${project.description} A ${project.role.toLowerCase()} project by ${SITE_NAME}, documenting the product and its purpose.`;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
   name: project.name,
-  description: project.description,
+  description: metaDescription,
   url: canonical,
   image: toAbsoluteUrl(images[0]?.src, Astro.site),
   creator: {
@@ -37,7 +40,7 @@ const structuredData = {
 
 <BaseLayout
   title={project.name}
-  description={project.description}
+  description={metaDescription}
   image={images[0]?.src}
   imageAlt={images[0]?.alt}
   structuredData={structuredData}
