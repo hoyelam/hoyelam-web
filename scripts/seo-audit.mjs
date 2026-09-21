@@ -291,6 +291,12 @@ if (!existsSync(distRoot)) {
   );
   addFindings(
     errors,
+    "Missing JSON-LD structured data",
+    indexablePages.filter((page) => page.schemaValues.length === 0),
+    (page) => page.pagePath,
+  );
+  addFindings(
+    errors,
     "Image is missing an alt attribute",
     indexablePages.filter((page) => page.missingAltCount > 0),
     (page) => `${page.pagePath} (${page.missingAltCount})`,

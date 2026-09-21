@@ -1,14 +1,32 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { SITE_NAME } from "@lib/seo";
 import { feedbackProjects, feedbackStatuses } from "../../../feedback/projects.js";
 
 const apiUrl = import.meta.env.PUBLIC_FEEDBACK_API_URL ?? "";
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
+const title = "Product feedback";
+const description =
+  "Report bugs, suggest product ideas, and follow the public roadmap for Hoye Lam's independent software.";
+const canonical = new URL("/feedback/", Astro.site).toString();
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: title,
+  description,
+  url: canonical,
+  author: {
+    "@type": "Person",
+    "@id": new URL("/#person", Astro.site).toString(),
+    name: SITE_NAME,
+  },
+};
 ---
 
 <BaseLayout
-  title="Product feedback"
-  description="Report bugs, suggest product ideas, and follow the public roadmap for Hoye Lam's independent software."
+  title={title}
+  description={description}
+  structuredData={structuredData}
 >
   <main
     class="feedback-page"

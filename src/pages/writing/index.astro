@@ -1,14 +1,32 @@
 ---
 import PostList from "@components/PostList.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
+import { SITE_NAME } from "@lib/seo";
 import { getPosts } from "../../lib/content";
 
 const posts = await getPosts();
+const title = "Writing";
+const description =
+  "Candid essays and practical notes on software, building products, work, family, ambition, and life by Hoye Lam.";
+const canonical = new URL("/writing/", Astro.site).toString();
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: title,
+  description,
+  url: canonical,
+  author: {
+    "@type": "Person",
+    "@id": new URL("/#person", Astro.site).toString(),
+    name: SITE_NAME,
+  },
+};
 ---
 
 <BaseLayout
-  title="Writing"
-  description="Candid essays and practical notes on software, building products, work, family, ambition, and life by Hoye Lam."
+  title={title}
+  description={description}
+  structuredData={structuredData}
 >
   <main class="article" id="main-content">
     <header class="article-header">
