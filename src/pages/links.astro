@@ -3,6 +3,8 @@ import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { linksDescription as description, personalLinks, projectLinks, socialLinks } from "../data/links";
 
+type Props = { noindex?: boolean };
+
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
@@ -26,7 +28,7 @@ const structuredData = {
 };
 ---
 
-<BaseLayout title="Links — Hoye Lam" description={description} structuredData={structuredData}
+<BaseLayout noindex={Astro.props.noindex} canonical="/links/" title="Links — Hoye Lam" description={description} structuredData={structuredData}
   image="/links/og.png" imageAlt="Hoye Lam — apps, writing and more, with his portrait and project logos."
   imageWidth={1200} imageHeight={630} compact>
   <main id="main-content" class="links-page">

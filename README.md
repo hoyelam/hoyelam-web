@@ -42,7 +42,10 @@ The live importer reads `https://hoyelam.com/sitemap-posts.xml` and `https://hoy
 ## Personal links page
 
 `/links/` is the public page to share in social profiles (`https://hoyelam.com/links/`).
-It uses the site's light/dark theme and social preview metadata.
+The shorter address `https://hoyelam.com/me` opens the same page and is suitable
+for social bios. Both addresses share the same layout and social preview metadata;
+`/links/` remains the canonical URL for search engines.
+It uses the site's light/dark theme.
 
 Current projects with a `Creator` or `Co-founder` role and a URL in
 `src/data/projects.ts` appear automatically. Each project's optional `links` record

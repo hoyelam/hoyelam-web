@@ -12,7 +12,9 @@ export default defineConfig({
   },
   integrations: [
     mdx(),
-    sitemap({ filter: (page) => page !== "https://hoyelam.com/kin-yee/" }),
+    sitemap({
+      filter: (page) => !["https://hoyelam.com/kin-yee/", "https://hoyelam.com/me/"].includes(page),
+    }),
   ],
   markdown: {
     processor: unified({ rehypePlugins: [rehypeImageAttributes] }),
