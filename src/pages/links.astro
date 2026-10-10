@@ -1,5 +1,5 @@
 ---
-import LinkProjectIcon from "@components/LinkProjectIcon.astro";
+import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { personalLinks, projectLinks, socialLinks } from "../data/links";
 
@@ -56,9 +56,18 @@ const structuredData = {
         {projectLinks.map((project) => (
           <li>
             <a class="project-link" href={project.href}>
-              <span class="project-link-icon" data-project={project.slug}>
-                <LinkProjectIcon slug={project.slug} />
-              </span>
+              {project.icon && (
+                <span class="project-link-icon">
+                  <Image
+                    src={project.icon}
+                    alt=""
+                    width={48}
+                    height={48}
+                    densities={[1, 2]}
+                    format="webp"
+                  />
+                </span>
+              )}
               <span class="project-link-copy">
                 <span class="link-title">{project.name}</span>
                 <span class="link-description">{project.description}</span>
@@ -145,10 +154,15 @@ const structuredData = {
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: var(--bg-strong);
-    color: var(--accent);
+    background: #fff;
+    overflow: hidden;
   }
-  .project-link-icon[data-project="loudscript"] { background: var(--text); color: var(--bg); }
+  .project-link-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
   .project-link-copy { flex: 1; min-width: 0; }
   .link-title { display: block; font-size: 1rem; font-weight: 650; line-height: 1.4; letter-spacing: -0.02em; }
   .link-description { display: block; color: var(--muted); font-size: 0.83rem; line-height: 1.5; margin-top: 0.2rem; }
