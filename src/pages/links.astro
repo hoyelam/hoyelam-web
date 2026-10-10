@@ -1,10 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { personalLinks, projectLinks, socialLinks } from "../data/links";
+import { linksDescription as description, personalLinks, projectLinks, socialLinks } from "../data/links";
 
-const description =
-  "Apps, projects, writing, and social links from Hoye Lam. Explore LoudScript, Websave, Thinkdrop, Waterfuze, and more in one place.";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
@@ -28,7 +26,9 @@ const structuredData = {
 };
 ---
 
-<BaseLayout title="Links — Hoye Lam" description={description} structuredData={structuredData} compact>
+<BaseLayout title="Links — Hoye Lam" description={description} structuredData={structuredData}
+  image="/links/og.png" imageAlt="Hoye Lam — apps, writing and more, with his portrait and project logos."
+  imageWidth={1200} imageHeight={630} compact>
   <main id="main-content" class="links-page">
     <header class="links-profile">
       <img
@@ -55,11 +55,11 @@ const structuredData = {
       <ul class="project-links">
         {projectLinks.map((project) => (
           <li>
-            <a class="project-link" href={project.href}>
+            <a class:list={["project-link", { "is-featured": project.featured }]} href={project.href}>
               {project.icon && (
                 <span class="project-link-icon">
                   <Image
-                    src={project.icon}
+                    src={project.icon.image}
                     alt=""
                     width={48}
                     height={48}
@@ -69,7 +69,10 @@ const structuredData = {
                 </span>
               )}
               <span class="project-link-copy">
-                <span class="link-title">{project.name}</span>
+                <span class="project-link-heading">
+                  <span class="link-title">{project.name}</span>
+                  {project.featured && <span class="featured-label">Featured</span>}
+                </span>
                 <span class="link-description">{project.description}</span>
               </span>
               <span class="link-arrow" aria-hidden="true">↗</span>
@@ -146,6 +149,9 @@ const structuredData = {
     min-height: 88px;
   }
   .project-link:hover, .personal-link:hover { border-color: var(--accent); color: var(--text); }
+  .project-link.is-featured { border-color: var(--accent); }
+  .project-link-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.6rem; }
+  .featured-label { color: var(--accent); font-size: 0.65rem; font-weight: 650; letter-spacing: 0.02em; }
   .project-link-icon {
     align-items: center;
     justify-content: center;

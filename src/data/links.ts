@@ -1,25 +1,10 @@
-import type { ImageMetadata } from "astro";
-import loudscriptIcon from "../assets/links/loudscript.png";
-import thinkdropIcon from "../assets/links/thinkdrop.png";
-import waterfuzeLogo from "../assets/links/waterfuze.png";
-import websaveIcon from "../assets/links/websave.png";
-import { getProjectSlug, projects } from "./projects";
+import { projects } from "./projects";
+import { getProjectLinks } from "../lib/project-links";
 
-const projectIcons: Partial<Record<string, ImageMetadata>> = {
-  loudscript: loudscriptIcon,
-  "thinkdrop-2": thinkdropIcon,
-  waterfuze: waterfuzeLogo,
-  websave: websaveIcon,
-};
+export const linksDescription =
+  "Explore Hoye Lam’s latest apps and projects, read candid thoughts on work and life, and find his social profiles—all in one place.";
 
-// Active independent projects share their names, URLs, and descriptions with the portfolio.
-export const projectLinks = projects.flatMap((project) =>
-  project.status === "Current" &&
-  ["Creator", "Co-founder"].includes(project.role) &&
-  project.href
-    ? [{ ...project, href: project.href, icon: projectIcons[getProjectSlug(project)] }]
-    : [],
-);
+export const projectLinks = getProjectLinks(projects);
 
 export const personalLinks = [
   {
