@@ -1,0 +1,192 @@
+---
+import { Image } from "astro:assets";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { linksDescription as description, personalLinks, projectLinks, socialLinks } from "../data/links";
+
+type Props = { noindex?: boolean };
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "Links — Hoye Lam",
+  description,
+  url: new URL("/links/", Astro.site).toString(),
+  about: { "@id": new URL("/#person", Astro.site).toString() },
+  mainEntity: {
+    "@type": "ItemList",
+    itemListElement: [
+      ...socialLinks,
+      ...projectLinks.map((project) => ({ title: project.name, href: project.href })),
+      ...personalLinks,
+    ].map((link, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: link.title,
+      url: new URL(link.href, Astro.site).toString(),
+    })),
+  },
+};
+---
+
+<BaseLayout noindex={Astro.props.noindex} canonical="/links/" title="Links — Hoye Lam" description={description} structuredData={structuredData}
+  image="/links/og.png" imageAlt="Hoye Lam — apps, writing and more, with his portrait and project logos."
+  imageWidth={1200} imageHeight={630} compact>
+  <main id="main-content" class="links-page">
+    <header class="links-profile">
+      <img
+        src="/images/hoye-lam-x-avatar.jpg"
+        alt="Hoye Lam"
+        width="400"
+        height="400"
+        class="links-avatar"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <h1>Hoye Lam</h1>
+      <p class="links-bio">Software engineer. Indie builder.<br />Father & husband.</p>
+      <nav class="social-links" aria-label="Find me online">
+        {socialLinks.map((link) => <a href={link.href} rel="me">{link.title}</a>)}
+      </nav>
+    </header>
+
+    <section aria-labelledby="projects-heading" class="links-section">
+      <div class="links-section-heading">
+        <h2 id="projects-heading">What I’m building</h2>
+        <span>Apps & projects</span>
+      </div>
+      <ul class="project-links">
+        {projectLinks.map((project) => (
+          <li>
+            <a class:list={["project-link", { "is-featured": project.featured }]} href={project.href}>
+              {project.icon && (
+                <span class="project-link-icon">
+                  <Image
+                    src={project.icon.image}
+                    alt=""
+                    width={48}
+                    height={48}
+                    densities={[1, 2]}
+                    format="webp"
+                  />
+                </span>
+              )}
+              <span class="project-link-copy">
+                <span class="project-link-heading">
+                  <span class="link-title">{project.name}</span>
+                  {project.featured && <span class="featured-label">Featured</span>}
+                </span>
+                <span class="link-description">{project.description}</span>
+              </span>
+              <span class="link-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-labelledby="personal-heading" class="links-section">
+      <div class="links-section-heading">
+        <h2 id="personal-heading">A little more about me</h2>
+      </div>
+      <ul class="personal-links">
+        {personalLinks.map((link) => (
+          <li>
+            <a class="personal-link" href={link.href}>
+              <span class="link-title">{link.title}<span class="link-arrow" aria-hidden="true">→</span></span>
+              <span class="link-description">{link.description}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .links-page { padding: 1rem 0 2.5rem; }
+  .links-profile { text-align: center; padding: 0.5rem 0 2rem; }
+  .links-avatar {
+    display: block;
+    width: 88px;
+    height: 88px;
+    object-fit: cover;
+    border: 4px solid var(--surface);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+  }
+  h1 { margin: 0; font-size: clamp(2rem, 6vw, 2.5rem); letter-spacing: -0.05em; line-height: 1.15; }
+  .links-bio { color: var(--muted); margin: 0.7rem 0 0.85rem; font-size: 0.98rem; line-height: 1.6; }
+  .social-links { display: flex; flex-wrap: wrap; gap: 0.25rem; justify-content: center; }
+  .social-links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0.4rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .social-links a:hover { background: var(--surface); }
+  .links-section + .links-section { margin-top: 2rem; }
+  .links-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; margin-bottom: 0.8rem; }
+  h2 { margin: 0; font-size: 0.95rem; font-weight: 650; letter-spacing: -0.02em; }
+  .links-section-heading > span { color: var(--muted); font-size: 0.75rem; white-space: nowrap; }
+  ul { list-style: none; padding: 0; margin: 0; }
+  .project-links { display: grid; gap: 0.7rem; }
+  .project-link, .personal-link {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .project-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    min-height: 88px;
+  }
+  .project-link:hover, .personal-link:hover { border-color: var(--accent); color: var(--text); }
+  .project-link.is-featured { border-color: var(--accent); }
+  .project-link-heading { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem 0.6rem; }
+  .featured-label { color: var(--accent); font-size: 0.65rem; font-weight: 650; letter-spacing: 0.02em; }
+  .project-link-icon {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .project-link-icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  .project-link-copy { flex: 1; min-width: 0; }
+  .link-title { display: block; font-size: 1rem; font-weight: 650; line-height: 1.4; letter-spacing: -0.02em; }
+  .link-description { display: block; color: var(--muted); font-size: 0.83rem; line-height: 1.5; margin-top: 0.2rem; }
+  .link-arrow { flex-shrink: 0; color: var(--muted); font-size: 1.2rem; font-weight: 400; }
+  .personal-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.7rem; }
+  .personal-link { display: block; height: 100%; padding: 1rem; }
+  .personal-link .link-title { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  @media (prefers-reduced-motion: no-preference) {
+    .project-link, .personal-link { transition: border-color 160ms ease, transform 160ms ease; }
+    .project-link:hover, .personal-link:hover { transform: translateY(-2px); }
+    .project-link:active, .personal-link:active { transform: translateY(0); }
+  }
+  @media (max-width: 400px) {
+    .project-link { gap: 0.75rem; padding: 0.85rem; }
+    .project-link-icon { width: 42px; height: 42px; }
+    .links-section-heading > span { display: none; }
+    .personal-links { grid-template-columns: 1fr; }
+  }
+</style>

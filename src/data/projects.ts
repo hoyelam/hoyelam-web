@@ -1,3 +1,5 @@
+import { linkIcons, type LinkIcon } from "./link-icons";
+
 export type ProjectImage = {
   src: string;
   alt: string;
@@ -23,6 +25,11 @@ export type Project = {
     | "websave";
   contribution?: string;
   images?: ProjectImage[];
+  links?: {
+    icon?: LinkIcon;
+    order?: number;
+    featured?: boolean;
+  };
 };
 
 export function getProjectSlug(project: Pick<Project, "name">) {
@@ -48,6 +55,7 @@ export const projects: Project[] = [
   },
   {
     name: "LoudScript",
+    links: { icon: linkIcons.loudscript, order: 10, featured: true },
     role: "Creator",
     description:
       "Mac text-to-speech with selected text, screenshot OCR, and natural voices.",
@@ -77,6 +85,7 @@ export const projects: Project[] = [
   },
   {
     name: "Waterfuze",
+    links: { icon: linkIcons.waterfuze, order: 40 },
     role: "Co-founder",
     description: "Helping athletes improve hydration through supplements.",
     href: "https://waterfuze.com/",
@@ -114,6 +123,7 @@ export const projects: Project[] = [
   },
   {
     name: "Websave",
+    links: { icon: linkIcons.websave, order: 20 },
     role: "Creator",
     description: "Save and archive webpages on iOS and iPadOS.",
     href: "https://websave.app/",
@@ -129,6 +139,7 @@ export const projects: Project[] = [
   },
   {
     name: "Thinkdrop 2",
+    links: { icon: linkIcons.thinkdrop, order: 30 },
     role: "Creator",
     description: "Unload thoughts and revisit them later.",
     href: "https://thinkdrop.app/",

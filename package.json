@@ -10,7 +10,8 @@
     "import:ghost": "node scripts/import-ghost.mjs",
     "import:live": "node scripts/import-live-ghost.mjs",
     "seo:audit": "npm run build && node scripts/seo-audit.mjs",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test": "node --experimental-strip-types --test tests/*.test.ts"
   },
   "dependencies": {
     "@astrojs/mdx": "^7.0.0",
@@ -19,6 +20,7 @@
     "astro": "^7.0.3",
     "cheerio": "^1.0.0",
     "image-size": "^2.0.2",
+    "sharp": "^0.34.5",
     "turndown": "^7.2.0"
   },
   "devDependencies": {
