@@ -1,9 +1,10 @@
 ---
 type Props = {
   pathname: string;
+  compact?: boolean;
 };
 
-const { pathname } = Astro.props;
+const { pathname, compact = false } = Astro.props;
 
 const navItems = [
   { href: "/", label: "Home" },
@@ -19,13 +20,13 @@ function isCurrent(href: string) {
 }
 ---
 
-<header class="site-header">
+<header class:list={["site-header", { "site-header-compact": compact }]}>
   <a class="brand" href="/">
     <span class="brand-mark">HL</span>
-    <span>Hoye Lam</span>
+    <span>{compact ? "hoyelam.com" : "Hoye Lam"}</span>
   </a>
   <div class="header-actions">
-    <nav class="nav" aria-label="Main navigation">
+    {!compact && <nav class="nav" aria-label="Main navigation">
       {
         navItems.map((item) => (
           <a href={item.href} aria-current={isCurrent(item.href) ? "page" : undefined}>
@@ -33,7 +34,7 @@ function isCurrent(href: string) {
           </a>
         ))
       }
-    </nav>
+    </nav>}
     <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme">
       <svg
         class="theme-icon theme-icon-sun"
@@ -70,3 +71,19 @@ function isCurrent(href: string) {
     </button>
   </div>
 </header>
+
+<style>
+  .site-header-compact {
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+
+  .site-header-compact .header-actions {
+    width: auto;
+  }
+
+  .site-header-compact .theme-toggle {
+    height: 2.75rem;
+    width: 2.75rem;
+  }
+</style>
