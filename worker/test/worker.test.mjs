@@ -32,6 +32,47 @@ test("rejects browser requests from unknown origins", async () => {
   assert.equal(response.status, 403);
 });
 
+test("CORS headers depend on the request origin", async () => {
+  const cases = [
+    { origin: undefined, status: 204, allowOrigin: null },
+    {
+      origin: "https://hoyelam.com",
+      status: 204,
+      allowOrigin: "https://hoyelam.com",
+    },
+    { origin: "https://attacker.example", status: 403, allowOrigin: null },
+  ];
+
+  for (const { origin, status, allowOrigin } of cases) {
+    for (const method of ["OPTIONS", "GET"]) {
+      const response = await handleRequest(
+        new Request("https://feedback.example/health", {
+          method,
+          headers: origin ? { Origin: origin } : {},
+        }),
+        env,
+        undefined,
+        {
+          fetchImpl: async () => assert.fail("fetch should not run"),
+          cache: null,
+        },
+      );
+      const expectedStatus = method === "GET" && status === 204 ? 200 : status;
+      assert.equal(response.status, expectedStatus, `${method} ${origin}`);
+      assert.equal(
+        response.headers.get("Access-Control-Allow-Origin"),
+        allowOrigin,
+        `${method} ${origin}`,
+      );
+      assert.equal(
+        response.headers.get("Vary"),
+        "Origin",
+        `${method} ${origin}`,
+      );
+    }
+  }
+});
+
 test("routes a submission to the allowlisted repository", async () => {
   const calls = [];
   const fetchImpl = async (url, init) => {
