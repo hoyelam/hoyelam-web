@@ -94,7 +94,6 @@ const enablePlausible = import.meta.env.PROD;
         const theme = stored === "light" || stored === "dark" ? stored : systemTheme;
 
         root.dataset.theme = theme;
-        root.style.colorScheme = theme;
       })();
     </script>
     <title>{pageTitle}</title>
@@ -164,7 +163,6 @@ const enablePlausible = import.meta.env.PROD;
         const systemTheme = () => (media.matches ? "dark" : "light");
 
         const updateToggle = (theme) => {
-          if (!toggle) return;
           const nextTheme = theme === "dark" ? "light" : "dark";
           const label = `Switch to ${nextTheme} mode`;
           toggle.setAttribute("aria-label", label);
@@ -173,7 +171,6 @@ const enablePlausible = import.meta.env.PROD;
 
         const setTheme = (theme, persist = true) => {
           root.dataset.theme = theme;
-          root.style.colorScheme = theme;
 
           if (persist) {
             try {
@@ -186,11 +183,10 @@ const enablePlausible = import.meta.env.PROD;
           updateToggle(theme);
         };
 
-        updateToggle(root.dataset.theme || systemTheme());
+        updateToggle(root.dataset.theme);
 
-        toggle?.addEventListener("click", () => {
-          const currentTheme = root.dataset.theme || systemTheme();
-          setTheme(currentTheme === "dark" ? "light" : "dark");
+        toggle.addEventListener("click", () => {
+          setTheme(root.dataset.theme === "dark" ? "light" : "dark");
         });
 
         media.addEventListener("change", () => {
