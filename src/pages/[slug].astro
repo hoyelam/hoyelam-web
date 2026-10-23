@@ -13,7 +13,7 @@ import {
   SITE_NAME,
   toAbsoluteUrl,
 } from "../lib/seo";
-import { formatDate, formatRelativeDate } from "../lib/tags";
+import { formatDate, formatRelativeDate } from "@lib/dates";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -52,8 +52,8 @@ const structuredData =
         description,
         url: canonical,
         mainEntityOfPage: canonical,
-        datePublished: entry.data.publishedAt?.toISOString(),
-        dateModified: (entry.data.updatedAt || entry.data.publishedAt)?.toISOString(),
+        datePublished: entry.data.publishedAt.toISOString(),
+        dateModified: (entry.data.updatedAt ?? entry.data.publishedAt).toISOString(),
         image: absoluteImage,
         author: {
           "@type": "Person",
@@ -69,7 +69,7 @@ const structuredData =
           name: seoTitle,
           description,
           url: canonical,
-          dateCreated: entry.data.publishedAt?.toISOString(),
+          dateCreated: entry.data.publishedAt.toISOString(),
           dateModified: entry.data.updatedAt?.toISOString(),
           mainEntity: {
             "@type": "Person",
@@ -126,7 +126,7 @@ const structuredData =
         kind === "post" ? (
           <p class="post-meta">
             <time
-              datetime={entry.data.publishedAt?.toISOString()}
+              datetime={entry.data.publishedAt.toISOString()}
               title={formatRelativeDate(entry.data.publishedAt)}
             >
               {formatDate(entry.data.publishedAt)}

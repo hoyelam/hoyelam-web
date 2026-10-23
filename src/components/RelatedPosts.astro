@@ -1,18 +1,9 @@
 ---
+import type { CollectionEntry } from "astro:content";
 import PostList from "@components/PostList.astro";
 
-type Post = {
-  id: string;
-  body?: string;
-  data: {
-    title: string;
-    description?: string;
-    publishedAt?: Date;
-  };
-};
-
 type Props = {
-  posts: Post[];
+  posts: CollectionEntry<"posts">[];
 };
 
 const { posts } = Astro.props;

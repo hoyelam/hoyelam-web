@@ -10,7 +10,7 @@ import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
 const recentCutoff = new Date();
 recentCutoff.setFullYear(recentCutoff.getFullYear() - 1);
 const posts = (await getPosts())
-  .filter((post) => post.data.publishedAt && post.data.publishedAt >= recentCutoff)
+  .filter((post) => post.data.publishedAt >= recentCutoff)
   .slice(0, 6);
 const currentProjects = projects
   .filter((project) => project.status === "Current")

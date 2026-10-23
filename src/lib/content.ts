@@ -60,8 +60,8 @@ export function getRelatedPosts(post: Post, posts: Post[], limit = 3) {
     .sort((a, b) => {
       if (b.score !== a.score) return b.score - a.score;
       return (
-        (b.candidate.data.publishedAt?.getTime() ?? 0) -
-        (a.candidate.data.publishedAt?.getTime() ?? 0)
+        b.candidate.data.publishedAt.getTime() -
+        a.candidate.data.publishedAt.getTime()
       );
     });
 
@@ -74,11 +74,9 @@ export function getRelatedPosts(post: Post, posts: Post[], limit = 3) {
 export async function getPosts() {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
 
-  return posts.sort((a, b) => {
-    const aTime = a.data.publishedAt?.getTime() ?? 0;
-    const bTime = b.data.publishedAt?.getTime() ?? 0;
-    return bTime - aTime;
-  });
+  return posts.sort(
+    (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime(),
+  );
 }
 
 export async function getPages() {

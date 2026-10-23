@@ -6,7 +6,7 @@ const contentBase = z.object({
   title: z.string(),
   seoTitle: z.string().optional(),
   description: z.string().optional(),
-  publishedAt: z.coerce.date().optional(),
+  publishedAt: z.coerce.date(),
   updatedAt: z.coerce.date().optional(),
   coverImage: z.string().optional(),
   draft: z.boolean().default(false),
