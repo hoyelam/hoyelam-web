@@ -1,6 +1,4 @@
-export function formatDate(value?: Date) {
-  if (!value) return "";
-
+export function formatDate(value: Date) {
   return new Intl.DateTimeFormat("en", {
     year: "numeric",
     month: "long",
@@ -16,9 +14,7 @@ function plural(value: number, unit: string) {
   return `${value} ${unit}${value === 1 ? "" : "s"} ago`;
 }
 
-export function formatRelativeDate(value?: Date, now = new Date()) {
-  if (!value) return "";
-
+export function formatRelativeDate(value: Date, now = new Date()) {
   const dayDifference = Math.round(
     (startOfDay(now).getTime() - startOfDay(value).getTime()) / 86_400_000,
   );

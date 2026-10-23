@@ -1,19 +1,10 @@
 ---
-import { formatDate, formatRelativeDate } from "@lib/tags";
+import type { CollectionEntry } from "astro:content";
+import { formatDate, formatRelativeDate } from "@lib/dates";
 import { getEntryExcerpt } from "@lib/seo";
 
-type Post = {
-  id: string;
-  body?: string;
-  data: {
-    title: string;
-    description?: string;
-    publishedAt?: Date;
-  };
-};
-
 type Props = {
-  posts: Post[];
+  posts: CollectionEntry<"posts">[];
   headingLevel?: "h2" | "h3";
 };
 
@@ -34,7 +25,7 @@ const Heading = headingLevel;
           </div>
           <span class="post-meta">
             <time
-              datetime={post.data.publishedAt?.toISOString()}
+              datetime={post.data.publishedAt.toISOString()}
               title={formatRelativeDate(post.data.publishedAt)}
             >
               {formatDate(post.data.publishedAt)}
