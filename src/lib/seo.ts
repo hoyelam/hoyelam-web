@@ -1,14 +1,14 @@
 export const SITE_NAME = "Hoye Lam";
 export const SITE_URL = "https://hoyelam.com";
 export const HOME_SITE_TITLE =
-  "Hoye Lam — iOS Engineer, Indie App Builder & Writer";
+  "Hoye Lam | iOS and macOS engineer and indie app builder";
 export const DEFAULT_SITE_DESCRIPTION =
-  "Useful software and candid writing about building, work, and life by Hoye Lam.";
+  "Apps and writing by Hoye Lam, a senior iOS and macOS engineer at DeepL.";
 export const HOME_SITE_DESCRIPTION =
-  "I’m Hoye Lam, a senior software engineer at DeepL specializing in software for Apple platforms. I build useful indie apps and write candidly about work and life.";
+  "I’m Hoye Lam, a senior iOS and macOS engineer at DeepL. On the side I build my own apps and write about software, work, and life.";
 export const DEFAULT_SOCIAL_IMAGE = "/images/hoye-lam-og.png";
 export const DEFAULT_SOCIAL_IMAGE_ALT =
-  "Hoye Lam, software engineer, indie app builder, and writer.";
+  "Hoye Lam, senior iOS and macOS engineer. Apps, writing, and product notes.";
 export const DEFAULT_SOCIAL_IMAGE_WIDTH = 1200;
 export const DEFAULT_SOCIAL_IMAGE_HEIGHT = 630;
 export const MAX_META_DESCRIPTION_LENGTH = 160;

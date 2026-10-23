@@ -9,7 +9,7 @@ type Props = { noindex?: boolean };
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CollectionPage",
-  name: "Links — Hoye Lam",
+  name: "Links",
   description,
   url: new URL("/links/", Astro.site).toString(),
   about: { "@id": PERSON_ID },
@@ -29,8 +29,8 @@ const structuredData = {
 };
 ---
 
-<BaseLayout noindex={Astro.props.noindex} canonical="/links/" title="Links — Hoye Lam" description={description} structuredData={structuredData}
-  image="/links/og.png" imageAlt="Hoye Lam — apps, writing and more, with his portrait and project logos."
+<BaseLayout noindex={Astro.props.noindex} canonical="/links/" title="Links" description={description} structuredData={structuredData}
+  image="/links/og.png" imageAlt="Hoye Lam’s portrait and the logos of his current apps."
   imageWidth={1200} imageHeight={630} compact>
   <main id="main-content" class="links-page">
     <header class="links-profile">

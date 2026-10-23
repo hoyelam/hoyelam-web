@@ -48,8 +48,6 @@ export const projects: Project[] = [
     thumbnailAlt: "DeepL logo",
     period: "2022-present",
     portfolioTier: "featured",
-    contribution:
-      "Specialized in Apple platform development for language and translation products.",
   },
   {
     name: "LoudScript",
@@ -83,7 +81,7 @@ export const projects: Project[] = [
     name: "Waterfuze",
     links: { icon: linkIcons.waterfuze, order: 40 },
     role: "Co-founder",
-    description: "Helping athletes improve hydration through supplements.",
+    description: "Hydration supplements for athletes.",
     href: "https://waterfuze.com/",
     thumbnail: "/images/imported/2020/07/image-c16b2eeb88.png",
     thumbnailAlt: "Waterfuze product mix",
@@ -95,7 +93,7 @@ export const projects: Project[] = [
   {
     name: "Xpensemap",
     role: "Creator",
-    description: "AI receipts and invoices accountant.",
+    description: "Receipt and invoice tracking with AI.",
     href: "https://xpensemap.com/",
     thumbnail: "/images/imported/2020/07/image-2b5b2e17c5.png",
     thumbnailAlt: "Xpensemap app screens",
@@ -142,20 +140,19 @@ export const projects: Project[] = [
     portfolioTier: "featured",
     feedbackProjectId: "thinkdrop",
     contribution:
-      "Rebuilt the thought-capture app and continue to maintain it.",
+      "Rebuilt the app in 2024 and still maintain it.",
   },
   {
     name: "Somnox",
     role: "Software Lead / Project Lead",
-    description:
-      "Sleep robot company where I worked across iOS, software leadership, and product delivery.",
+    description: "Company behind the Somnox sleep robot.",
     href: "https://meetsomnox.com/",
     thumbnail: "/images/imported/2020/07/Brand-new-companion-app-01ebabef4c.jpeg",
     thumbnailAlt: "Somnox companion app",
     period: "2018-2020",
     portfolioTier: "archive",
     contribution:
-      "Previously led software work and helped ship connected sleep-tech products.",
+      "Started as a software developer, then led projects and the software team.",
     images: [
       {
         src: "/images/imported/2020/07/Brand-new-companion-app-01ebabef4c.jpeg",

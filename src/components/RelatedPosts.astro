@@ -12,7 +12,7 @@ const { posts } = Astro.props;
 {
   posts.length ? (
     <section class="related-writing" aria-labelledby="related-writing-heading">
-      <h2 id="related-writing-heading">Keep reading</h2>
+      <h2 id="related-writing-heading">Related posts</h2>
       <PostList posts={posts} headingLevel="h3" />
     </section>
   ) : null

@@ -26,7 +26,7 @@ const images =
 const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
 const metaDescription = project.contribution
   ? `${project.description} ${project.contribution}`
-  : `${project.description} A ${project.role.toLowerCase()} project by ${SITE_NAME}, documenting the product and its purpose.`;
+  : `${project.description} Role: ${project.role}.`;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
