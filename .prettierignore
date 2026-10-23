@@ -1,0 +1,7 @@
+src/content
+dist
+node_modules
+worker/node_modules
+package-lock.json
+worker/package-lock.json
+public
