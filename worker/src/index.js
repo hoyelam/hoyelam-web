@@ -82,7 +82,8 @@ async function moderateSubmission(submission, env) {
       max_tokens: 64,
       temperature: 0,
     });
-  } catch {
+  } catch (error) {
+    console.error("Moderation request failed", error);
     throw new HttpError(
       503,
       "Content safety check is temporarily unavailable.",
@@ -273,7 +274,13 @@ async function listTickets(request, env, origin, ctx, fetchImpl, cache) {
 
   results.forEach((result, index) => {
     if (result.status === "fulfilled") tickets.push(...result.value);
-    else unavailableProjects.push(projects[index].id);
+    else {
+      console.error(
+        `Listing tickets failed for ${projects[index].id}`,
+        result.reason,
+      );
+      unavailableProjects.push(projects[index].id);
+    }
   });
 
   tickets.sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
@@ -346,6 +353,7 @@ export async function handleRequest(
         origin,
       );
     }
+    console.error("Unhandled feedback request error", error);
     return jsonResponse(
       {
         error: "Feedback service is temporarily unavailable.",
