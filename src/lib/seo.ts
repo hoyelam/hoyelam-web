@@ -13,29 +13,58 @@ export const DEFAULT_SOCIAL_IMAGE_WIDTH = 1200;
 export const DEFAULT_SOCIAL_IMAGE_HEIGHT = 630;
 export const MAX_META_DESCRIPTION_LENGTH = 160;
 export const MIN_META_DESCRIPTION_LENGTH = 70;
+export const PERSON_ID = `${SITE_URL}/#person`;
+
+export const socialLinks = [
+  { title: "Instagram", href: "https://www.instagram.com/hoyelam/" },
+  { title: "X", href: "https://x.com/hoyelam" },
+  { title: "GitHub", href: "https://github.com/hoyelam" },
+  { title: "Spotify", href: "https://open.spotify.com/user/hoye140" },
+];
+
+export const personRef = {
+  "@type": "Person",
+  "@id": PERSON_ID,
+  name: SITE_NAME,
+};
+
+export function personSchema(description: string) {
+  return {
+    ...personRef,
+    alternateName: ["林浩意", "@hoyelam"],
+    description,
+    url: `${SITE_URL}/`,
+    image: `${SITE_URL}/images/hoye-lam-x-avatar.jpg`,
+    jobTitle: "Senior Software Engineer",
+    worksFor: {
+      "@type": "Organization",
+      name: "DeepL",
+      url: "https://www.deepl.com/",
+    },
+    sameAs: socialLinks.map(({ href }) => href),
+    knowsAbout: [
+      "iOS development",
+      "macOS development",
+      "Swift",
+      "indie app development",
+      "software products",
+    ],
+  };
+}
 
 type EntryLike = {
   body?: string;
-  id?: string;
   data: {
     title: string;
     description?: string;
-    coverImage?: string;
-    publishedAt?: Date;
-    updatedAt?: Date;
   };
 };
 
-export function toAbsoluteUrl(
-  value: string | undefined,
-  site: string | URL | undefined = SITE_URL,
-) {
-  if (!value) return undefined;
-  return value.startsWith("http")
-    ? value
-    : new URL(value, site ?? SITE_URL).toString();
+export function toAbsoluteUrl(value: string, site: string | URL = SITE_URL) {
+  return value.startsWith("http") ? value : new URL(value, site).toString();
 }
-export function normalizeDescription(value?: string) {
+
+function normalizeDescription(value?: string) {
   return value?.replace(/\s+/g, " ").trim();
 }
 
@@ -93,15 +122,12 @@ export function getEntryExcerpt(
   return truncateText(lines.join(" "), maxLength);
 }
 
-export function getSeoDescription(
-  entry: EntryLike,
-  fallback = DEFAULT_SITE_DESCRIPTION,
-) {
+export function getSeoDescription(entry: EntryLike) {
   const explicitDescription = normalizeDescription(entry.data.description);
   const excerpt = getEntryExcerpt(entry, MAX_META_DESCRIPTION_LENGTH);
 
   if (!explicitDescription) {
-    return excerpt || fallback;
+    return excerpt || DEFAULT_SITE_DESCRIPTION;
   }
 
   if (explicitDescription.length >= MIN_META_DESCRIPTION_LENGTH) {
@@ -121,12 +147,4 @@ export function getSeoDescription(
       : `${explicitDescription} ${excerpt}`;
 
   return truncateText(combinedDescription, MAX_META_DESCRIPTION_LENGTH);
-}
-
-export function getEntryImage(entry: EntryLike) {
-  return entry.data.coverImage || DEFAULT_SOCIAL_IMAGE;
-}
-
-export function getEntryImageAlt(entry: EntryLike) {
-  return `${entry.data.title} by ${SITE_NAME}`;
 }

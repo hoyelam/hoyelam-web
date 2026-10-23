@@ -33,7 +33,7 @@ const structuredData = {
   name: project.name,
   description: metaDescription,
   url: canonical,
-  image: toAbsoluteUrl(images[0]?.src, Astro.site),
+  image: images[0] && toAbsoluteUrl(images[0].src, Astro.site),
   creator: {
     "@type": "Person",
     name: SITE_NAME,

@@ -4,7 +4,7 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import { getLocalImageDimensions } from "../../scripts/image-dimensions.mjs";
 import { projects } from "../data/projects";
 import { getPosts } from "../lib/content";
-import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, SITE_NAME } from "../lib/seo";
+import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, PERSON_ID, personSchema, SITE_NAME } from "@lib/seo";
 
 // Static build: the daily scheduled deploy re-evaluates this cutoff.
 const recentCutoff = new Date();
@@ -19,44 +19,18 @@ const currentProjects = projects
     ...project,
     thumbnailDimensions: getLocalImageDimensions(project.thumbnail),
   }));
-const personId = new URL("/#person", Astro.site).toString();
-const homeUrl = new URL("/", Astro.site).toString();
 const structuredData = [
   {
     "@context": "https://schema.org",
-    "@type": "Person",
-    "@id": personId,
-    name: SITE_NAME,
-    alternateName: ["林浩意", "@hoyelam"],
-    description: HOME_SITE_DESCRIPTION,
-    url: homeUrl,
-    image: new URL("/images/hoye-lam-x-avatar.jpg", Astro.site).toString(),
-    jobTitle: "Senior Software Engineer",
-    worksFor: {
-      "@type": "Organization",
-      name: "DeepL",
-      url: "https://www.deepl.com/",
-    },
-    sameAs: [
-      "https://github.com/hoyelam",
-      "https://twitter.com/hoyelam",
-      "https://www.instagram.com/hoyelam/",
-    ],
-    knowsAbout: [
-      "iOS development",
-      "macOS development",
-      "Swift",
-      "indie app development",
-      "software products",
-    ],
+    ...personSchema(HOME_SITE_DESCRIPTION),
   },
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: SITE_NAME,
-    url: homeUrl,
+    url: new URL("/", Astro.site).toString(),
     description: HOME_SITE_DESCRIPTION,
-    author: { "@id": personId },
+    author: { "@id": PERSON_ID },
   },
 ];
 ---

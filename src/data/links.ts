@@ -18,10 +18,3 @@ export const personalLinks = [
     href: "/portfolio/",
   },
 ];
-
-export const socialLinks = [
-  { title: "Instagram", href: "https://www.instagram.com/hoyelam/" },
-  { title: "X", href: "https://x.com/hoyelam" },
-  { title: "GitHub", href: "https://github.com/hoyelam" },
-  { title: "Spotify", href: "https://open.spotify.com/user/hoye140" },
-];

@@ -1,7 +1,7 @@
 ---
 import PostList from "@components/PostList.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { SITE_NAME } from "@lib/seo";
+import { personRef } from "@lib/seo";
 import { getPosts } from "../../lib/content";
 
 const posts = await getPosts();
@@ -15,11 +15,7 @@ const structuredData = {
   name: title,
   description,
   url: canonical,
-  author: {
-    "@type": "Person",
-    "@id": new URL("/#person", Astro.site).toString(),
-    name: SITE_NAME,
-  },
+  author: personRef,
 };
 ---
 

@@ -1,7 +1,8 @@
 ---
 import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { linksDescription as description, personalLinks, projectLinks, socialLinks } from "../data/links";
+import { PERSON_ID, socialLinks } from "@lib/seo";
+import { linksDescription as description, personalLinks, projectLinks } from "../data/links";
 
 type Props = { noindex?: boolean };
 
@@ -11,7 +12,7 @@ const structuredData = {
   name: "Links — Hoye Lam",
   description,
   url: new URL("/links/", Astro.site).toString(),
-  about: { "@id": new URL("/#person", Astro.site).toString() },
+  about: { "@id": PERSON_ID },
   mainEntity: {
     "@type": "ItemList",
     itemListElement: [
