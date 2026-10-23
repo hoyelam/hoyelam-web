@@ -9,7 +9,6 @@ const contentBase = z.object({
   publishedAt: z.coerce.date().optional(),
   updatedAt: z.coerce.date().optional(),
   coverImage: z.string().optional(),
-  legacyUrl: z.string().optional(),
   draft: z.boolean().default(false),
 });
 
@@ -23,9 +22,7 @@ const posts = defineCollection({
 
 const pages = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/pages" }),
-  schema: contentBase.extend({
-    navigationLabel: z.string().optional(),
-  }),
+  schema: contentBase,
 });
 
 export const collections = { posts, pages };
