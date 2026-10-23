@@ -1,4 +1,5 @@
 import { feedbackProjects } from "../../feedback/projects.js";
+import { githubHeaders } from "../src/core.js";
 
 const labels = [
   {
@@ -35,17 +36,9 @@ const labels = [
   },
 ];
 
-const apiVersion = "2026-03-10";
-
 async function saveLabel(project, token, label) {
   const base = `https://api.github.com/repos/${project.repository}/labels`;
-  const headers = {
-    Accept: "application/vnd.github+json",
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "application/json",
-    "User-Agent": "hoyelam-feedback-label-setup",
-    "X-GitHub-Api-Version": apiVersion,
-  };
+  const headers = githubHeaders(token);
   const body = JSON.stringify(label);
   const created = await fetch(base, { method: "POST", headers, body });
   if (created.status === 201) return "created";
@@ -69,7 +62,7 @@ async function saveLabel(project, token, label) {
 let failed = false;
 
 for (const project of feedbackProjects) {
-  const token = process.env[project.tokenBinding] || process.env.GITHUB_TOKEN;
+  const token = process.env[project.tokenBinding];
   if (!token) {
     console.error(`${project.repository}: missing ${project.tokenBinding}`);
     failed = true;

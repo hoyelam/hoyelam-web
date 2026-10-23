@@ -1,6 +1,6 @@
 # SEO Measurement Checklist
 
-Use this after deployment and before larger content imports.
+Use this after each deployment.
 
 ## Search Console Setup
 
@@ -32,4 +32,4 @@ Prefer this order:
 2. Consolidate related short posts into a stronger topic page.
 3. Add `noindex` only when the page should remain public but not compete in search.
 
-Run `npm run seo:audit` before publishing large batches of imported content.
+Run `npm run seo:audit` before publishing several new or edited posts at once.
