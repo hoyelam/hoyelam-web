@@ -2,24 +2,20 @@ import { feedbackProjects } from "../../feedback/projects.js";
 import {
   HttpError,
   MAX_REQUEST_BYTES,
-  allowedOrigin,
   buildIssueBody,
   corsHeaders,
   githubHeaders,
   jsonResponse,
+  parseAllowedOrigins,
   resolveProject,
   sanitizePublicIssue,
   tokenForProject,
   validateSubmission,
 } from "./core.js";
 
-const DEFAULT_GITHUB_API = "https://api.github.com";
+const GITHUB_API = "https://api.github.com";
 const CACHE_SECONDS = 300;
 const MODERATION_MODEL = "@cf/meta/llama-guard-3-8b";
-
-function githubApiUrl(env) {
-  return (env.GITHUB_API_URL || DEFAULT_GITHUB_API).replace(/\/$/, "");
-}
 
 async function verifyTurnstile(submission, request, env, fetchImpl) {
   if (!env.TURNSTILE_SECRET_KEY) {
@@ -128,7 +124,7 @@ async function createGithubIssue(submission, env, fetchImpl) {
   }
 
   const response = await fetchImpl(
-    `${githubApiUrl(env)}/repos/${submission.project.repository}/issues`,
+    `${GITHUB_API}/repos/${submission.project.repository}/issues`,
     {
       method: "POST",
       headers: githubHeaders(token),
@@ -227,7 +223,7 @@ async function listProjectTickets(project, env, fetchImpl) {
     per_page: "100",
   });
   const response = await fetchImpl(
-    `${githubApiUrl(env)}/repos/${project.repository}/issues?${params}`,
+    `${GITHUB_API}/repos/${project.repository}/issues?${params}`,
     { headers: githubHeaders(token) },
   );
 
@@ -315,9 +311,9 @@ export async function handleRequest(
   const fetchImpl = options.fetchImpl || fetch;
   const cache =
     options.cache ?? (typeof caches === "undefined" ? null : caches.default);
-  const origin = allowedOrigin(request, env);
+  const origin = request.headers.get("Origin");
 
-  if (request.headers.has("Origin") && origin === undefined) {
+  if (origin && !parseAllowedOrigins(env.ALLOWED_ORIGINS).has(origin)) {
     return jsonResponse(
       { error: "Origin is not allowed.", code: "origin_not_allowed" },
       403,
