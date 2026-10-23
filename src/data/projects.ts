@@ -11,12 +11,11 @@ export type Project = {
   role: string;
   description: string;
   href?: string;
-  status?: string;
   thumbnail?: string;
   thumbnailAlt?: string;
   thumbnailFit?: "contain" | "cover";
-  period?: string;
-  portfolioTier?: "featured" | "past" | "archive" | "olderArchive";
+  period: string;
+  portfolioTier: "featured" | "archive" | "olderArchive";
   feedbackProjectId?:
     | "loudscript-ios"
     | "loudscript-mac"
@@ -45,7 +44,6 @@ export const projects: Project[] = [
     role: "Senior Software Engineer",
     description: "iOS and macOS engineer on translation products at deepl.com.",
     href: "https://www.deepl.com/",
-    status: "Current",
     thumbnail: "/images/projects/deepl-logo-blue.svg",
     thumbnailAlt: "DeepL logo",
     period: "2022-present",
@@ -60,7 +58,6 @@ export const projects: Project[] = [
     description:
       "Mac text-to-speech with selected text, screenshot OCR, and natural voices.",
     href: "https://loudscript.app/",
-    status: "Current",
     thumbnail: "/images/projects/loudscript-mac-main-window.png",
     thumbnailAlt: "LoudScript for Mac main window",
     thumbnailFit: "contain",
@@ -75,7 +72,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "AI captions and hashtags for social posts.",
     href: "https://craftcaption.com/",
-    status: "Archived",
     thumbnail:
       "/images/imported/2020/07/four_screens_app_demo-1-ae8d83e6cf.png",
     thumbnailAlt: "CraftCaption app screens",
@@ -89,7 +85,6 @@ export const projects: Project[] = [
     role: "Co-founder",
     description: "Helping athletes improve hydration through supplements.",
     href: "https://waterfuze.com/",
-    status: "Current",
     thumbnail: "/images/imported/2020/07/image-c16b2eeb88.png",
     thumbnailAlt: "Waterfuze product mix",
     period: "2024-present",
@@ -102,7 +97,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "AI receipts and invoices accountant.",
     href: "https://xpensemap.com/",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-2b5b2e17c5.png",
     thumbnailAlt: "Xpensemap app screens",
     thumbnailFit: "contain",
@@ -114,7 +108,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "Follow matches and results for esports.",
     href: "https://www.esportsfort.app/",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-1-981a975174.png",
     thumbnailAlt: "Esportsfort app screens",
     thumbnailFit: "contain",
@@ -127,7 +120,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "Save and archive webpages on iOS and iPadOS.",
     href: "https://websave.app/",
-    status: "Current",
     thumbnail: "/images/imported/2020/07/image-2-ac840d64ff.png",
     thumbnailAlt: "Websave app screens",
     thumbnailFit: "contain",
@@ -143,7 +135,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "Unload thoughts and revisit them later.",
     href: "https://thinkdrop.app/",
-    status: "Current",
     thumbnail: "/images/imported/2020/07/image-f93ad6a01d.png",
     thumbnailAlt: "Thinkdrop 2 app screens",
     thumbnailFit: "contain",
@@ -159,11 +150,10 @@ export const projects: Project[] = [
     description:
       "Sleep robot company where I worked across iOS, software leadership, and product delivery.",
     href: "https://meetsomnox.com/",
-    status: "Past",
     thumbnail: "/images/imported/2020/07/Brand-new-companion-app-01ebabef4c.jpeg",
     thumbnailAlt: "Somnox companion app",
     period: "2018-2020",
-    portfolioTier: "past",
+    portfolioTier: "archive",
     contribution:
       "Previously led software work and helped ship connected sleep-tech products.",
     images: [
@@ -186,12 +176,11 @@ export const projects: Project[] = [
     role: "Creator",
     description: "Count anything and track progress over time.",
     href: "https://growrilla.app/",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/four_screens_demo-6c03f0964d.png",
     thumbnailAlt: "Growrilla app screens",
     thumbnailFit: "contain",
     period: "2020-2021",
-    portfolioTier: "past",
+    portfolioTier: "archive",
     contribution:
       "Built and launched the iOS app, subscription flow, widgets, and website.",
   },
@@ -200,7 +189,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "Wish list app for saving and tracking things you want.",
     href: "https://kowa.app/",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/Wishlists-are-great-d3970c952f.png",
     thumbnailAlt: "Kowa app screen",
     thumbnailFit: "contain",
@@ -229,7 +217,6 @@ export const projects: Project[] = [
     role: "Creator",
     description: "Quick thought dropping on your phone.",
     href: "https://thinkdrop.app/",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-3-af44044e7c.png",
     thumbnailAlt: "Think Drop app screen",
     thumbnailFit: "contain",
@@ -240,7 +227,6 @@ export const projects: Project[] = [
     name: "Devleads",
     role: "Creator",
     description: "Find software engineer leads from GitHub.",
-    status: "Archived",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -248,7 +234,6 @@ export const projects: Project[] = [
     name: "OnCircleCI",
     role: "Creator",
     description: "Simple CircleCI client for iOS.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-6-4f60fb6e75.png",
     thumbnailAlt: "OnCircleCI app screen",
     thumbnailFit: "contain",
@@ -260,7 +245,6 @@ export const projects: Project[] = [
     role: "Creator",
     description:
       "Calendar for upcoming CS:GO, League of Legends, Dota 2, and Overwatch matches.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-7-19dcbca55c.png",
     thumbnailAlt: "Esports Calendar app screen",
     thumbnailFit: "contain",
@@ -272,7 +256,6 @@ export const projects: Project[] = [
     role: "Graduate Intern / Developer / Researcher",
     description:
       "Integration of third-party services and additional data for Sense Health.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-9-33ae324416.png",
     thumbnailAlt: "Sense Health thesis project",
     thumbnailFit: "contain",
@@ -284,7 +267,6 @@ export const projects: Project[] = [
     role: "Creator / Interviewer",
     description:
       "Web platform for startup stories from founders in the Netherlands.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-8-63610a4d1b.png",
     thumbnailAlt: "Startup Story website",
     thumbnailFit: "contain",
@@ -295,7 +277,6 @@ export const projects: Project[] = [
     name: "Projectcampus",
     role: "Mobile Developer",
     description: "University education platform by Shareworks Solution.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-10-095b221e30.png",
     thumbnailAlt: "Projectcampus app screen",
     thumbnailFit: "contain",
@@ -306,7 +287,6 @@ export const projects: Project[] = [
     name: "Smart Mirror",
     role: "University Student / Developer",
     description: "Mirror displaying metadata.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-11-c09cc966cf.png",
     thumbnailAlt: "Smart Mirror project",
     period: "Archived",
@@ -316,7 +296,6 @@ export const projects: Project[] = [
     name: "Human Tracking Drone",
     role: "University Student / Developer",
     description: "Drone that can keep following a human.",
-    status: "Archived",
     period: "Archived",
     portfolioTier: "olderArchive",
   },
@@ -324,7 +303,6 @@ export const projects: Project[] = [
     name: "PCBuild",
     role: "University Student / Developer",
     description: "Offline web platform for assembling PC components.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-13-2b74c4ce5e.png",
     thumbnailAlt: "PCBuild web platform",
     thumbnailFit: "contain",
@@ -335,7 +313,6 @@ export const projects: Project[] = [
     name: "MyWatchList",
     role: "Developer",
     description: "Android app for tracking TV series.",
-    status: "Archived",
     thumbnail: "/images/imported/2020/07/image-14-3c97eaa837.png",
     thumbnailAlt: "MyWatchList Android app",
     thumbnailFit: "contain",

@@ -7,7 +7,8 @@ const project = (overrides: Partial<Project> = {}): Project => ({
   name: "An app",
   description: "An independent project",
   role: "Creator",
-  status: "Current",
+  period: "2026",
+  portfolioTier: "featured",
   href: "https://example.com/",
   ...overrides,
 });
@@ -33,7 +34,7 @@ test("only current independent projects with destinations are included", () => {
   const active = project({ name: "Active", role: "Co-founder" });
   assert.deepEqual(
     getProjectLinks([
-      project({ status: "Archived", links: { featured: true } }),
+      project({ portfolioTier: "archive", links: { featured: true } }),
       project({ role: "Senior Software Engineer" }),
       project({ href: undefined }),
       project({ href: "" }),

@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { getLocalImageDimensions } from "../../../scripts/image-dimensions.mjs";
+import { getLocalImageDimensions } from "@lib/image-dimensions.mjs";
+import { SITE_NAME, toAbsoluteUrl } from "@lib/seo";
 import { getProjectSlug, projects } from "../../data/projects";
-import { SITE_NAME, toAbsoluteUrl } from "../../lib/seo";
 
 export function getStaticPaths() {
   const archivedProjects = projects.filter((project) => project.portfolioTier !== "featured");
