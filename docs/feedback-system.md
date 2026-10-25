@@ -75,12 +75,12 @@ Removing `public` hides a ticket after the Worker cache expires, within five min
 ## Local development
 
 1. Copy `.env.example` to `.env`.
-2. Copy `worker/.dev.vars.example` to `worker/.dev.vars` and replace the GitHub tokens.
-3. Start the Worker with a localhost origin override:
+2. Copy `worker/.dev.vars.example` to `worker/.dev.vars` and replace the GitHub tokens. The file also allows requests from the local Astro server.
+3. Start the Worker:
 
    ```sh
    npm --prefix worker install
-   npm --prefix worker run dev -- --var ALLOWED_ORIGINS:http://localhost:4321
+   npm --prefix worker run dev
    ```
 
 4. In another terminal, start Astro:

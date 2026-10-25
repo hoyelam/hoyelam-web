@@ -33,14 +33,6 @@ export function parseAllowedOrigins(value = "") {
   );
 }
 
-export function allowedOrigin(request, env) {
-  const origin = request.headers.get("Origin");
-  if (!origin) return null;
-  return parseAllowedOrigins(env.ALLOWED_ORIGINS).has(origin)
-    ? origin
-    : undefined;
-}
-
 export function corsHeaders(origin) {
   const headers = {
     "Access-Control-Allow-Headers": "Content-Type",
@@ -70,11 +62,7 @@ export function jsonResponse(
 
 function normalizeSingleLine(value, maximumLength) {
   if (typeof value !== "string") return "";
-  return value
-    .replace(/[\r\n\t]+/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, maximumLength);
+  return value.replace(/\s+/g, " ").trim().slice(0, maximumLength);
 }
 
 function normalizeParagraphs(value, maximumLength) {
@@ -154,7 +142,7 @@ export function buildIssueBody(submission) {
   const context = [
     `- Product: ${submission.project.name}`,
     `- Type: ${submission.type === "bug" ? "Bug report" : "Feature idea"}`,
-    `- Source: ${submission.source || "website"}`,
+    `- Source: ${submission.source}`,
     `- App version: ${submission.appVersion || "Not provided"}`,
     `- OS version: ${submission.osVersion || "Not provided"}`,
     `- Contact email: ${submission.email || "Not provided"}`,
@@ -183,13 +171,17 @@ export function githubHeaders(token) {
 }
 
 export function tokenForProject(project, env) {
-  return env[project.tokenBinding] || env.GITHUB_TOKEN;
+  return env[project.tokenBinding];
+}
+
+function labelNames(labels) {
+  return new Set(
+    labels.map((label) => (typeof label === "string" ? label : label.name)),
+  );
 }
 
 export function statusFromLabels(labels) {
-  const names = new Set(
-    labels.map((label) => (typeof label === "string" ? label : label.name)),
-  );
+  const names = labelNames(labels);
   for (const status of [...feedbackStatuses].reverse()) {
     if (names.has(`status:${status.id}`)) return status.id;
   }
@@ -197,13 +189,10 @@ export function statusFromLabels(labels) {
 }
 
 function typeFromLabels(labels) {
-  const names = new Set(
-    labels.map((label) => (typeof label === "string" ? label : label.name)),
-  );
-  return names.has("type:idea") ? "idea" : "bug";
+  return labelNames(labels).has("type:idea") ? "idea" : "bug";
 }
 
-export function extractPublicDescription(body = "") {
+export function extractPublicDescription(body) {
   const match = body.match(
     /## Details\s*\n([\s\S]*?)(?=\n## Submission context|$)/i,
   );
