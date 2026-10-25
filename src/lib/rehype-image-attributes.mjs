@@ -1,15 +1,14 @@
 import { getLocalImageDimensions } from "./image-dimensions.mjs";
 
-async function visitImages(node, callback, ancestors = []) {
-  if (!node || typeof node !== "object") return;
-
+function visitImages(node, callback, ancestors = []) {
   if (node.type === "element" && node.tagName === "img") {
-    await callback(node, ancestors);
+    callback(node, ancestors);
   }
   for (const child of node.children ?? []) {
-    await visitImages(child, callback, [...ancestors, node]);
+    visitImages(child, callback, [...ancestors, node]);
   }
 }
+
 function nodeText(node) {
   if (node?.type === "text") return node.value ?? "";
   return (node?.children ?? []).map(nodeText).join("");
@@ -45,11 +44,10 @@ function adjacentCaption(ancestors) {
 }
 
 export default function rehypeImageAttributes() {
-  return async (tree) => {
+  return (tree) => {
     let imageIndex = 0;
 
-    await visitImages(tree, async (image, ancestors) => {
-      image.properties ??= {};
+    visitImages(tree, (image, ancestors) => {
       image.properties.decoding ??= "async";
       if (imageIndex > 0) image.properties.loading ??= "lazy";
       imageIndex += 1;
@@ -59,7 +57,7 @@ export default function rehypeImageAttributes() {
       }
 
       const dimensions = getLocalImageDimensions(image.properties.src);
-      if (dimensions?.width && dimensions?.height) {
+      if (dimensions) {
         image.properties.width ??= dimensions.width;
         image.properties.height ??= dimensions.height;
       }

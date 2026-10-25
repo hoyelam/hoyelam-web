@@ -6,10 +6,9 @@ const contentBase = z.object({
   title: z.string(),
   seoTitle: z.string().optional(),
   description: z.string().optional(),
-  publishedAt: z.coerce.date().optional(),
+  publishedAt: z.coerce.date(),
   updatedAt: z.coerce.date().optional(),
   coverImage: z.string().optional(),
-  legacyUrl: z.string().optional(),
   draft: z.boolean().default(false),
 });
 
@@ -23,9 +22,7 @@ const posts = defineCollection({
 
 const pages = defineCollection({
   loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/pages" }),
-  schema: contentBase.extend({
-    navigationLabel: z.string().optional(),
-  }),
+  schema: contentBase,
 });
 
 export const collections = { posts, pages };

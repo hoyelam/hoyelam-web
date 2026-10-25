@@ -1,49 +1,20 @@
 ---
-import { getLocalImageDimensions } from "../../scripts/image-dimensions.mjs";
-import { getProjectSlug, projects } from "../data/projects";
+import ProjectThumb from "@components/ProjectThumb.astro";
+import { getProjectSlug, projects, type Project } from "../data/projects";
 
-const withThumbnailDimensions = (project: (typeof projects)[number]) => ({
-  ...project,
-  thumbnailDimensions: getLocalImageDimensions(project.thumbnail),
-});
-const featured = projects
-  .filter((project) => project.portfolioTier === "featured")
-  .map(withThumbnailDimensions);
-const archive = projects
-  .filter(
-    (project) =>
-      project.portfolioTier !== "featured" &&
-      project.portfolioTier !== "olderArchive",
-  )
-  .map(withThumbnailDimensions);
-const olderArchive = projects
-  .filter((project) => project.portfolioTier === "olderArchive")
-  .map(withThumbnailDimensions);
-
-const fallback = (name: string) => name.slice(0, 2);
-const projectPath = (project: (typeof projects)[number]) =>
-  `/portfolio/${getProjectSlug(project)}/`;
+const byTier = (tier: Project["portfolioTier"]) =>
+  projects.filter((project) => project.portfolioTier === tier);
+const projectPath = (project: Project) => `/portfolio/${getProjectSlug(project)}/`;
 ---
 
 <section class="portfolio-section">
   <h2>Current Focus</h2>
   <div class="portfolio-featured-grid">
     {
-      featured.map((project) => (
+      byTier("featured").map((project) => (
         <article class="portfolio-card">
           <div class="portfolio-card-media">
-            {project.thumbnail ? (
-              <img
-                src={project.thumbnail}
-                alt={project.thumbnailAlt ?? `${project.name} preview`}
-                data-fit={project.thumbnailFit}
-                width={project.thumbnailDimensions?.width}
-                height={project.thumbnailDimensions?.height}
-                loading="lazy"
-              />
-            ) : (
-              <div class="portfolio-card-fallback" aria-hidden="true">{fallback(project.name)}</div>
-            )}
+            <ProjectThumb project={project} />
           </div>
           <div class="portfolio-card-body">
             <p class="portfolio-meta">{project.period} · {project.role}</p>
@@ -72,21 +43,10 @@ const projectPath = (project: (typeof projects)[number]) =>
   <h2>Archive</h2>
   <div class="portfolio-archive-grid">
     {
-      archive.map((project) => (
+      byTier("archive").map((project) => (
         <a class="portfolio-card portfolio-card-compact" href={projectPath(project)}>
           <div class="portfolio-card-media">
-            {project.thumbnail ? (
-              <img
-                src={project.thumbnail}
-                alt={project.thumbnailAlt ?? `${project.name} preview`}
-                data-fit={project.thumbnailFit}
-                width={project.thumbnailDimensions?.width}
-                height={project.thumbnailDimensions?.height}
-                loading="lazy"
-              />
-            ) : (
-              <div class="portfolio-card-fallback" aria-hidden="true">{fallback(project.name)}</div>
-            )}
+            <ProjectThumb project={project} />
           </div>
           <div class="portfolio-card-body">
             <p class="portfolio-meta">{project.period} · {project.role}</p>
@@ -104,21 +64,10 @@ const projectPath = (project: (typeof projects)[number]) =>
   <h2>Older Archive</h2>
   <div class="portfolio-older-archive-grid">
     {
-      olderArchive.map((project) => (
+      byTier("olderArchive").map((project) => (
         <a class="portfolio-card portfolio-card-compact portfolio-card-small" href={projectPath(project)}>
           <div class="portfolio-card-media">
-            {project.thumbnail ? (
-              <img
-                src={project.thumbnail}
-                alt={project.thumbnailAlt ?? `${project.name} preview`}
-                data-fit={project.thumbnailFit}
-                width={project.thumbnailDimensions?.width}
-                height={project.thumbnailDimensions?.height}
-                loading="lazy"
-              />
-            ) : (
-              <div class="portfolio-card-fallback" aria-hidden="true">{fallback(project.name)}</div>
-            )}
+            <ProjectThumb project={project} />
           </div>
           <div class="portfolio-card-body">
             <p class="portfolio-meta">{project.period} · {project.role}</p>

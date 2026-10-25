@@ -1,8 +1,8 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { getLocalImageDimensions } from "../../../scripts/image-dimensions.mjs";
+import { getLocalImageDimensions } from "@lib/image-dimensions.mjs";
+import { SITE_NAME, toAbsoluteUrl } from "@lib/seo";
 import { getProjectSlug, projects } from "../../data/projects";
-import { SITE_NAME, toAbsoluteUrl } from "../../lib/seo";
 
 export function getStaticPaths() {
   const archivedProjects = projects.filter((project) => project.portfolioTier !== "featured");
@@ -26,14 +26,14 @@ const images =
 const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
 const metaDescription = project.contribution
   ? `${project.description} ${project.contribution}`
-  : `${project.description} A ${project.role.toLowerCase()} project by ${SITE_NAME}, documenting the product and its purpose.`;
+  : `${project.description} Role: ${project.role}.`;
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "CreativeWork",
   name: project.name,
   description: metaDescription,
   url: canonical,
-  image: toAbsoluteUrl(images[0]?.src, Astro.site),
+  image: images[0] && toAbsoluteUrl(images[0].src, Astro.site),
   creator: {
     "@type": "Person",
     name: SITE_NAME,

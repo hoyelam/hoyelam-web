@@ -1,13 +1,13 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
-import { SITE_NAME } from "@lib/seo";
+import { personRef } from "@lib/seo";
 import { feedbackProjects, feedbackStatuses } from "../../../feedback/projects.js";
 
 const apiUrl = import.meta.env.PUBLIC_FEEDBACK_API_URL ?? "";
 const turnstileSiteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "";
 const title = "Product feedback";
 const description =
-  "Report bugs, suggest product ideas, and follow the public roadmap for Hoye Lam's independent software.";
+  "Report a bug or suggest an idea for one of my apps, and see what’s planned.";
 const canonical = new URL("/feedback/", Astro.site).toString();
 const structuredData = {
   "@context": "https://schema.org",
@@ -15,11 +15,7 @@ const structuredData = {
   name: title,
   description,
   url: canonical,
-  author: {
-    "@type": "Person",
-    "@id": new URL("/#person", Astro.site).toString(),
-    name: SITE_NAME,
-  },
+  author: personRef,
 };
 ---
 
@@ -40,7 +36,7 @@ const structuredData = {
       <p>Report a bug, suggest an idea, or see what is being worked on.</p>
     </header>
 
-    <section class="feedback-section feedback-submit-section" aria-labelledby="feedback-form-title">
+    <section class="section" aria-labelledby="feedback-form-title">
       <div class="feedback-section-heading">
         <div>
           <h2 id="feedback-form-title" data-feedback-form-title>Share feedback</h2>
@@ -151,8 +147,8 @@ const structuredData = {
       </form>
     </section>
 
-    <section class="feedback-section feedback-roadmap" aria-labelledby="feedback-roadmap-title">
-      <div class="feedback-section-heading feedback-roadmap-heading">
+    <section class="section" aria-labelledby="feedback-roadmap-title">
+      <div class="feedback-section-heading">
         <div>
           <h2 id="feedback-roadmap-title">Public roadmap</h2>
           <p>Approved tickets only. Private contact details and internal notes are never included.</p>

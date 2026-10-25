@@ -2,18 +2,16 @@
 import { render } from "astro:content";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import RelatedPosts from "@components/RelatedPosts.astro";
-import { getPages, getPosts, getRelatedPosts } from "../lib/content";
+import { getPages, getPosts, getRelatedPosts } from "@lib/content";
+import { formatDate, formatRelativeDate } from "@lib/dates";
 import {
   DEFAULT_SOCIAL_IMAGE,
-  DEFAULT_SOCIAL_IMAGE_HEIGHT,
-  DEFAULT_SOCIAL_IMAGE_WIDTH,
-  getEntryImage,
-  getEntryImageAlt,
   getSeoDescription,
+  personRef,
+  personSchema,
   SITE_NAME,
   toAbsoluteUrl,
-} from "../lib/seo";
-import { formatDate, formatRelativeDate } from "../lib/tags";
+} from "@lib/seo";
 
 export async function getStaticPaths() {
   const posts = await getPosts();
@@ -24,101 +22,68 @@ export async function getStaticPaths() {
       params: { slug: entry.id },
       props: { entry, kind: "post", relatedPosts: getRelatedPosts(entry, posts) },
     })),
-    ...pages
-      .filter((entry) => entry.id !== "home" && entry.id !== "kin-yee")
-      .map((entry) => ({
-        params: { slug: entry.id },
-        props: { entry, kind: "page", relatedPosts: [] },
-      })),
+    ...pages.map((entry) => ({
+      params: { slug: entry.id },
+      props: { entry, kind: "page", relatedPosts: [] },
+    })),
   ];
 }
 
-const { entry, kind, relatedPosts = [] } = Astro.props;
+const { entry, kind, relatedPosts } = Astro.props;
 const { Content } = await render(entry);
 const title = entry.data.title;
 const seoTitle = entry.data.seoTitle || title;
 const description = getSeoDescription(entry);
-const image = getEntryImage(entry);
-const imageAlt = getEntryImageAlt(entry);
 const canonical = new URL(`/${entry.id}/`, Astro.site).toString();
-const absoluteImage = toAbsoluteUrl(image, Astro.site);
-const personId = new URL("/#person", Astro.site).toString();
-const isDefaultImage = image === DEFAULT_SOCIAL_IMAGE;
 const isProfilePage = kind === "page" && entry.id === "about";
-const structuredData =
-  kind === "post"
-    ? {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        headline: title,
-        description,
-        url: canonical,
-        mainEntityOfPage: canonical,
-        datePublished: entry.data.publishedAt?.toISOString(),
-        dateModified: (entry.data.updatedAt || entry.data.publishedAt)?.toISOString(),
-        image: absoluteImage,
-        author: {
-          "@type": "Person",
-          "@id": personId,
-          name: SITE_NAME,
-          url: new URL("/about/", Astro.site).toString(),
-        },
-      }
-    : isProfilePage
-      ? {
-          "@context": "https://schema.org",
-          "@type": "ProfilePage",
-          name: seoTitle,
-          description,
-          url: canonical,
-          dateCreated: entry.data.publishedAt?.toISOString(),
-          dateModified: entry.data.updatedAt?.toISOString(),
-          mainEntity: {
-            "@type": "Person",
-            "@id": personId,
-            name: SITE_NAME,
-            alternateName: ["林浩意", "@hoyelam"],
-            description,
-            image: new URL("/images/hoye-lam-x-avatar.jpg", Astro.site).toString(),
-            url: new URL("/", Astro.site).toString(),
-            jobTitle: "Senior Software Engineer",
-            worksFor: {
-              "@type": "Organization",
-              name: "DeepL",
-              url: "https://www.deepl.com/",
-            },
-            sameAs: [
-              "https://github.com/hoyelam",
-              "https://twitter.com/hoyelam",
-              "https://www.instagram.com/hoyelam/",
-            ],
-          },
-        }
-      : {
-        "@context": "https://schema.org",
-        "@type": "WebPage",
-        name: title,
-        description,
-        url: canonical,
-        author: {
-          "@type": "Person",
-          "@id": personId,
-          name: SITE_NAME,
-        },
-      };
+
+function getStructuredData() {
+  if (kind === "post") {
+    return {
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      headline: title,
+      description,
+      url: canonical,
+      mainEntityOfPage: canonical,
+      datePublished: entry.data.publishedAt.toISOString(),
+      dateModified: (entry.data.updatedAt ?? entry.data.publishedAt).toISOString(),
+      image: toAbsoluteUrl(entry.data.coverImage ?? DEFAULT_SOCIAL_IMAGE, Astro.site),
+      author: { ...personRef, url: new URL("/about/", Astro.site).toString() },
+    };
+  }
+  if (isProfilePage) {
+    return {
+      "@context": "https://schema.org",
+      "@type": "ProfilePage",
+      name: seoTitle,
+      description,
+      url: canonical,
+      dateCreated: entry.data.publishedAt.toISOString(),
+      dateModified: entry.data.updatedAt?.toISOString(),
+      mainEntity: personSchema(description),
+    };
+  }
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: title,
+    description,
+    url: canonical,
+    author: personRef,
+  };
+}
 ---
 
 <BaseLayout
   title={seoTitle}
   description={description}
-  image={image}
-  imageAlt={imageAlt}
-  imageWidth={isDefaultImage ? DEFAULT_SOCIAL_IMAGE_WIDTH : undefined}
-  imageHeight={isDefaultImage ? DEFAULT_SOCIAL_IMAGE_HEIGHT : undefined}
+  image={entry.data.coverImage}
+  imageAlt={`${title} by ${SITE_NAME}`}
   type={kind === "post" ? "article" : isProfilePage ? "profile" : "website"}
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
-  structuredData={structuredData}
+  structuredData={getStructuredData()}
 >
   <main class="article" id="main-content">
     <header class="article-header">
@@ -128,7 +93,7 @@ const structuredData =
         kind === "post" ? (
           <p class="post-meta">
             <time
-              datetime={entry.data.publishedAt?.toISOString()}
+              datetime={entry.data.publishedAt.toISOString()}
               title={formatRelativeDate(entry.data.publishedAt)}
             >
               {formatDate(entry.data.publishedAt)}

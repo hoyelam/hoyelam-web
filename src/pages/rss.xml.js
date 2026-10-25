@@ -1,17 +1,23 @@
 import rss from "@astrojs/rss";
-import { getPosts } from "../lib/content";
-import { getEntryExcerpt, getSeoDescription } from "../lib/seo";
+import { getPosts } from "@lib/content";
+import {
+  DEFAULT_SITE_DESCRIPTION,
+  getEntryExcerpt,
+  getSeoDescription,
+  MAX_META_DESCRIPTION_LENGTH,
+  SITE_NAME,
+} from "@lib/seo";
 
 export async function GET(context) {
   const posts = await getPosts();
 
   return rss({
-    title: "Hoye Lam",
-    description: "Portfolio, apps, writing, and notes by Hoye Lam.",
+    title: SITE_NAME,
+    description: DEFAULT_SITE_DESCRIPTION,
     site: context.site,
     items: posts.map((post) => ({
       title: post.data.title,
-      description: getEntryExcerpt(post, 160) || getSeoDescription(post),
+      description: getEntryExcerpt(post, MAX_META_DESCRIPTION_LENGTH) || getSeoDescription(post),
       pubDate: post.data.publishedAt,
       link: `/${post.id}/`,
     })),
