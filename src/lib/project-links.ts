@@ -3,7 +3,7 @@ import type { Project } from "../data/projects.ts";
 export function getProjectLinks(projects: readonly Project[]) {
   const links = projects.flatMap((project) =>
     project.portfolioTier === "featured" &&
-    ["Creator", "Co-founder"].includes(project.role) &&
+    ["Creator", "Founder", "Co-founder"].includes(project.role) &&
     project.href
       ? [{ ...project, href: project.href, ...project.links }]
       : [],

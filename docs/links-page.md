@@ -6,7 +6,7 @@ for social bios. Both addresses share the same layout and social preview metadat
 `/links/` remains the canonical URL for search engines.
 It uses the site's light/dark theme.
 
-Current projects with a `Creator` or `Co-founder` role and a URL in
+Current projects with a `Creator`, `Founder` or `Co-founder` role and a URL in
 `src/data/projects.ts` appear automatically. Each project's optional `links` record
 controls its logo, display order (lower numbers first), and featured status:
 
@@ -35,6 +35,7 @@ checks, the Astro type check/build, and `scripts/seo-audit.mjs` through
 
 Asset sources (retrieved October 10, 2026):
 
+- [Kin-Yee app icon](https://kin-yee.com/apple-touch-icon.png) (retrieved October 29, 2026)
 - [LoudScript app icon](https://loudscript.app/apple-touch-icon.png)
 - [Waterfuze brand mark](https://waterfuze.com/cdn/shop/files/LOGO_transparent_1.png?v=1696692664&width=180)
 - [Websave app icon](https://websave.app/images/AppLogo.png)

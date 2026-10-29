@@ -31,16 +31,16 @@ test("renaming a project preserves its logo and URL", () => {
 });
 
 test("only current independent projects with destinations are included", () => {
-  const active = project({ name: "Active", role: "Co-founder" });
   assert.deepEqual(
     getProjectLinks([
       project({ portfolioTier: "archive", links: { featured: true } }),
       project({ role: "Senior Software Engineer" }),
       project({ href: undefined }),
       project({ href: "" }),
-      active,
+      project({ name: "Co-founded", role: "Co-founder" }),
+      project({ name: "Founded", role: "Founder" }),
     ]).map((item) => item.name),
-    ["Active"],
+    ["Co-founded", "Founded"],
   );
 });
 

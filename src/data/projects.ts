@@ -51,6 +51,7 @@ export const projects: Project[] = [
   },
   {
     name: "Kin-Yee",
+    links: { icon: linkIcons.kinyee, order: 15 },
     role: "Founder",
     description:
       "AI assistant for the admin work of small businesses, in the tools they already use.",

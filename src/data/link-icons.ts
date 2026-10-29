@@ -1,3 +1,5 @@
+import kinyeeImage from "../assets/links/kin-yee.png";
+import kinyeeDataUrl from "../assets/links/kin-yee.png?inline";
 import loudscriptImage from "../assets/links/loudscript.png";
 import loudscriptDataUrl from "../assets/links/loudscript.png?inline";
 import thinkdropImage from "../assets/links/thinkdrop.png";
@@ -9,6 +11,7 @@ import websaveDataUrl from "../assets/links/websave.png?inline";
 
 // Astro optimizes the page images; the static sharing image uses the same originals.
 export const linkIcons = {
+  kinyee: { image: kinyeeImage, dataUrl: kinyeeDataUrl },
   loudscript: { image: loudscriptImage, dataUrl: loudscriptDataUrl },
   thinkdrop: { image: thinkdropImage, dataUrl: thinkdropDataUrl },
   waterfuze: { image: waterfuzeImage, dataUrl: waterfuzeDataUrl },
