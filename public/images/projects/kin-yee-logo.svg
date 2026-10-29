@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="ky-fill" x1="0" y1="18" x2="0" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#9aa4ae"/>
+    </linearGradient>
+    <clipPath id="ky-cap">
+      <rect x="0" y="19" width="64" height="26"/>
+    </clipPath>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="#17212b"/>
+  <g transform="translate(-2.8 0)" clip-path="url(#ky-cap)" fill="none" stroke="url(#ky-fill)" stroke-width="6.5" stroke-linejoin="miter">
+    <path d="M15 16V48"/>
+    <path d="M32.5 16L15.5 35.2"/>
+    <path d="M21.5 28.5L33.5 48"/>
+    <path d="M37.6 16L47 31.5L56.4 16"/>
+    <path d="M47 30V48"/>
+  </g>
+</svg>

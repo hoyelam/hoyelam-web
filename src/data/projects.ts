@@ -50,6 +50,19 @@ export const projects: Project[] = [
     portfolioTier: "featured",
   },
   {
+    name: "Kin-Yee",
+    role: "Founder",
+    description:
+      "AI assistant for the admin work of small businesses, in the tools they already use.",
+    href: "https://kin-yee.com/",
+    thumbnail: "/images/projects/kin-yee-logo.svg",
+    thumbnailAlt: "Kin-Yee logo",
+    period: "2026-present",
+    portfolioTier: "featured",
+    contribution:
+      "Built the website and the setup that installs and runs each client's assistant.",
+  },
+  {
     name: "LoudScript",
     links: { icon: linkIcons.loudscript, order: 10, featured: true },
     role: "Creator",
