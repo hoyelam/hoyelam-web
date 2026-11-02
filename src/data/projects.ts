@@ -70,7 +70,7 @@ export const projects: Project[] = [
     description:
       "Mac text-to-speech with selected text, screenshot OCR, and natural voices.",
     href: "https://loudscript.app/",
-    thumbnail: "/images/projects/loudscript-mac-main-window.png",
+    thumbnail: "/images/projects/loudscript-mac-main-window.webp",
     thumbnailAlt: "LoudScript for Mac main window",
     thumbnailFit: "contain",
     period: "2026",
