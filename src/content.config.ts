@@ -4,6 +4,8 @@ import { z } from "astro/zod";
 
 const contentBase = z.object({
   title: z.string(),
+  // Shown before the page heading; decorative only.
+  emoji: z.string().optional(),
   seoTitle: z.string().optional(),
   description: z.string().optional(),
   publishedAt: z.coerce.date(),

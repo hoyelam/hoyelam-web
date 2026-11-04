@@ -2,12 +2,10 @@
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { getLocalImageDimensions } from "@lib/image-dimensions.mjs";
 import { SITE_NAME, toAbsoluteUrl } from "@lib/seo";
-import { getProjectSlug, projects } from "../../data/projects";
+import { getProjectSlug, hasProjectPage, projects } from "../../data/projects";
 
 export function getStaticPaths() {
-  const archivedProjects = projects.filter((project) => project.portfolioTier !== "featured");
-
-  return archivedProjects.map((project) => ({
+  return projects.filter(hasProjectPage).map((project) => ({
     params: { slug: getProjectSlug(project) },
     props: { project },
   }));
@@ -23,7 +21,7 @@ const images =
       ...image,
       dimensions: getLocalImageDimensions(image.src),
     }));
-const canonical = new URL(`/portfolio/${getProjectSlug(project)}/`, Astro.site).toString();
+const canonical = new URL(`/projects/${getProjectSlug(project)}/`, Astro.site).toString();
 const metaDescription = project.contribution
   ? `${project.description} ${project.contribution}`
   : `${project.description} Role: ${project.role}.`;
@@ -54,8 +52,11 @@ const structuredData = {
 >
   <main class="article project-detail" id="main-content">
     <header class="article-header">
-      <a class="project-back-link" href="/portfolio/">← Portfolio</a>
-      <h1>{project.name}</h1>
+      <a class="project-back-link" href="/projects/">← Projects</a>
+      <h1>
+        <span class="heading-emoji" aria-hidden="true">{project.portfolioTier === "olderArchive" ? "🗄️" : "🗃️"}</span>
+        {project.name}
+      </h1>
       <p class="article-description">{project.description}</p>
       <p class="post-meta">{project.period} · {project.role}</p>
     </header>

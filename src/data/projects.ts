@@ -16,6 +16,7 @@ export type Project = {
   thumbnailFit?: "contain" | "cover";
   period: string;
   portfolioTier: "featured" | "archive" | "olderArchive";
+  mainJob?: true;
   feedbackProjectId?:
     | "loudscript-ios"
     | "loudscript-mac"
@@ -38,6 +39,12 @@ export function getProjectSlug(project: Pick<Project, "name">) {
     .replace(/^-|-$/g, "");
 }
 
+// An archived project gets its own page only when it has a gallery to show;
+// otherwise the page would repeat its card.
+export function hasProjectPage(project: Pick<Project, "portfolioTier" | "images">) {
+  return project.portfolioTier !== "featured" && (project.images?.length ?? 0) > 1;
+}
+
 export const projects: Project[] = [
   {
     name: "DeepL",
@@ -48,10 +55,11 @@ export const projects: Project[] = [
     thumbnailAlt: "DeepL logo",
     period: "2022-present",
     portfolioTier: "featured",
+    mainJob: true,
   },
   {
     name: "Kin-Yee",
-    links: { icon: linkIcons.kinyee, order: 15 },
+    links: { icon: linkIcons.kinyee, order: 30 },
     role: "Founder",
     description:
       "AI assistant for the admin work of small businesses, in the tools they already use.",
@@ -65,7 +73,7 @@ export const projects: Project[] = [
   },
   {
     name: "LoudScript",
-    links: { icon: linkIcons.loudscript, order: 10, featured: true },
+    links: { icon: linkIcons.loudscript, order: 20 },
     role: "Creator",
     description:
       "Mac text-to-speech with selected text, screenshot OCR, and natural voices.",
@@ -93,7 +101,7 @@ export const projects: Project[] = [
   },
   {
     name: "Waterfuze",
-    links: { icon: linkIcons.waterfuze, order: 40 },
+    links: { icon: linkIcons.waterfuze, order: 60 },
     role: "Co-founder",
     description: "Hydration supplements for athletes.",
     href: "https://waterfuze.com/",
@@ -117,18 +125,21 @@ export const projects: Project[] = [
   },
   {
     name: "Esportsfort",
+    links: { icon: linkIcons.esportsfort, order: 10 },
     role: "Creator",
-    description: "Follow matches and results for esports.",
-    href: "https://www.esportsfort.app/",
-    thumbnail: "/images/imported/2020/07/image-1-981a975174.png",
-    thumbnailAlt: "Esportsfort app screens",
-    thumbnailFit: "contain",
-    period: "2023",
-    portfolioTier: "archive",
+    description:
+      "Esports match schedules, live prediction market odds, news, and League of Legends stats.",
+    href: "https://esportsfort.com/",
+    thumbnail: "/images/projects/esportsfort-web.webp",
+    thumbnailAlt: "Esportsfort web app showing a League of Legends playoff match",
+    period: "2023-present",
+    portfolioTier: "featured",
+    contribution:
+      "Built the iOS app, then the web app and the data service behind it.",
   },
   {
     name: "Websave",
-    links: { icon: linkIcons.websave, order: 20 },
+    links: { icon: linkIcons.websave, order: 50 },
     role: "Creator",
     description: "Save and archive webpages on iOS and iPadOS.",
     href: "https://websave.app/",
@@ -143,7 +154,7 @@ export const projects: Project[] = [
   },
   {
     name: "Thinkdrop 2",
-    links: { icon: linkIcons.thinkdrop, order: 30 },
+    links: { icon: linkIcons.thinkdrop, order: 40 },
     role: "Creator",
     description: "Unload thoughts and revisit them later.",
     href: "https://thinkdrop.app/",
@@ -238,7 +249,7 @@ export const projects: Project[] = [
     name: "Devleads",
     role: "Creator",
     description: "Find software engineer leads from GitHub.",
-    period: "Archived",
+    period: "2021",
     portfolioTier: "olderArchive",
   },
   {
@@ -248,7 +259,7 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-6-4f60fb6e75.png",
     thumbnailAlt: "OnCircleCI app screen",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2018",
     portfolioTier: "olderArchive",
   },
   {
@@ -259,7 +270,7 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-7-19dcbca55c.png",
     thumbnailAlt: "Esports Calendar app screen",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2018",
     portfolioTier: "olderArchive",
   },
   {
@@ -270,7 +281,7 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-9-33ae324416.png",
     thumbnailAlt: "Sense Health thesis project",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2017",
     portfolioTier: "olderArchive",
   },
   {
@@ -281,7 +292,7 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-8-63610a4d1b.png",
     thumbnailAlt: "Startup Story website",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2016",
     portfolioTier: "olderArchive",
   },
   {
@@ -291,7 +302,7 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-10-095b221e30.png",
     thumbnailAlt: "Projectcampus app screen",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2015-2017",
     portfolioTier: "olderArchive",
   },
   {
@@ -300,14 +311,14 @@ export const projects: Project[] = [
     description: "Mirror displaying metadata.",
     thumbnail: "/images/imported/2020/07/image-11-c09cc966cf.png",
     thumbnailAlt: "Smart Mirror project",
-    period: "Archived",
+    period: "2015",
     portfolioTier: "olderArchive",
   },
   {
     name: "Human Tracking Drone",
     role: "University Student / Developer",
     description: "Drone that can keep following a human.",
-    period: "Archived",
+    period: "2015",
     portfolioTier: "olderArchive",
   },
   {
@@ -317,7 +328,7 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-13-2b74c4ce5e.png",
     thumbnailAlt: "PCBuild web platform",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2014",
     portfolioTier: "olderArchive",
   },
   {
@@ -327,7 +338,9 @@ export const projects: Project[] = [
     thumbnail: "/images/imported/2020/07/image-14-3c97eaa837.png",
     thumbnailAlt: "MyWatchList Android app",
     thumbnailFit: "contain",
-    period: "Archived",
+    period: "2013",
     portfolioTier: "olderArchive",
   },
 ];
+
+export const mainJob = projects.find((project) => project.mainJob);

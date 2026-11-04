@@ -1,3 +1,5 @@
+import esportsfortImage from "../assets/links/esportsfort.png";
+import esportsfortDataUrl from "../assets/links/esportsfort.png?inline";
 import kinyeeImage from "../assets/links/kin-yee.png";
 import kinyeeDataUrl from "../assets/links/kin-yee.png?inline";
 import loudscriptImage from "../assets/links/loudscript.png";
@@ -11,6 +13,7 @@ import websaveDataUrl from "../assets/links/websave.png?inline";
 
 // Astro optimizes the page images; the static sharing image uses the same originals.
 export const linkIcons = {
+  esportsfort: { image: esportsfortImage, dataUrl: esportsfortDataUrl },
   kinyee: { image: kinyeeImage, dataUrl: kinyeeDataUrl },
   loudscript: { image: loudscriptImage, dataUrl: loudscriptDataUrl },
   thinkdrop: { image: thinkdropImage, dataUrl: thinkdropDataUrl },

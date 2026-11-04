@@ -84,10 +84,14 @@ function getStructuredData() {
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
   structuredData={getStructuredData()}
+  section={kind === "post" ? "/writing/" : undefined}
 >
   <main class="article" id="main-content">
     <header class="article-header">
-      <h1>{title}</h1>
+      <h1>
+        {entry.data.emoji ? <span class="heading-emoji" aria-hidden="true">{entry.data.emoji}</span> : null}
+        {title}
+      </h1>
       {kind === "page" && description ? <p class="article-description">{description}</p> : null}
       {
         kind === "post" ? (

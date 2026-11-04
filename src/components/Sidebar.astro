@@ -1,0 +1,171 @@
+---
+import { Image } from "astro:assets";
+import Icon from "@components/Icon.astro";
+import ThemeToggle from "@components/ThemeToggle.astro";
+import type { IconName } from "@lib/icons";
+import { socialLinks } from "@lib/seo";
+import { projectLinks } from "../data/links";
+import { mainJob } from "../data/projects";
+
+type Props = {
+  // The page's place in the site; defaults to the URL path.
+  section: string;
+};
+
+const { section } = Astro.props;
+
+const navItems: { href: string; label: string; icon: IconName }[] = [
+  {
+    href: "/",
+    label: "Home",
+    icon: "house",
+  },
+  {
+    href: "/projects/",
+    label: "Projects",
+    icon: "rocket",
+  },
+  {
+    href: "/writing/",
+    label: "Writing",
+    icon: "pen",
+  },
+  {
+    href: "/feedback/",
+    label: "Feedback",
+    icon: "chat",
+  },
+  {
+    href: "/about/",
+    label: "About",
+    icon: "user",
+  },
+];
+
+function isCurrent(href: string) {
+  if (href === "/") return section === "/";
+  return section.startsWith(href);
+}
+---
+
+<aside class="sidebar" aria-label="Site" transition:persist="site-sidebar" transition:animate="none">
+  <div class="sidebar-rail">
+    <a class="brand-mark rail-brand" href="/" aria-label="Hoye Lam, home">HL</a>
+    <nav class="rail-nav" aria-label="Main navigation">
+      {
+        navItems.map((item) => (
+          <a
+            class="rail-link"
+            href={item.href}
+            aria-current={isCurrent(item.href) ? "page" : undefined}
+          >
+            <Icon name={item.icon} />
+            <span class="rail-label">{item.label}</span>
+          </a>
+        ))
+      }
+    </nav>
+    <div class="rail-footer">
+      <a class="rail-link" href="/rss.xml">
+        <Icon name="rss" />
+        <span class="rail-label">RSS feed</span>
+      </a>
+      <ThemeToggle />
+    </div>
+  </div>
+
+  <div class="sidebar-panel">
+    <div class="panel-profile">
+      <a class="panel-identity" href="/">
+        <img src="/images/hoye-lam-x-avatar.jpg" alt="" width="400" height="400" decoding="async" />
+        <span>
+          <span class="panel-name">Hoye Lam</span>
+          <span class="panel-domain">hoyelam.com</span>
+        </span>
+      </a>
+      <p class="panel-tagline">
+        Senior iOS and macOS engineer at DeepL. Building my own apps on the side.
+      </p>
+    </div>
+
+    <div class="panel-scroll">
+      {
+        mainJob ? (
+          <section class="panel-section" aria-labelledby="panel-main-job">
+            <h2 id="panel-main-job">Main job</h2>
+            <a class="panel-item" href={mainJob.href} target="_blank" rel="noreferrer">
+              <img class="panel-item-icon panel-item-logo" src={mainJob.thumbnail} alt="" width="28" height="28" />
+              <span class="panel-item-stack">
+                <span>{mainJob.name}</span>
+                <span class="panel-item-detail">{mainJob.role}</span>
+              </span>
+            </a>
+          </section>
+        ) : null
+      }
+
+      <section class="panel-section" aria-labelledby="panel-products">
+        <h2 id="panel-products"><a href="/projects/">Side products</a></h2>
+        <ul>
+          {
+            projectLinks.map((project) => (
+              <li>
+                <a class="panel-item" href={project.href} target="_blank" rel="noreferrer">
+                  {project.icon ? (
+                    <Image
+                      class="panel-item-icon"
+                      src={project.icon.image}
+                      alt=""
+                      width={28}
+                      height={28}
+                      densities={[1, 2]}
+                    />
+                  ) : (
+                    <span class="panel-item-icon panel-item-fallback" aria-hidden="true">
+                      {project.name.slice(0, 1)}
+                    </span>
+                  )}
+                  <span>{project.name}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <section class="panel-section" aria-labelledby="panel-elsewhere">
+        <h2 id="panel-elsewhere">Elsewhere</h2>
+        <ul>
+          {
+            socialLinks.map((link) => (
+              <li>
+                <a class="panel-item panel-item-text" href={link.href} target="_blank" rel="noreferrer">
+                  <svg class="panel-brand-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor">
+                    <path d={link.icon.path} />
+                  </svg>
+                  <span>{link.title}</span>
+                  <span class="panel-external" aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+    </div>
+
+  </div>
+</aside>
+
+<script>
+  // The sidebar persists across client-side navigations, so take the current
+  // page marker from the incoming page's freshly rendered sidebar.
+  document.addEventListener("astro:before-swap", (event) => {
+    const incoming = event.newDocument.querySelectorAll<HTMLAnchorElement>(".rail-nav .rail-link");
+    const current = document.querySelectorAll<HTMLAnchorElement>(".rail-nav .rail-link");
+    current.forEach((link, index) => {
+      const marker = incoming[index]?.getAttribute("aria-current");
+      if (marker) link.setAttribute("aria-current", marker);
+      else link.removeAttribute("aria-current");
+    });
+  });
+</script>

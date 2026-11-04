@@ -11,12 +11,14 @@ Current projects with a `Creator`, `Founder` or `Co-founder` role and a URL in
 controls its logo, display order (lower numbers first), and featured status:
 
 ```ts
-links: { icon: linkIcons.loudscript, order: 10, featured: true }
+links: { icon: linkIcons.esportsfort, order: 10 }
 ```
 
-The featured project appears first; at most one current project can be featured.
-Unconfigured projects follow the ordered ones. Changing this order does not change
-the portfolio, and renaming a project preserves its logo. Archived projects disappear
+The same order drives the sidebar's Side products list and the home page's
+"What I'm building" cards. Adding `featured: true` highlights a project with a
+"Featured" label and moves it first; at most one current project can be featured,
+and none is today. Unconfigured projects follow the ordered ones. Changing this
+order does not change the Projects page, and renaming a project preserves its logo. Archived projects disappear
 automatically, including from the sharing image.
 
 Official icons live in `src/assets/links/` and are registered in
@@ -35,6 +37,7 @@ checks, the Astro type check/build, and `scripts/seo-audit.mjs` through
 
 Asset sources (retrieved October 10, 2026):
 
+- Esportsfort app icon: `AppIcon.appiconset` in the Esportsfort iOS project, resized to 256 px (retrieved November 4, 2026)
 - [Kin-Yee app icon](https://kin-yee.com/apple-touch-icon.png) (retrieved October 29, 2026)
 - [LoudScript app icon](https://loudscript.app/apple-touch-icon.png)
 - [Waterfuze brand mark](https://waterfuze.com/cdn/shop/files/LOGO_transparent_1.png?v=1696692664&width=180)

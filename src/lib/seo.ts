@@ -1,3 +1,5 @@
+import { siGithub, siInstagram, siSpotify, siX } from "simple-icons";
+
 export const SITE_NAME = "Hoye Lam";
 export const SITE_URL = "https://hoyelam.com";
 export const HOME_SITE_TITLE =
@@ -15,11 +17,12 @@ export const MAX_META_DESCRIPTION_LENGTH = 160;
 export const MIN_META_DESCRIPTION_LENGTH = 70;
 export const PERSON_ID = `${SITE_URL}/#person`;
 
+// Brand logos from Simple Icons (CC0).
 export const socialLinks = [
-  { title: "Instagram", href: "https://www.instagram.com/hoyelam/" },
-  { title: "X", href: "https://x.com/hoyelam" },
-  { title: "GitHub", href: "https://github.com/hoyelam" },
-  { title: "Spotify", href: "https://open.spotify.com/user/hoye140" },
+  { title: "Instagram", href: "https://www.instagram.com/hoyelam/", icon: siInstagram },
+  { title: "X", href: "https://x.com/hoyelam", icon: siX },
+  { title: "GitHub", href: "https://github.com/hoyelam", icon: siGithub },
+  { title: "Spotify", href: "https://open.spotify.com/user/hoye140", icon: siSpotify },
 ];
 
 export const personRef = {

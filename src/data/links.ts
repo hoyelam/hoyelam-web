@@ -13,8 +13,8 @@ export const personalLinks = [
     href: "/writing/",
   },
   {
-    title: "Portfolio",
+    title: "Projects",
     description: "Everything I’ve worked on",
-    href: "/portfolio/",
+    href: "/projects/",
   },
 ];
