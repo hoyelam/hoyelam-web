@@ -1,20 +1,20 @@
 ---
-import PostList from "@components/PostList.astro";
-import ProjectThumb from "@components/ProjectThumb.astro";
+import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import { getPosts } from "@lib/content";
-import { projects } from "../data/projects";
-import { HOME_SITE_DESCRIPTION, HOME_SITE_TITLE, PERSON_ID, personSchema, SITE_NAME } from "@lib/seo";
+import { formatDate, formatRelativeDate } from "@lib/dates";
+import { projectLinks } from "../data/links";
+import { mainJob as dayJob } from "../data/projects";
+import {
+  getEntryExcerpt,
+  HOME_SITE_DESCRIPTION,
+  HOME_SITE_TITLE,
+  PERSON_ID,
+  personSchema,
+  SITE_NAME,
+} from "@lib/seo";
 
-// Static build: the daily scheduled deploy re-evaluates this cutoff.
-const recentCutoff = new Date();
-recentCutoff.setFullYear(recentCutoff.getFullYear() - 1);
-const posts = (await getPosts())
-  .filter((post) => post.data.publishedAt >= recentCutoff)
-  .slice(0, 6);
-const currentProjects = projects
-  .filter((project) => project.portfolioTier === "featured")
-  .slice(0, 3);
+const latestPosts = (await getPosts()).slice(0, 3);
 const structuredData = [
   {
     "@context": "https://schema.org",
@@ -32,72 +32,132 @@ const structuredData = [
 ---
 
 <BaseLayout title={HOME_SITE_TITLE} description={HOME_SITE_DESCRIPTION} structuredData={structuredData}>
-  <main id="main-content">
-    <section class="hero">
+  <main id="main-content" class="home">
+    <section class="home-hero" aria-labelledby="home-title">
       <img
-        class="hero-avatar"
+        class="home-portrait"
         src="/images/hoye-lam-x-avatar.jpg"
         alt="Hoye Lam"
         width="400"
         height="400"
         decoding="async"
       />
-      <h1>Hoye Lam</h1>
-      <p class="hero-copy">
-        I’m a senior iOS and macOS engineer at{" "}
-        <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a>. On the side I build{" "}
-        <strong>LoudScript</strong>, <strong>Websave</strong>, and <strong>Thinkdrop 2</strong>, and I co-founded{" "}
-        <strong>Waterfuze</strong>. Here I write what I actually think about software, work, and family.
-      </p>
-      <div class="actions">
-        <a class="button primary" href="/portfolio/">View portfolio</a>
-        <a class="button secondary" href="/writing/">Read writing</a>
+      <div class="home-intro">
+        <h1 id="home-title">
+          <span class="home-greeting"><span class="heading-emoji" aria-hidden="true">👋</span>Hi, I’m Hoye Lam</span>
+          <span class="home-roles">Developer, Father, Writer</span>
+        </h1>
+        <p class="home-lede">
+          I’m a senior iOS and macOS engineer at{" "}
+          <a href="https://www.deepl.com/" target="_blank" rel="noreferrer">DeepL</a>. On the side I
+          build my own apps, and here I write what I actually think about software, work, and family.
+        </p>
+        <div class="home-actions">
+          <a class="button primary" href="/projects/">View projects</a>
+          <a class="button secondary" href="/writing/">Read writing</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-section" aria-labelledby="home-building">
+      <div class="section-heading">
+        <h2 id="home-building"><span class="heading-emoji" aria-hidden="true">🛠️</span>What I’m building</h2>
+        <a class="muted" href="/projects/">All projects</a>
+      </div>
+      <div class="home-products">
+        {
+          projectLinks.map((project) => (
+            <article class="home-product">
+              <div class="home-product-header">
+                {project.icon ? (
+                  <Image
+                    class="home-product-icon"
+                    src={project.icon.image}
+                    alt=""
+                    width={48}
+                    height={48}
+                    densities={[1, 2]}
+                  />
+                ) : null}
+                <div>
+                  <h3>
+                    <a href={project.href} target="_blank" rel="noreferrer">
+                      {project.name}
+                    </a>
+                  </h3>
+                  <p class="home-meta">
+                    {project.role} · {project.period}
+                  </p>
+                </div>
+              </div>
+              <p>{project.description}</p>
+              {project.feedbackProjectId ? (
+                <a class="project-feedback-link" href={`/feedback/?project=${project.feedbackProjectId}`}>
+                  Share feedback →
+                </a>
+              ) : null}
+            </article>
+          ))
+        }
       </div>
     </section>
 
     {
-      posts.length ? (
-        <section class="section">
+      dayJob ? (
+        <section class="home-section" aria-labelledby="home-day-job">
           <div class="section-heading">
-            <h2>Recent writing</h2>
-            <a class="muted" href="/writing/">Archive</a>
+            <h2 id="home-day-job"><span class="heading-emoji" aria-hidden="true">💼</span>Day job</h2>
+            <a class="muted" href="/about/">About me</a>
           </div>
-          <PostList posts={posts} />
+          <a class="home-day-job" href={dayJob.href} target="_blank" rel="noreferrer">
+            <img src={dayJob.thumbnail} alt={dayJob.thumbnailAlt} width="64" height="64" />
+            <div>
+              <p class="home-meta">{dayJob.period}</p>
+              <h3>{dayJob.role} at {dayJob.name}</h3>
+              <p>{dayJob.description}</p>
+            </div>
+          </a>
         </section>
       ) : null
     }
 
-    <section class="section">
-      <div class="section-heading">
-        <h2>Current projects</h2>
-        <a class="muted" href="/portfolio/">All projects</a>
+    {
+      latestPosts.length ? (
+        <section class="home-section" aria-labelledby="home-writing">
+          <div class="section-heading">
+            <h2 id="home-writing"><span class="heading-emoji" aria-hidden="true">✍️</span>Latest writing</h2>
+            <a class="muted" href="/writing/">Archive</a>
+          </div>
+          <div class="home-posts">
+            {latestPosts.map((post) => {
+              const excerpt = getEntryExcerpt(post);
+              return (
+                <a class="home-post" href={`/${post.id}/`}>
+                  <time
+                    class="home-meta"
+                    datetime={post.data.publishedAt.toISOString()}
+                    title={formatRelativeDate(post.data.publishedAt)}
+                  >
+                    {formatDate(post.data.publishedAt)}
+                  </time>
+                  <h3>{post.data.title}</h3>
+                  {excerpt ? <p>{excerpt}</p> : null}
+                </a>
+              );
+            })}
+          </div>
+        </section>
+      ) : null
+    }
+
+    <section class="home-closing" aria-labelledby="home-closing-title">
+      <div>
+        <h2 id="home-closing-title"><span class="heading-emoji" aria-hidden="true">💬</span>Using one of my apps?</h2>
+        <p>Report a bug, suggest an idea, or see what I’m working on next.</p>
       </div>
-      <div class="project-grid">
-        {
-          currentProjects.map((project) => (
-            <article class="project-card">
-              <div class="project-preview">
-                <ProjectThumb project={project} />
-              </div>
-              <div class="project-body">
-                <div class="project-meta">{project.period} · {project.role}</div>
-                <h3>
-                  {project.href ? (
-                    <a href={project.href} target="_blank" rel="noreferrer">{project.name}</a>
-                  ) : project.name}
-                </h3>
-                <p>{project.description}</p>
-                {
-                  project.feedbackProjectId ? (
-                    <a class="project-feedback-link" href={`/feedback/?project=${project.feedbackProjectId}`}>
-                      Share feedback →
-                    </a>
-                  ) : null
-                }
-              </div>
-            </article>
-          ))
-        }
+      <div class="home-actions">
+        <a class="button primary" href="/feedback/">Share feedback</a>
+        <a class="button secondary" href="/links/">All links</a>
       </div>
     </section>
   </main>

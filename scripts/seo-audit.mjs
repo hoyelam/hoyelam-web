@@ -196,12 +196,10 @@ if (!existsSync(distRoot)) {
       const image = $(element);
       const src = image.attr("src") ?? "";
       const isProjectGallery = image.parents(".project-gallery").length > 0;
-      const isProjectPreview = image.parents(".project-preview").length > 0;
       const isPortfolioCard = image.parents(".portfolio-card-media").length > 0;
       return (
         src.startsWith("/") &&
         !isProjectGallery &&
-        !isProjectPreview &&
         !isPortfolioCard &&
         (!image.attr("width") || !image.attr("height"))
       );

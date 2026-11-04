@@ -23,6 +23,7 @@ const structuredData = {
   title={title}
   description={description}
   structuredData={structuredData}
+  clientRouter={false}
 >
   <main
     class="feedback-page"
@@ -32,7 +33,7 @@ const structuredData = {
     data-turnstile-configured={turnstileSiteKey ? "true" : "false"}
   >
     <header class="feedback-hero">
-      <h1>Product feedback</h1>
+      <h1><span class="heading-emoji" aria-hidden="true">💬</span>Product feedback</h1>
       <p>Report a bug, suggest an idea, or see what is being worked on.</p>
     </header>
 
